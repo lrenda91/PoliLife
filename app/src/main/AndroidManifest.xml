@@ -41,7 +41,7 @@
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".didactical.rooms.ClassroomDetailsActivity"
+            android:name=".didactical.rooms.ClassroomActivity"
             android:label="@string/title_activity_classroom_details" >
         </activity>
         <!--
