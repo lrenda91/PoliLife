@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="blue" type="color">#00C2C2</item>
+    <item name="darkblue" type="color">#3366FF</item>
+    <item name="purple" type="color">#DE7AFF</item>
+    <item name="green" type="color">#9CFF7A</item>
+    <item name="orange" type="color">#FFBF00</item>
+    <item name="red" type="color">#FF643C</item>
+    <item name="darkpurple" type="color">#FF9933CC</item>
+    <item name="darkgreen" type="color">#C4FF8A</item>
+    <item name="darkorange" type="color">#FFFF8800</item>
+    <item name="darkred" type="color">#FF8080</item>
+    <item name="medium_dark_gray" type="color">#E0E0E0E0</item>
+    <item name="gray" type="color">#D1D1D1</item>
+    <item name="black" type="color">#000000</item>
+    <item name="yellow" type="color">#FFFF3D</item>
+    <color name="white" type="color">#FFFFFF</color>
+    <color name="brown" type="color">#BE7400</color>
+    <color name="amaranth" type="color">#996666</color>
+
+    <integer-array name="androidcolors">
+        <item>@color/blue</item>
+        <item>@color/green</item>
+        <item>@color/yellow</item>
+        <item>@color/orange</item>
+        <item>@color/red</item>
+        <item>@color/gray</item>
+        <item>@color/brown</item>
+        <item>@color/amaranth</item>
+    </integer-array>
+</resources>

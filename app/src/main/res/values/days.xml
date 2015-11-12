@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <integer-array name="dayRelativeLayouts">
+        <item>@id/mondayRelativeLayout</item>
+        <item>@id/tuesdayRelativeLayout</item>
+        <item>@id/wednesdayRelativeLayout</item>
+        <item>@id/thursdayRelativeLayout</item>
+        <item>@id/fridayRelativeLayout</item>
+    </integer-array>  
+    
+    <string-array name="dayStrings">
+        <item>@string/monday</item>
+        <item>@string/tuesday</item>
+        <item>@string/wednesday</item>
+        <item>@string/thursday</item>
+        <item>@string/friday</item>
+    </string-array>
+    
+</resources>

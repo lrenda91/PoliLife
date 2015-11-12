@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/calendarScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent"
+    android:fadingEdge="none"
+    android:overScrollMode="never"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:id="@+id/calendarSplitterLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:baselineAligned="false" >
+
+        <RelativeLayout
+            android:id="@+id/hoursRelativeLayout"
+            android:layout_width="@dimen/hours_width"
+            android:layout_height="match_parent" >
+
+            <TextView
+                android:id="@+id/hour1TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="0dp"
+                android:gravity="top|center"
+                android:text="@string/hour1"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour2TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="60dp"
+                android:gravity="top|center"
+                android:text="@string/hour2"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour3TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="120dp"
+                android:gravity="top|center"
+                android:text="@string/hour3"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour4TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="180dp"
+                android:gravity="top|center"
+                android:text="@string/hour4"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour5TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="240dp"
+                android:gravity="top|center"
+                android:text="@string/hour5"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour6TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="300dp"
+                android:gravity="top|center"
+                android:text="@string/hour6"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour7TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="360dp"
+                android:gravity="top|center"
+                android:text="@string/hour7"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour8TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="420dp"
+                android:gravity="top|center"
+                android:text="@string/hour8"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour9amTextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="480dp"
+                android:gravity="top|center"
+                android:text="@string/hour9"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour10TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="540dp"
+                android:gravity="top|center"
+                android:text="@string/hour10"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/hour11TextView"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="600dp"
+                android:gravity="top|center"
+                android:text="@string/hour11"
+                android:textSize="15sp" />
+        </RelativeLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" />
+
+    </LinearLayout>
+
+</ScrollView>

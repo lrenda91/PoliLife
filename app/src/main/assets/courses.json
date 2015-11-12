@@ -1,0 +1,34 @@
+{
+  "courses": [
+    {
+      "name": "Mobile Application Development",
+      "teacher": "d021836",
+      "description": "The course aims at teaching the fundamentals of mobile application design and development.\\n It explores the principles and the challenges in designing and developing for this peculiar kind of devices, focusing on smart phone platforms such as Android and iOS. These platforms are continuously growing and becoming active and important participant in the wider mobile ecosystem. The material will be presented through a thorough study of the architecture, and a rich set of practical examples that covers all aspect of the mobile device usage"
+    },
+    {
+      "name": "Project and Lab on Communication Systems",
+      "teacher": "d182856",
+      "description": "The course aims to bring students to the techniques of high-level programming systems embedded. \\n In its development are examined first the common features of the software environments used in this field and related programming languages, then focus on the environment and on the Microsoft Micro Framework.NET programming language C # objects.\\nThe course is completed with a project for a software system embedded on a hardware platform family Gadgeteer, totaling 60 hours of lecture and project assistance"
+    },
+    {
+      "name": "Programmazione Distribuita I",
+      "teacher": "Enrico Masala",
+      "description": "L'insegnamento si prefigge di far conoscere le principali tecniche per la realizzazione di applicazioni distribuite, a cominciare dalla cosiddetta 'programmazione di rete', per arrivare alla programmazione di un'applicazione distribuita basata sul paradigma web che includa anche l'uso di una base dati relazionale remota"
+    },
+    {
+      "name": "Distributed Programming II",
+      "teacher": "Riccardo Sisto",
+      "description": "This course completes the students' knowledge and abilities that are taught in the previous course on Distributed Programming I and that are required for developing distributed applications. It focuses on the techniques for interactions among distributed applications, such as distributed services (web services) and XML"
+    },
+    {
+      "name": "Programmazione di Sistema",
+      "teacher": "d586327",
+      "description": "Il modulo illustra l'architettura dei sistemi operativi analizzandone i moduli interni, e approfondisce i concetti e le tecniche di gestione efficiente delle risorse di un sistema di elaborazione (processori, memorie, dispositivi periferici, file, ecc.). Sono presentate inoltre le tecniche di programmazione di sistema mediante l'analisi e l'utilizzo delle chiamate di sistema di Unix e Windows. Vengono infine introdotte ed utilizzate tecniche avanzate di programmazione concorrente"
+    },
+    {
+      "name": "Computer Systems Security",
+      "teacher": "d218689",
+      "description": "This course addresses the issues of security in modern computer systems, with particular attention to data security and the protection of computer networks and network applications, in a closed environment (Intranet) and open (Internet). The aim of the course is to put the student can perform both the safety analysis is the design of the protective measures to a computer system in the network"
+    }
+  ]
+}

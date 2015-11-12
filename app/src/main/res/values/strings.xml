@@ -1,0 +1,212 @@
+<resources>
+    <string name="app_name">PoliLife</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_sign_up">SignUpActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="drawer_close">Drawer Closed</string>
+    <string name="clear"></string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+
+    <string name="news">News</string>
+    <string name="search_positions">Search for positions</string>
+    <string name="savedPos">Favorite positions</string>
+    <string name="search_companies">Search for companies</string>
+    <string name="savedComp">Favorite companies</string>
+    <string name="profile">Profile</string>
+    <string name="applied">Applied</string>
+
+    <string name="fav_students">Favourite Students</string>
+    <string name="comp_positions">My positions</string>
+    <string name="search_students">Search for students</string>
+
+
+    <string name="username_text">Username</string>
+    <string name="email_text">Email</string>
+    <string name="password_text">Password</string>
+    <string name="login_text">LOG IN</string>
+    <string name="signup_text">SIGN UP</string>
+    <string name="logout">Log out</string>
+
+    <string name="userselector_text">user</string>
+    <string name="studentbutton_text">Student</string>
+    <string name="companybutton_text">Company</string>
+
+    <string name="register_text">register</string>
+    <string name="firstname_text">First Name</string>
+    <string name="lastname_text">Last Name</string>
+    <string name="country_text">Select Country</string>
+    <string name="city_text">City</string>
+
+    <string-array name="career_arrays">
+        <item>Select Career</item>
+        <item>Bachelor</item>
+        <item>Degree</item>
+        <item>Master</item>
+        <item>PhD</item>
+    </string-array>
+
+    <string-array name="required_career_arrays">
+        <item>Required Career</item>
+        <item>Bachelor</item>
+        <item>Degree</item>
+        <item>Master</item>
+        <item>PhD</item>
+    </string-array>
+
+    <string-array name="languages_arrays">
+        <item>Select Language</item>
+        <item>Italian</item>
+        <item>English</item>
+    </string-array>
+
+
+    <string-array name="country_arrays">
+        <item>Select Country</item>
+        <item>Italy</item>
+        <item>Malaysia</item>
+        <item>Uzbekistan</item>
+        <item>United States</item>
+        <item>Indonesia</item>
+        <item>France</item>
+        <item>Singapore</item>
+        <item>New Zealand</item>
+        <item>India</item>
+        <item>Portugal</item>
+    </string-array>
+
+
+    <string-array name="types_of_contract">
+        <item>Select Contract</item>
+        <item>FULL_TIME</item>
+        <item>PART_TIME</item>
+        <item>CONTRACT</item>
+        <item>INTERNSHIP</item>
+        <item>TEMPORARY</item>
+        <item>OTHER</item>
+    </string-array>
+
+    <string-array name="type_arrays">
+        <item>Select Position</item>
+        <item>Course</item>
+        <item>Media</item>
+        <item>Sales</item>
+        <item>Recruitment</item>
+        <item>Social care</item>
+        <item>Environment</item>
+    </string-array>
+
+    <string-array name="gender_arrays">
+        <item>Select Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="department_arrays">
+        <item>Select Department</item>
+        <item>ICT</item>
+        <item>Management</item>
+    </string-array>
+
+    <string name="dateofb_text">Date of Birth (DD/MM/YYYY)</string>
+    <string name="ssn_text">Social Security Number</string>
+    <string name="phone_text">Phone Number</string>
+    <string name="address_text">Address</string>
+    <string name="gender_text">Gender</string>
+    <string name="nation_text">Nationality</string>
+
+    <string name="aboutme_text">About Me</string>
+    <string name="skills_text">Skills</string>
+    <string name="linksto_text">Links to Projects/Works</string>
+    <string name="career_text">University Career</string>
+    <string name="hobbies_text">Hobbies</string>
+    <string name="available_text">Available Period</string>
+    <string name="uploadresume_text">Upload Resume</string>
+    <string name="addphoto_text">Add Photo</string>
+
+    <string name="update_button_text">UPDATE</string>
+    <string name="skip_button_text">SKIP</string>
+
+    <string name="comname_text">Company Name</string>
+    <string name="contacname_text">Contact Name</string>
+    <string name="faxnumber_text">Fax Number</string>
+    <string name="webpage_text">Web Page</string>
+    <string name="workersn_text">Number of Workers</string>
+
+    <string name="aboutcompany_text">About Company</string>
+    <string name="missions_text">Missions</string>
+    <string name="fields_text">Fields of Work</string>
+    <string name="awards_text">Awards</string>
+    <string name="addlogo_text">Add Logo</string>
+    <string name="title_activity_signup">signup</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_login">login</string>
+    <string name="title_activity_signupselect">signupselect</string>
+    <string name="title_activity_reg_c_1">reg_c_1</string>
+    <string name="title_activity_temp_profile_page">temp_profile_page</string>
+
+    <string name="contacts">Contacts</string>
+    <string name="info">Info</string>
+    <string name="infoStudent">Personal Info</string>
+
+    <string name="infoPosition">Information</string>
+    <string name="descriptionPosition">Description</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_company_main">CompanyMainActivity</string>
+    <string name="title_activity_add_details">addDetails</string>
+    <string name="title_activity_add_position">addPosition</string>
+    <string name="title_activity_info_company">InfoCompanyActivity</string>
+    <string name="title_activity_student_main">StudentMainActivity</string>
+    <string name="title_activity_student_position">PositionMainActivity</string>
+    <string name="studentProfileInsideCompany">PositionMainActivity</string>
+
+    <string name="more_button_text">More</string>
+    <string name="edit">edit</string>
+    <string name="description">Description</string>
+    <string name="done">done</string>
+    <string name="about_company">About Company</string>
+    <string name="filds_of_work">Filds of Work</string>
+    <string name="mission">Mission</string>
+    <string name="title_activity_student_favorites">StudentFavoritesActivity</string>
+    <string name="title_activity_company_student_search">CompanyStudentSearchActivity</string>
+    <string name="title_activity_student_position_search">StudentPositionSearchActivity</string>
+    <string name="title_activity_student_company_search">StudentCompanySearchActivity</string>
+
+    <string name="monday">Mon</string>
+    <string name="tuesday">Tue</string>
+    <string name="wednesday">Wed</string>
+    <string name="thursday">Thu</string>
+    <string name="friday">Fri</string>
+    <string name="hour1">8:30</string>
+    <string name="hour2">9:30</string>
+    <string name="hour3">10:30</string>
+    <string name="hour4">11:30</string>
+    <string name="hour5">12:30</string>
+    <string name="hour6">13:30</string>
+    <string name="hour7">14:30</string>
+    <string name="hour8">15:30</string>
+    <string name="hour9">16:30</string>
+    <string name="hour10">17:30</string>
+    <string name="hour11">18:30</string>
+    <string name="room">Classroom</string>
+    <string name="menu">Context Menu</string>
+    <string name="clear_text">Clear text</string>
+    <string name="details_title">Course details</string>
+    <string name="title_activity_details">Details</string>
+    <string name="action_search">Search</string>
+    <string name="title_activity_search">Search</string>
+    <string name="search">Search</string>
+    <string name="teacher">Teacher name or a part of it</string>
+    <string name="course">Course name or a part of it</string>
+    <string name="noResult">No results found</string>
+    <string name="exportTitle">Export to Google Calendar</string>
+    <string name="emptyResult">Sorry, you have no events to export</string>
+    <string name="noAccount">No Google accounts found</string>
+    <string name="confirmExport">Are you sure?</string>
+    <string name="title_activity_classroom_details">Map</string>
+
+</resources>
