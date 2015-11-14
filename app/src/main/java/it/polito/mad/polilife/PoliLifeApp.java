@@ -12,7 +12,7 @@ import it.polito.mad.polilife.db.classes.*;
 /**
  * Created by Luigi on 27/10/2015.
  */
-public class MyApp extends Application {
+public class PoliLifeApp extends Application {
 
     public static void registerExceptionHandler(){
         Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
@@ -44,6 +44,7 @@ public class MyApp extends Application {
         registerExceptionHandler();
         PoliLifeDB.initialize(this,
                 StudentInfo.class,
+                Professor.class,
                 Company.class,
                 Position.class,
                 Classroom.class,

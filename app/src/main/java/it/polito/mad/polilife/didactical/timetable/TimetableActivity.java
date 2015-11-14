@@ -1,4 +1,4 @@
-package it.polito.mad.polilife.didactical;
+package it.polito.mad.polilife.didactical.timetable;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import it.polito.mad.polilife.R;
-import it.polito.mad.polilife.didactical.timetable.Timetable;
-import it.polito.mad.polilife.didactical.timetable.TimetableImpl;
+import it.polito.mad.polilife.didactical.timetable.data.Timetable;
+import it.polito.mad.polilife.didactical.timetable.data.TimetableImpl;
 
 public class TimetableActivity extends AppCompatActivity {
 

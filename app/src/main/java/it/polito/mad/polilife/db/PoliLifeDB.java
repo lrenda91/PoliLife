@@ -105,7 +105,7 @@ public class PoliLifeDB {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
                 if (parseUser == null || !(parseUser instanceof Student) ||
-                        ((Student) parseUser).getStudentInfo() == null){
+                        ((Student) parseUser).getStudentInfo() == null) {
                     if (listener != null) {
                         listener.onLoginError((e != null) ? e : new ParseException(-1, "No login"));
                     }
@@ -200,6 +200,38 @@ public class PoliLifeDB {
     }
 
 
+    public static void searchClassrooms(String param, final ClassroomSearchCallback listener){
+        ParseQuery<Classroom> query = ParseQuery.getQuery(Classroom.class);
+        query.whereContains(Classroom.NAME, param);
+        query.findInBackground(new FindCallback<Classroom>() {
+            @Override
+            public void done(List<Classroom> list, ParseException e) {
+                if (e != null) {
+                    if (listener != null) {
+                        listener.onClassroomSearchError(e);
+                    }
+                    return;
+                }
+                if (listener != null) {
+                    listener.onClassroomsFound(list);
+                }
+            }
+        });
+    }
+
+    public static void downloadProfessorsInfo(final MultipleFetchCallback<Professor> listener){
+        ParseQuery<Professor> query = ParseQuery.getQuery(Professor.class);
+        query.findInBackground(new FindCallback<Professor>() {
+            @Override
+            public void done(List<Professor> list, ParseException e) {
+                if (e != null){
+                    if (listener != null) listener.onFetchSuccess(list);
+                    return;
+                }
+                if (listener != null) listener.onFetchError(e);
+            }
+        });
+    }
 
 
     public static void publishNewNotice(final PNoticeData data,

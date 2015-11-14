@@ -1,5 +1,6 @@
 package it.polito.mad.polilife.didactical.rooms;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,37 +26,52 @@ import java.util.List;
 
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.Utility;
+import it.polito.mad.polilife.db.DBCallbacks;
+import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Classroom;
 
 /**
  * Created by luigi on 12/11/15.
  */
-public class ClassroomSearchFragment extends Fragment {
+public class ClassroomSearchFragment extends Fragment implements DBCallbacks.ClassroomSearchCallback {
 
-    public static ClassroomSearchFragment newInstance(){
+    public interface ClassroomSelectionListener {
+        void onClassroomSelected(Classroom classroom);
+    }
+
+    public static ClassroomSearchFragment newInstance(String searchParam){
         Bundle args = new Bundle();
         ClassroomSearchFragment fragment = new ClassroomSearchFragment();
+        args.putString("param",searchParam);
         fragment.setArguments(args);
         return fragment;
     }
+
+    private ListView mListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.fragment_classroom_search, container, false);
+        mListView = (ListView) root.findViewById(R.id.classroom_results);
 
-        final List<String> items = new LinkedList<>();
-        items.add("7I"); items.add("5I");
-        ListView list = (ListView) root.findViewById(R.id.classroom_results);
-        list.setAdapter(new BaseAdapter() {
+        String searchParam = getArguments().getString("param");
+        PoliLifeDB.searchClassrooms(searchParam, this);
+
+        return root;
+    }
+
+    @Override
+    public void onClassroomsFound(final List<Classroom> result) {
+        mListView.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
-                return items.size();
+                return result.size();
             }
 
             @Override
-            public String getItem(int position) {
-                return items.get(position);
+            public Classroom getItem(int position) {
+                return result.get(position);
             }
 
             @Override
@@ -64,24 +81,31 @@ public class ClassroomSearchFragment extends Fragment {
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                TextView tv = new TextView(getActivity());
-                final String item = getItem(position);
-                tv.setText(item);
-                tv.setOnClickListener(new View.OnClickListener(){
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(getActivity())
+                            .inflate(R.layout.layout_classroom_result_item, parent, false);
+                }
+
+                final Classroom item = getItem(position);
+                TextView tv = (TextView) convertView.findViewById(R.id.classroom_name);
+                tv.setText(item.getName());
+
+                convertView.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
-                        if (getActivity() instanceof Int){
-                            ((Int) getActivity()).fai();
+                        if (getActivity() instanceof ClassroomSelectionListener){
+                            ((ClassroomSelectionListener) getActivity()).onClassroomSelected(item);
                         }
                     }
                 });
-                return tv;
+                return convertView;
             }
         });
-
-
-        return root;
     }
 
+    @Override
+    public void onClassroomSearchError(Exception exception) {
+        Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_SHORT);
+    }
 
 }

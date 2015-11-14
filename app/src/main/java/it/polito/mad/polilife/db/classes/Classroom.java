@@ -11,7 +11,7 @@ import com.parse.ParseRelation;
 @ParseClassName("Classroom")
 public class Classroom extends ParseObject {
 
-    static final String NAME = "name";
+    public static final String NAME = "name";
     static final String LOCATION = "location";
     static final String SITE = "site";
     static final String FLOOR = "floor";

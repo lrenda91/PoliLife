@@ -202,7 +202,7 @@ public class SignUpPagerAdapter extends FragmentPagerAdapter {
         }
 
         @Override
-        public void onStudentSignUpException(ParseException pe) {
+        public void onStudentSignUpException(Exception pe) {
             waitingDialog.dismiss();
             Toast.makeText(getActivity(),
                     pe.getMessage(),

@@ -1,4 +1,4 @@
-package it.polito.mad.polilife.didactical.timetable;
+package it.polito.mad.polilife.didactical.timetable.data;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

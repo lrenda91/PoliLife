@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="0dp"
-    tools:context="it.polito.mad.polilife.didactical.TimetableActivity" >
+    tools:context="it.polito.mad.polilife.didactical.timetable.TimetableActivity" >
 
     <LinearLayout
         android:id="@+id/dayLabelsLinearLayout"

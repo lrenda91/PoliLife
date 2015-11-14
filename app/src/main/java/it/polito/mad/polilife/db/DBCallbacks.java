@@ -1,6 +1,5 @@
 package it.polito.mad.polilife.db;
 
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
@@ -17,27 +16,27 @@ public class DBCallbacks {
 
     public interface UserLoginCallback {
         void onStudentLoginSuccess(ParseUser student);
-        void onLoginError(ParseException exception);
+        void onLoginError(Exception exception);
     }
 
     public interface UserLogoutCallback {
         void onLogoutSuccess();
-        void onLogoutError(ParseException exception);
+        void onLogoutError(Exception exception);
     }
 
     public interface StudentSignUpCallback {
         void onStudentSignUpSuccess(Student student);
-        void onStudentSignUpException(ParseException exception);
+        void onStudentSignUpException(Exception exception);
     }
 
     public interface UpdateCallback<T extends ParseObject> {
         void onUpdateSuccess(T updated);
-        void onUpdateError(ParseException exception);
+        void onUpdateError(Exception exception);
     }
 
     public interface DeleteCallback<T extends ParseObject> {
         void onDeleteSuccess();
-        void onDeleteError(ParseException exception);
+        void onDeleteError(Exception exception);
     }
 
     public interface DownloadCallback<T extends ParseObject> {
@@ -47,37 +46,42 @@ public class DBCallbacks {
 
     public interface FilterCallback<T extends ParseObject> {
         void onDataFiltered(List<T> result);
-        void onFilterError(ParseException exception);
+        void onFilterError(Exception exception);
     }
 
     public interface SortCallback<T extends ParseObject> {
         void done(List<T> result);
-        void onSortError(ParseException exception);
+        void onSortError(Exception exception);
     }
 
     public interface SingleFetchCallback<T extends ParseObject> {
         void onFetchSuccess(T result);
-        void onFetchError(ParseException exception);
+        void onFetchError(Exception exception);
     }
 
     public interface MultipleFetchCallback<T extends ParseObject> {
         void onFetchSuccess(List<T> result);
-        void onFetchError(ParseException exception);
+        void onFetchError(Exception exception);
     }
 
     public interface NoticeFlagCallback {
         void onFlagSuccess();
-        void onFlagError(ParseException exception);
+        void onFlagError(Exception exception);
     }
 
     public interface SetFavoriteCallback {
         void onSetFavoriteSuccess(boolean added);
-        void onSetFavoriteError(ParseException exception);
+        void onSetFavoriteError(Exception exception);
+    }
+    
+    public interface ClassroomSearchCallback {
+        void onClassroomsFound(List<Classroom> result);
+        void onClassroomSearchError(Exception exception);
     }
 
     public interface NewGroupCallback {
         void onNewGroupCreated(Group group);
-        void onError(ParseException exception);
+        void onError(Exception exception);
     }
 
 }
