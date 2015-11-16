@@ -87,10 +87,14 @@ public class PoliLifeDB {
 
     public static ParseUser tryLocalLogin() {
         ParseUser current = ParseUser.getCurrentUser();
-        if (current == null || !(current instanceof Student) || ((Student) current).getStudentInfo() == null){
+        if (current == null || !(current instanceof Student)){
             return null;
         }
-        StudentInfo info = (StudentInfo) current.get(STUDENT_KEY);
+        Student student = (Student) current;
+        if (student.getStudentInfo() == null){
+            return null;
+        }
+        StudentInfo info = student.getStudentInfo();
         try {
             info.fetchFromLocalDatastore();
         } catch (ParseException e) {
@@ -114,8 +118,9 @@ public class PoliLifeDB {
                 Student student = (Student) parseUser;
                 ParseObject studentInfo = student.getStudentInfo();
                 try {
+                    student.fetchIfNeeded();
                     studentInfo.fetchIfNeeded();
-                    studentInfo.pin();
+                    student.pin();
                 } catch (ParseException ex) {
                     if (listener != null) {
                         listener.onLoginError(ex);
@@ -123,16 +128,13 @@ public class PoliLifeDB {
                     return;
                 }
                 if (listener != null) {
-                    if (studentInfo instanceof StudentInfo) {
-                        listener.onStudentLoginSuccess(parseUser);
-                    }
+                    listener.onStudentLoginSuccess(parseUser);
                 }
             }
         });
     }
 
     public static void logOut(final UserLogoutCallback listener) {
-
         ParseUser current = ParseUser.getCurrentUser();
         if (current == null){
             if (listener != null){
@@ -140,16 +142,8 @@ public class PoliLifeDB {
             }
             return;
         }
-
-        ParseObject relatedUser = (StudentInfo) current.get(STUDENT_KEY);
-        if (relatedUser == null){
-            if (listener != null){
-                listener.onLogoutError(new ParseException(-1, "No current parse user"));
-            }
-            return;
-        }
         try {
-            relatedUser.unpin();
+            current.unpin();
         }
         catch (ParseException e) {
             if (listener != null) {

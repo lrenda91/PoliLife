@@ -29,15 +29,12 @@ import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Classroom;
+import it.polito.mad.polilife.didactical.ClassroomSelectionListener;
 
 /**
  * Created by luigi on 12/11/15.
  */
 public class ClassroomSearchFragment extends Fragment implements DBCallbacks.ClassroomSearchCallback {
-
-    public interface ClassroomSelectionListener {
-        void onClassroomSelected(Classroom classroom);
-    }
 
     public static ClassroomSearchFragment newInstance(String searchParam){
         Bundle args = new Bundle();

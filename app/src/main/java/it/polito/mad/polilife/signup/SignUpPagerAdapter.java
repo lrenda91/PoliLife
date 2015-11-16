@@ -24,6 +24,7 @@ import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Student;
 import it.polito.mad.polilife.db.classes.StudentInfo;
+import it.polito.mad.polilife.db.parcel.PStudentData;
 import it.polito.mad.polilife.db.parcel.PUserData;
 
 /**
@@ -195,7 +196,7 @@ public class SignUpPagerAdapter extends FragmentPagerAdapter {
                     .password(password)
                     .eMail(email);
 
-            PoliLifeDB.signUpStudent(info, null, this);
+            PoliLifeDB.signUpStudent(info, new PStudentData(), this);
 
 
             waitingDialog.show();

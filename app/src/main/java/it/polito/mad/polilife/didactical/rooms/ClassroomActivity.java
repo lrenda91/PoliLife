@@ -11,10 +11,11 @@ import android.widget.EditText;
 
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.db.classes.Classroom;
+import it.polito.mad.polilife.didactical.ClassroomSelectionListener;
 import it.polito.mad.polilife.didactical.DidacticalHomeFragment;
 
 public class ClassroomActivity extends AppCompatActivity
-        implements ClassroomSearchFragment.ClassroomSelectionListener {
+        implements ClassroomSelectionListener {
 
     private void showFragment(Fragment fragment){
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
