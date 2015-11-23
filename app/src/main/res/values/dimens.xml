@@ -5,7 +5,10 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
 
+    <dimen name="toolbar_height">48dp</dimen>
+
     <dimen name="timetable_column_height">60dp</dimen>
 
+    <dimen name="fields_margin">10dp</dimen>
     <dimen name="hours_width">60dp</dimen>
 </resources>

@@ -5,9 +5,61 @@
     android:orientation="vertical"
     tools:context="it.polito.mad.polilife.didactical.timetable.LectureDetailsActivity" >
 
-    <FrameLayout
-        android:id="@+id/lecture_container"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <RelativeLayout
+                android:id="@+id/backgroundCourseLayout"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:background="@color/darkorange" >
+
+                <TextView
+                    android:id="@+id/courseTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/teacherTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/roomTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp" />
+
+            <TextView
+                android:id="@+id/scheduleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"/>
+
+            <TextView
+                android:id="@+id/subjectTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp" />
+
+            <FrameLayout
+                android:id="@+id/room_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </ScrollView>
 </LinearLayout>

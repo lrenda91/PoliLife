@@ -88,7 +88,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
                 public void onClick(View v) {
                     int itemPosition = ((RecyclerView) p).getChildPosition(v);
                     if (listener != null){
-                        listener.onItemClick(v, itemPosition);
+                        listener.onItemClick(v, itemPosition-1);
                     }
                 }
             });

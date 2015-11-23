@@ -282,4 +282,59 @@ public class PoliLifeDB {
         }.execute();
     }
 
+    public static void advancedNoticeFilter(final Notice.FilterData filterData,
+                                            final FilterCallback<Notice> listener){
+        ParseQuery<Notice> query = ParseQuery.getQuery(Notice.class);
+        ParseQuery<Notice> finalQuery = null;
+        if (filterData != null) {
+            query.whereLessThanOrEqualTo(Notice.PRICE, filterData.maxPrice)
+                    .whereGreaterThanOrEqualTo(Notice.PRICE, filterData.minPrice)
+                    .whereLessThanOrEqualTo(Notice.SIZE, filterData.maxSize)
+                    .whereGreaterThanOrEqualTo(Notice.SIZE, filterData.minSize);
+
+            if (filterData.title != null){
+                query.whereContains(Notice.TITLE, filterData.title);
+            }
+            if (filterData.location != null) {
+                query.whereContains(Notice.LOCATION_STRING, filterData.location);
+            }
+            if (filterData.latitude != null && filterData.longitude != null){
+                ParseGeoPoint point = new ParseGeoPoint(filterData.latitude, filterData.longitude);
+                query.whereWithinKilometers(Notice.LOCATION_POINT, point, filterData.within);
+            }
+            if (filterData.contractType != null) {
+                query.whereEqualTo(Notice.CONTRACT_TYPE, filterData.contractType);
+            }
+            if (filterData.propertyType != null) {
+                query.whereEqualTo(Notice.PROPERTY_TYPE, filterData.propertyType);
+            }
+            if (filterData.tags != null && !filterData.tags.isEmpty()) {
+                query.whereContainsAll(Notice.TAGS, filterData.tags);
+            }
+            List<ParseQuery<Notice>> res = new LinkedList<>();
+            res.add(query);
+            for (String tag : filterData.tags) {
+                List<ParseQuery<Notice>> queries = new LinkedList<>();
+                queries.add(ParseQuery.getQuery(Notice.class).whereContains(Notice.TITLE, tag));
+                queries.add(ParseQuery.getQuery(Notice.class).whereContains(Notice.DESCRIPTION, tag));
+                ParseQuery<Notice> union = ParseQuery.or(queries);
+                res.add(union);
+            }
+            finalQuery = ParseQuery.or(res);
+        }
+        else{
+            finalQuery = query;
+        }
+        finalQuery.findInBackground(new FindCallback<Notice>() {
+            @Override
+            public void done(List<Notice> list, ParseException e) {
+                if (e != null) {
+                    if (listener != null) listener.onFilterError(e);
+                    return;
+                }
+                if (listener != null) listener.onDataFiltered(list);
+            }
+        });
+    }
+
 }

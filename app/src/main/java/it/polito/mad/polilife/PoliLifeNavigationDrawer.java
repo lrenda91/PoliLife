@@ -19,6 +19,15 @@ public class PoliLifeNavigationDrawer {
         void onFooterClick(View view);
     }
 
+    static class SimpleOnItemClickListener implements OnItemClickListener {
+        @Override
+        public void onItemClick(View view, int position) {}
+        @Override
+        public void onHeaderClick(View view) {}
+        @Override
+        public void onFooterClick(View view) {}
+    }
+
     private OnItemClickListener listener;
     private NavigationAdapter mAdapter;
 
@@ -83,6 +92,18 @@ public class PoliLifeNavigationDrawer {
             mDrawerLayout.closeDrawer(mRootView);
         } else {
             mDrawerLayout.openDrawer(mRootView);
+        }
+    }
+
+    public void open(){
+        if (!mDrawerLayout.isDrawerOpen(mRootView)){
+            mDrawerLayout.openDrawer(mRootView);
+        }
+    }
+
+    public void close(){
+        if (mDrawerLayout.isDrawerOpen(mRootView)){
+            mDrawerLayout.closeDrawer(mRootView);
         }
     }
 

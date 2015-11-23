@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.polito.mad.polilife" >
+    package="it.polito.mad.polilife">
 
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -19,10 +23,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,17 +36,14 @@
         <activity
             android:name=".signup.SignUpActivity"
             android:label="@string/title_activity_sign_up"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".didactical.timetable.TimetableActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".didactical.rooms.ClassroomActivity"
-            android:label="@string/title_activity_classroom_details" >
-        </activity>
+            android:label="@string/title_activity_classroom_details"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -55,15 +56,17 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".didactical.prof.ProfessorsActivity" >
-        </activity>
+        <activity android:name=".didactical.prof.ProfessorsActivity"></activity>
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity android:name=".didactical.timetable.LectureDetailsActivity" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".didactical.timetable.LectureDetailsActivity"></activity>
+        <activity
+            android:name=".noticeboard.NoticeBoardActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".noticeboard.add.AddNoticeActivity"></activity>
+        <activity android:name=".noticeboard.AdvancedSearchActivity"></activity>
     </application>
 
 </manifest>

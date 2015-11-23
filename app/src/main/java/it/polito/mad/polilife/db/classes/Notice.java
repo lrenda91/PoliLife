@@ -22,22 +22,23 @@ public class Notice extends ParseObject {
     /**
      * 'Common' keys, e.g. which belong to all notices
      */
-    static final String TITLE = "title";
-    static final String DESCRIPTION = "description";
-    static final String PRICE = "cost";
-    static final String PROPERTY_TYPE = "type";
-    static final String LOCATION_STRING = "locationName";
-    static final String LOCATION_POINT = "location";
-    static final String TAGS = "keywords";
-    static final String PHOTOS = "photos";
-    static final String OWNER = "owner";
+    public static final String TITLE = "title";
+    public static final String DESCRIPTION = "description";
+    public static final String PRICE = "cost";
+    public static final String PROPERTY_TYPE = "type";
+    public static final String LOCATION_STRING = "locationName";
+    public static final String LOCATION_POINT = "location";
+    public static final String TAGS = "keywords";
+    public static final String PHOTOS = "photos";
+    public static final String OWNER = "owner";
+    public static final String DETAILS = "details";
 
     /**
      * House related notices' keys
      */
-    static final String CONTRACT_TYPE = "contractType";
-    static final String SIZE = "size";
-    static final String AVAILABILITY = "availableFrom";
+    public static final String CONTRACT_TYPE = "contractType";
+    public static final String SIZE = "size";
+    public static final String AVAILABILITY = "availableFrom";
 
 
     public static class SortParam {
@@ -63,11 +64,11 @@ public class Notice extends ParseObject {
             minSize = 0; minPrice = 0;
             maxSize = 10000; maxPrice = 10000;  //huge values
         }
-        String title, location, contractType, propertyType;
+        public String title, location, contractType, propertyType;
         public List<String> tags = new LinkedList<>();
-        int minSize, maxSize, minPrice, maxPrice;
-        Double latitude = null, longitude = null;
-        int within = 1;
+        public int minSize, maxSize, minPrice, maxPrice;
+        public Double latitude = null, longitude = null;
+        public int within = 1;
         public FilterData title(String value){ title = value; return this; }
         public FilterData location(String value){ location = value; return this; }
         public FilterData latitude(Double value){ latitude = value; return this; }

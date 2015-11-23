@@ -64,7 +64,7 @@ public class LectureDetailsFragment extends Fragment {
             }
         });
 
-        roomTV.setOnClickListener(new View.OnClickListener() {
+        root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String room = roomTV.getText().toString();
@@ -77,6 +77,7 @@ public class LectureDetailsFragment extends Fragment {
                             ((ClassroomSelectionListener) getActivity()).onClassroomSelected(classroom);
                         }
                     }
+
                     @Override
                     public void onClassroomSearchError(Exception exception) {
 

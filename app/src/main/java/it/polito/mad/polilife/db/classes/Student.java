@@ -23,7 +23,7 @@ public class Student extends ParseUser {
     private static final String CITY= "city";
     private static final String CONTACT_PHONE = "contactPhone";
     private static final String ABOUT = "aboutMe";
-    private static final String PHOTO= "photo";
+    private static final String PHOTO = "photo";
 
     public Student() {
 

@@ -1,15 +1,8 @@
 package it.polito.mad.polilife;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,20 +10,11 @@ import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseUser;
@@ -39,20 +23,38 @@ import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Student;
 import it.polito.mad.polilife.didactical.DidacticalHomeFragment;
-import it.polito.mad.polilife.didactical.rooms.ClassroomSearchFragment;
-import it.polito.mad.polilife.didactical.timetable.LectureDetailsActivity;
+import it.polito.mad.polilife.news.NewsFragment;
+import it.polito.mad.polilife.noticeboard.NoticeBoardActivity;
+import it.polito.mad.polilife.noticeboard.NoticeboardHomeFragment;
+import it.polito.mad.polilife.placement.JobPlacementFragment;
+import it.polito.mad.polilife.profile.ProfileFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private static final int PROFILE = 0;
+    private static final int DIDACTICS = 1;
+    private static final int NOTICEBOARD = 2;
+    private static final int JOBPLACEMENT = 3;
+    private static final int CHAT = 4;
+    private static final int NEWS = 5;
+
     private Student user = (Student) ParseUser.getCurrentUser();
 
-    //private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    //private ViewPager mViewPager;
+    private Fragment[] pages = {
+            ProfileFragment.newInstance(),
+            DidacticalHomeFragment.newInstance(),
+            NoticeboardHomeFragment.newInstance(),
+            JobPlacementFragment.newInstance(),
+            NoticeboardHomeFragment.newInstance(),
+            NewsFragment.newInstance()
+    };
 
     private PoliLifeNavigationDrawer mNavigationDrawer;
     private ActionBarDrawerToggle mDrawerToggle;
-    private Toolbar toolbar;
+    private Toolbar mToolbar;
+    private String[] mTitles;
+
+    private int mCurrentFeature;
     private int currentAlpha = 255;
     private int i;
 
@@ -60,30 +62,17 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.getBackground().setAlpha(255);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.getBackground().setAlpha(255);
 
+        mTitles = getResources().getStringArray(R.array.student_drawer_titles);
         setUpNavigationDrawer();
 
-        mNavigationDrawer.setOnItemClickListener(new PoliLifeNavigationDrawer.OnItemClickListener() {
+        mNavigationDrawer.setOnItemClickListener(new PoliLifeNavigationDrawer.SimpleOnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Fragment f = DidacticalHomeFragment.newInstance();
-                FragmentManager frgManager = getSupportFragmentManager();
-                frgManager.beginTransaction().replace(R.id.container, f).commit();
-                mNavigationDrawer.toggle();
-            }
-
-            @Override
-            public void onHeaderClick(View view) {
-                Intent intent = new Intent(view.getContext(), LectureDetailsActivity.class);
-                intent.putExtra("course", "aaaaa");
-                intent.putExtra("teacher", "bbbbbb");
-                intent.putExtra("time", "08:30");
-                intent.putExtra("room", "7I");
-                intent.putExtra("color", R.color.brown);
-                view.getContext().startActivity(intent);
+                showPage(position);
             }
 
             @Override
@@ -107,20 +96,44 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        //by default, we'd like to see immediately all news
+        showPage(NEWS);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        int id = R.menu.menu_home;
+        switch(mCurrentFeature){
+            case NOTICEBOARD:
+                id = R.menu.menu_home_noticeboard;
+                break;
+        }
+        getMenuInflater().inflate(id, menu);
+        getSupportActionBar().setTitle(mTitles[mCurrentFeature]);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_go_to_notices:
+                startActivity(new Intent(this, NoticeBoardActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setUpNavigationDrawer() {
-        String[] titles = getResources().getStringArray(R.array.student_drawer_titles);
         TypedArray ar = getResources().obtainTypedArray(R.array.student_drawer_icons);
         int[] icons = new int[ar.length()];
-        for (int i = 0; i < titles.length; i++) {
+        for (int i = 0; i < mTitles.length; i++) {
             icons[i] = ar.getResourceId(i, 0);
         }
         ar.recycle();
 
         DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
         mNavigationDrawer = new PoliLifeNavigationDrawer(
-                titles, icons,
+                mTitles, icons,
                 mDrawerLayout
         );
 
@@ -132,9 +145,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDrawerClosed(View v) {
                 if (i == 1) {
-                    toolbar.getBackground().setAlpha(currentAlpha);
+                    mToolbar.getBackground().setAlpha(currentAlpha);
                 } else {
-                    toolbar.getBackground().setAlpha(255);
+                    mToolbar.getBackground().setAlpha(255);
                 }
                 super.onDrawerClosed(v);
                 invalidateOptionsMenu();
@@ -144,9 +157,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onDrawerOpened(View v) {
                 if (Build.VERSION.SDK_INT >= 19) {
-                    currentAlpha = toolbar.getBackground().getAlpha();
+                    currentAlpha = mToolbar.getBackground().getAlpha();
                 }
-                toolbar.getBackground().setAlpha(255);
+                mToolbar.getBackground().setAlpha(255);
                 super.onDrawerOpened(v);
                 invalidateOptionsMenu();
                 syncState();
@@ -169,80 +182,15 @@ public class HomeActivity extends AppCompatActivity {
         }*/
 
     }
-/*
-    @Override
-    public void onScrolled(int dx, int dy) {
-        //height of the header image and the toolbar
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int headerHeight = (int) getResources().getDimension(R.dimen.header_image_height);
-        int toolbarHeight = (int) getResources().getDimension(R.dimen.toolbar_height);
 
 
-        //difference between the heights in pixel
-        float heightPx = (headerHeight - toolbarHeight);
-
-        //value of the transparency(between 0 and 255) based on the scroll displacement
-        int transparency = (int) (dy * (256 / heightPx));
-
-        if (transparency < 256) {
-            toolbar.getBackground().setAlpha(transparency);
-            currentAlpha = transparency;
-            System.out.println("TRA " + transparency + " dy " + dy + " px" + heightPx);
-
-        } else {
-            toolbar.getBackground().setAlpha(255);
-            currentAlpha = 255;
+    private void showPage(int position){
+        FragmentManager frgManager = getSupportFragmentManager();
+        frgManager.beginTransaction().replace(R.id.container, pages[position]).commit();
+        mCurrentFeature = position;
+        supportInvalidateOptionsMenu();
+        if (mNavigationDrawer != null){
+            mNavigationDrawer.close();
         }
     }
-
-*/
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        private Fragment[] sections = {
-                DidacticalHomeFragment.newInstance(),
-                DidacticalHomeFragment.newInstance(),
-                DidacticalHomeFragment.newInstance()
-        };
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return sections[position];
-        }
-
-        @Override
-        public int getCount() {
-            return sections.length;
-        }
-
-        private int[] imageResId = {
-                R.drawable.ic_cast_dark,
-                R.drawable.ic_pause_dark,
-                R.drawable.ic_play_dark
-        };
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            String title = "";
-            switch (position) {
-                case 0:
-                    title = "SECTION 1"; break;
-                case 1:
-                    title = "SECTION 2"; break;
-                case 2:
-                    title = "SECTION 3"; break;
-            }
-            Drawable image = ContextCompat.getDrawable(HomeActivity.this, imageResId[position]);
-            image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-            SpannableString sb = new SpannableString(title);
-            ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
-            sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return sb;
-        }
-
-    }
-
 }

@@ -1,44 +1,24 @@
 package it.polito.mad.polilife.noticeboard;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import it.polito.mad.polilife.R;
+import it.polito.mad.polilife.didactical.prof.ProfessorsActivity;
+import it.polito.mad.polilife.didactical.rooms.ClassroomActivity;
+import it.polito.mad.polilife.didactical.timetable.TimetableActivity;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NoticeboardHomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class NoticeboardHomeFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NoticeboardHomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NoticeboardHomeFragment newInstance(String param1, String param2) {
+    public static NoticeboardHomeFragment newInstance() {
         NoticeboardHomeFragment fragment = new NoticeboardHomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -47,20 +27,26 @@ public class NoticeboardHomeFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_noticeboard_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_noticeboard_home, container, false);
+
+        final Intent intent = new Intent(getActivity(), NoticeBoardActivity.class);
+        root.findViewById(R.id.home_select).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                getActivity().startActivity(intent);
+            }
+        });
+
+        root.findViewById(R.id.books_notes_select).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                getActivity().startActivity(intent);
+            }
+        });
+
+        return root;
     }
 
 
