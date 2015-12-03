@@ -10,6 +10,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -73,7 +75,7 @@ public class ClassroomDetailsFragment extends Fragment implements OnMapReadyCall
         mMap.addMarker(new MarkerOptions().position(room).title(name));
 
         float zoom = Utility.calculateZoomLevel(getActivity(), 2000);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(room, zoom));
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(room));
     }
 
 }

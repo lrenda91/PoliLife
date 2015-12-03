@@ -2,9 +2,12 @@ package it.polito.mad.polilife.didactical.timetable;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,58 +23,54 @@ import it.polito.mad.polilife.didactical.ProfessorSelectionListener;
 import it.polito.mad.polilife.didactical.rooms.ClassroomDetailsFragment;
 import it.polito.mad.polilife.didactical.timetable.data.Lecture;
 
-public class LectureDetailsActivity extends AppCompatActivity
-        implements ClassroomSelectionListener, ProfessorSelectionListener {
+public class LectureDetailsActivity extends AppCompatActivity {
+
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecture_details);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+
         Bundle extras = getIntent().getExtras();
 
-        TextView courseTV = (TextView) findViewById(R.id.courseTextView);
-        courseTV.setText(extras.getString("course"));
+        mToolbar.setBackgroundColor(ContextCompat.getColor(this, extras.getInt("color")));
 
-        final TextView roomTV = (TextView) findViewById(R.id.roomTextView);
+        ((TextView) findViewById(R.id.courseTextView)).setText(extras.getString("course"));
+
+        View classroomRow = findViewById(R.id.classroom_row);
+        TextView roomTV = (TextView) classroomRow.findViewById(R.id.rowText);
         roomTV.setText(extras.getString("room"));
+        ((ImageView) classroomRow.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_setting_light);
 
-        final TextView teacherTV = (TextView) findViewById(R.id.teacherTextView);
+        View teacherRow = findViewById(R.id.professor_row);
+        TextView teacherTV = (TextView) teacherRow.findViewById(R.id.rowText);
         teacherTV.setText(extras.getString("teacher"));
+        ((ImageView) teacherRow.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_setting_light);
 
-        TextView scheduleTV = (TextView) findViewById(R.id.scheduleTextView);
+        View scheduleRow = findViewById(R.id.schedule_row);
+        TextView scheduleTV = (TextView) scheduleRow.findViewById(R.id.rowText);
         scheduleTV.setText(extras.getString("time"));
+        ((ImageView) scheduleRow.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_setting_light);
 
-        RelativeLayout rl = (RelativeLayout) findViewById(R.id.backgroundCourseLayout);
-        rl.setBackgroundColor(getResources().getColor(extras.getInt("color")));
-
-        teacherTV.setOnClickListener(new View.OnClickListener() {
+        String room = roomTV.getText().toString();
+        PoliLifeDB.searchClassrooms(room, new DBCallbacks.ClassroomSearchCallback() {
             @Override
-            public void onClick(View v) {
-                String name = teacherTV.getText().toString();
-                onProfessorSelected(name);
+            public void onClassroomsFound(List<Classroom> result) {
+                Classroom classroom = result.get(0);
+                Fragment fragment = ClassroomDetailsFragment.newInstance(
+                        classroom.getName(),
+                        classroom.getLocation().getLatitude(),
+                        classroom.getLocation().getLongitude(),
+                        classroom.getDetails()
+                );
+                showFragment(fragment);
             }
-        });
 
-        final View vv = findViewById(R.id.room_info_container);
-
-        rl.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                String room = roomTV.getText().toString();
-
-                PoliLifeDB.searchClassrooms(room, new DBCallbacks.ClassroomSearchCallback() {
-                    @Override
-                    public void onClassroomsFound(List<Classroom> result) {
-                        Classroom classroom = result.get(0);
-                        onClassroomSelected(classroom);
-                    }
-
-                    @Override
-                    public void onClassroomSearchError(Exception exception) {
-
-                    }
-                });
-
+            public void onClassroomSearchError(Exception exception) {
 
             }
         });
@@ -82,22 +81,6 @@ public class LectureDetailsActivity extends AppCompatActivity
         frgManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.room_info_container, fragment).commit();
-    }
-
-    @Override
-    public void onClassroomSelected(Classroom classroom) {
-        Fragment fragment = ClassroomDetailsFragment.newInstance(
-                classroom.getName(),
-                classroom.getLocation().getLatitude(),
-                classroom.getLocation().getLongitude(),
-                classroom.getDetails()
-        );
-        showFragment(fragment);
-    }
-
-    @Override
-    public void onProfessorSelected(String professorName) {
-
     }
 
 }

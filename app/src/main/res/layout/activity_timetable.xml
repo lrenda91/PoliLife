@@ -35,8 +35,8 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent">
 
-        <include layout="@layout/layout_timetable_day"/>
-        <include layout="@layout/layout_timetable_week"/>
+        <include layout="@layout/layout_timetable_day" android:id="@+id/day_view"/>
+        <include layout="@layout/layout_timetable_week" android:id="@+id/week_view"/>
 
     </ViewFlipper>
 

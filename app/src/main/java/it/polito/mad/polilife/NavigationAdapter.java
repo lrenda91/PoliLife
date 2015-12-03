@@ -72,13 +72,13 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
         int itemLayoutResID = 0;
         switch (viewType){
             case TYPE_HEADER:
-                itemLayoutResID = R.layout.navigation_drawer_header;
+                itemLayoutResID = R.layout.layout_nav_drawer_header;
                 break;
             case TYPE_ITEM:
-                itemLayoutResID = R.layout.navigation_drawer_row;
+                itemLayoutResID = R.layout.layout_nav_drawer_row;
                 break;
             case TYPE_FOOTER:
-                itemLayoutResID = R.layout.navigation_drawer_row;
+                itemLayoutResID = R.layout.layout_nav_drawer_row;
                 break;
         }
         View v = LayoutInflater.from(parent.getContext()).inflate(itemLayoutResID, parent, false);

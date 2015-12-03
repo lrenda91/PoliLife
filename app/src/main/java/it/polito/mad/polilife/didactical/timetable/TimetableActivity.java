@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.ViewFlipper;
 
 import java.io.IOException;
@@ -26,13 +28,16 @@ import it.polito.mad.polilife.didactical.timetable.data.*;
 
 public class TimetableActivity extends AppCompatActivity {
 
+    private static final int NUM_DAYS = 5;
+
     private static final int DAY_VIEW = 1;
     private static final int WEEK_VIEW = 2;
 
     private ViewFlipper mFlipper;
     private Toolbar mToolbar;
 
-    private DayFragment[] dayPages;
+    //private DayFragment[] dayPages;
+    private View[] dayPages;
 
     private Timetable data;
 
@@ -58,8 +63,11 @@ public class TimetableActivity extends AppCompatActivity {
             data = (Timetable) savedInstanceState.getSerializable("model");
         }
 
-
-        dayPages = new DayFragment[5];
+        dayPages = new View[NUM_DAYS];
+        for (int i=0;i<NUM_DAYS;i++){
+            dayPages[i] = LayoutInflater.from(this).inflate(R.layout.dayview, null);
+        }
+        //dayPages = new DayFragment[5];
         int[] dayLayoutIDs = {
                 R.id.mondayRelativeLayout,
                 R.id.tuesdayRelativeLayout,
@@ -73,10 +81,14 @@ public class TimetableActivity extends AppCompatActivity {
             int i = lecture.getDayOfWeek();
             //setup day mode
             if (dayPages[i] == null){
-                dayPages[i] = DayFragment.newInstance(i);
+                //dayPages[i] = DayFragment.newInstance(i);
+                dayPages[i] = LayoutInflater.from(TimetableActivity.this).inflate(R.layout.dayview, null);
             }
-            HashSet<Lecture> hs = (HashSet<Lecture>) dayPages[i].getArguments().getSerializable("lectures");
-            hs.add(lecture);
+            //HashSet<Lecture> hs = (HashSet<Lecture>) dayPages[i].getArguments().getSerializable("lectures");
+            //hs.add(lecture);
+            if (dayPages[i] instanceof ViewGroup){
+                ((ViewGroup) dayPages[i]).addView(Utility.getView(this, lecture));
+            }
 
             //setup week mode
             ViewGroup vg = (ViewGroup) findViewById(dayLayoutIDs[i]);
@@ -84,8 +96,35 @@ public class TimetableActivity extends AppCompatActivity {
         }
 
         final ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
-        DayViewPagerAdapter adapter = new DayViewPagerAdapter(getSupportFragmentManager(), this);
-        mViewPager.setAdapter(adapter);
+        final String[] titles = getResources().getStringArray(R.array.days);
+        //DayViewPagerAdapter adapter = new DayViewPagerAdapter(getSupportFragmentManager(), this);
+        mViewPager.setAdapter(new PagerAdapter() {
+            @Override
+            public int getCount() {
+                return NUM_DAYS;
+            }
+            @Override
+            public void destroyItem(ViewGroup container, int position, Object object) {
+                container.removeView((View) object);
+            }
+            @Override
+            public Object instantiateItem(ViewGroup container, int position) {
+                //View page = LayoutInflater.from(TimetableActivity.this).inflate(R.layout.dayview, container, false);
+                View page = dayPages[position];
+                container.addView(page);
+                return page;
+                //return super.instantiateItem(container, position);
+            }
+            @Override
+            public boolean isViewFromObject(View view, Object object) {
+                return view == object;
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return titles[position];
+            }
+        });
         ViewPager.OnPageChangeListener pageChangeListener =
                 new ViewPager.SimpleOnPageChangeListener() {
                     @Override
@@ -102,17 +141,23 @@ public class TimetableActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+        int menuID = 0;
+        switch (mFlipper.getCurrentView().getId()){
+            case R.id.day_view:
+                menuID = R.menu.menu_timetable_day;
+                break;
+            case R.id.week_view:
+                menuID = R.menu.menu_timetable_week;
+                break;
+        }
+        getMenuInflater().inflate(menuID, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.action_settings:
-                mFlipper.showNext();
-                break;
-        }
+        mFlipper.showNext();
+        supportInvalidateOptionsMenu();
         return super.onOptionsItemSelected(item);
     }
 
@@ -130,57 +175,6 @@ public class TimetableActivity extends AppCompatActivity {
         if (savedInstanceState != null){
             data = (Timetable) savedInstanceState.getSerializable("model");
         }
-    }
-
-    public static class DayFragment extends Fragment {
-        static DayFragment newInstance(int day){
-            Bundle args = new Bundle();
-            args.putInt("day", day);
-            args.putSerializable("lectures", new HashSet<Lecture>());
-            DayFragment df = new DayFragment();
-            df.setArguments(args);
-            return df;
-        }
-        private ViewGroup root;
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            root = (ViewGroup) inflater.inflate(R.layout.dayview, container, false);
-            int day = getArguments().getInt("day");
-            HashSet<Lecture> lectures = (HashSet<Lecture>) getArguments().getSerializable("lectures");
-            for (Lecture l : lectures){
-                root.addView(Utility.getView(getActivity(),l));
-            }
-            return root;
-        }
-
-    }
-
-
-    public class DayViewPagerAdapter extends FragmentPagerAdapter {
-
-        //private DayFragment[] sections;
-        private String[] titles;
-
-        public DayViewPagerAdapter(FragmentManager fm, Context context) {
-            super(fm);
-            titles = context.getResources().getStringArray(R.array.days);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return dayPages[position];
-        }
-
-        @Override
-        public int getCount() {
-            return dayPages.length;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return titles[position];
-        }
-
     }
 
 }
