@@ -1,5 +1,8 @@
 package it.polito.mad.polilife.db.classes;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
@@ -17,7 +20,62 @@ import java.util.List;
  * Created by luigi on 29/05/15.
  */
 @ParseClassName("Notice")
-public class Notice extends ParseObject {
+public class Notice extends ParseObject implements Parcelable {
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Notice createFromParcel(Parcel in) {
+            return new Notice(in);
+        }
+        public Notice[] newArray(int size) {
+            return new Notice[size];
+        }
+    };
+
+    public Notice(){
+
+    }
+
+    public Notice(Parcel in){
+        String title = in.readString();
+        String description = in.readString();
+        int price = in.readInt();
+        String locStr = in.readString();
+        boolean[] b = new boolean[1];
+        in.readBooleanArray(b);
+        ParseGeoPoint pgp = null;
+        if (b[0]){
+            pgp = new ParseGeoPoint(in.readDouble(), in.readDouble());
+        }
+        List<String> tags = new LinkedList<>();
+        in.readStringList(tags);
+
+        if (title != null) setTitle(title);
+        if (description != null) setDescription(description);
+        setCost(price);
+        if (locStr != null) setLocationName(locStr);
+        if (pgp != null) setLocationPoint(pgp);
+        addTags(tags);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getTitle());
+        dest.writeString(getDescription());
+        dest.writeInt(getPrice());
+        dest.writeString(getLocationName());
+        boolean hasPositionPoint = getLocationPoint() != null;
+        dest.writeBooleanArray(new boolean[]{hasPositionPoint});
+        if (hasPositionPoint){
+            dest.writeDouble(getLocationPoint().getLatitude());
+            dest.writeDouble(getLocationPoint().getLongitude());
+        }
+        dest.writeStringList(getTags());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
     /**
      * 'Common' keys, e.g. which belong to all notices
@@ -25,17 +83,17 @@ public class Notice extends ParseObject {
     public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
     public static final String PRICE = "cost";
-    public static final String PROPERTY_TYPE = "type";
     public static final String LOCATION_STRING = "locationName";
     public static final String LOCATION_POINT = "location";
     public static final String TAGS = "keywords";
     public static final String PHOTOS = "photos";
     public static final String OWNER = "owner";
-    public static final String DETAILS = "details";
+    public static final String PUBLICATED_AT = "createdAt";
 
     /**
      * House related notices' keys
      */
+    public static final String PROPERTY_TYPE = "type";
     public static final String CONTRACT_TYPE = "contractType";
     public static final String SIZE = "size";
     public static final String AVAILABILITY = "availableFrom";
@@ -69,6 +127,7 @@ public class Notice extends ParseObject {
         public int minSize, maxSize, minPrice, maxPrice;
         public Double latitude = null, longitude = null;
         public int within = 1;
+        public int daysAgo = -1;
         public FilterData title(String value){ title = value; return this; }
         public FilterData location(String value){ location = value; return this; }
         public FilterData latitude(Double value){ latitude = value; return this; }
@@ -86,14 +145,14 @@ public class Notice extends ParseObject {
 
 
     public String getTitle(){
-        return (String) get(TITLE);
+        return getString(TITLE);
     }
     public void setTitle(String value){
         put(TITLE, value);
     }
 
     public String getDescription(){
-        return (String) get(DESCRIPTION);
+        return getString(DESCRIPTION);
     }
     public void setDescription(String value){
         put(DESCRIPTION, value);
@@ -109,7 +168,7 @@ public class Notice extends ParseObject {
     public String getLocationName(){ return (String) get(LOCATION_STRING); }
     public void setLocationName(String value){ put(LOCATION_STRING, value); }
 
-    public String getType(){
+    public String getPropertyType(){
         return (String) get(PROPERTY_TYPE);
     }
     public void setPropertyType(String value){
@@ -141,7 +200,7 @@ public class Notice extends ParseObject {
         put(AVAILABILITY, value);
     }
 
-    public int getCost(){
+    public int getPrice(){
         return (int) get(PRICE);
     }
     public void setCost(int value){

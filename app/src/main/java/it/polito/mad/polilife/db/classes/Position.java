@@ -1,6 +1,8 @@
 package it.polito.mad.polilife.db.classes;
 
 import com.parse.*;
+
+import java.util.Date;
 import java.util.List;
 
 @ParseClassName("Position")
@@ -18,16 +20,17 @@ public class Position extends ParseObject {
 
 
 
-    private static final String NAME = "name";
-    private static final String ABOUT = "about";
-    private static final String COMPANY = "company";
-    private static final String APPLIEDSTUS = "applied";
-    private static final String TYPEOFJOB = "typeOfJob";
-    private static final String TYPEOFDEGREE = "typeOfDegree";
-    private static final String TYPEOFCONTRACT = "typeOfContract";
-    private static final String CITY = "city";
-    private static final String COUNTRY = "country";
-    private static final String CLOGO = "clogo";
+    public static final String NAME = "name";
+    public static final String ABOUT = "about";
+    public static final String COMPANY = "company";
+    public static final String APPLIEDSTUS = "applied";
+    public static final String TYPEOFJOB = "typeOfJob";
+    public static final String TYPEOFDEGREE = "typeOfDegree";
+    public static final String TYPEOFCONTRACT = "typeOfContract";
+    public static final String CITY = "city";
+    public static final String COUNTRY = "country";
+    public static final String CLOGO = "clogo";
+    public static final String START_DATE = "availableFrom";
 
     public String getTypeOfContract(){
         return ((String) get(TYPEOFCONTRACT));
@@ -75,7 +78,8 @@ public class Position extends ParseObject {
         put(CLOGO, resumeFile);
     }
 
-
+    public Date getStartDate(){ return (Date) get(START_DATE); }
+    public void setStartDate(Date value) { put(START_DATE, value); }
 
     public String getName(){
         return (String) get(NAME);

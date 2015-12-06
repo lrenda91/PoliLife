@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +34,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
     private Notice.FilterData params = new Notice.FilterData();
 
     private ListView tagsList;
-
+    private Toolbar mToolbar;
     private EditText newTagET;
     private TextView within;
     private Spinner contractTypeSpinner, propertyTypeSpinner;
@@ -44,6 +45,18 @@ public class AdvancedSearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advanced_search);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         findViewById(R.id.new_tag_confirm).setOnClickListener(new View.OnClickListener() {
             @Override

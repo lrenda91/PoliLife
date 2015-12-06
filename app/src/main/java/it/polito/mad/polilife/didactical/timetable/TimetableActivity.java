@@ -51,17 +51,7 @@ public class TimetableActivity extends AppCompatActivity {
 
         mFlipper = (ViewFlipper) findViewById(R.id.flipper);
 
-        if (savedInstanceState == null){
-            InputStream lecturesStream = null, coursesStream = null;
-            try {
-                lecturesStream = getAssets().open("timetable.json");
-                coursesStream = getAssets().open("courses.json");
-            } catch (IOException e) {}
-            data = TimetableImpl.newInstance(coursesStream, lecturesStream);
-        }
-        else{
-            data = (Timetable) savedInstanceState.getSerializable("model");
-        }
+        data = (Timetable) getIntent().getSerializableExtra("model");
 
         dayPages = new View[NUM_DAYS];
         for (int i=0;i<NUM_DAYS;i++){

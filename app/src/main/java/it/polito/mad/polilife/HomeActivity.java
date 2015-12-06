@@ -72,6 +72,8 @@ public class HomeActivity extends AppCompatActivity {
         mNavigationDrawer.setOnItemClickListener(new PoliLifeNavigationDrawer.SimpleOnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                mCurrentFeature = position;
+                //mNavigationDrawer.close();
                 showPage(position);
             }
 
@@ -152,6 +154,7 @@ public class HomeActivity extends AppCompatActivity {
                 super.onDrawerClosed(v);
                 invalidateOptionsMenu();
                 syncState();
+                //showPage(mCurrentFeature);
             }
 
             @Override

@@ -14,16 +14,16 @@ import java.util.Date;
 @ParseClassName("_User")
 public class Student extends ParseUser {
 
-    private static final String STUDENT_KEY = "studentInfo";
-    private static final String FIRST_NAME = "firstName";
-    private static final String LAST_NAME = "lastName";
-    private static final String DOB = "birth";
-    private static final String ADDRESS= "address";
-    private static final String COUNTRY = "country";
-    private static final String CITY= "city";
-    private static final String CONTACT_PHONE = "contactPhone";
-    private static final String ABOUT = "aboutMe";
-    private static final String PHOTO = "photo";
+    public static final String STUDENT_KEY = "studentInfo";
+    public static final String FIRST_NAME = "firstName";
+    public static final String LAST_NAME = "lastName";
+    public static final String DOB = "birth";
+    public static final String ADDRESS= "address";
+    public static final String COUNTRY = "country";
+    public static final String CITY= "city";
+    public static final String CONTACT_PHONE = "contactPhone";
+    public static final String ABOUT = "aboutMe";
+    public static final String PHOTO = "photo";
 
     public Student() {
 

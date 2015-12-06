@@ -4,10 +4,17 @@
     android:layout_height="match_parent"
     tools:context="it.polito.mad.polilife.news.NewsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
+
+        <include layout="@layout/layout_progress_bar"/>
+
+        <ExpandableListView
+            android:id="@+id/lvExp"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
+
+    </RelativeLayout>
 
 </FrameLayout>

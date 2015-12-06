@@ -12,7 +12,6 @@ import android.net.NetworkInfo;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.Animation;
@@ -60,7 +59,7 @@ public class Utility {
 
     public static LectureLayout getView(Context context, Lecture l) {
         LectureLayout ll = new LectureLayout(context, null,
-                l.getCourse().getName(), l.getCourse().getTeacher(), ""+l.getDayOfWeek(),
+                l.getCourse().getName(), l.getCourse().getProfessor().getName(), ""+l.getDayOfWeek(),
                 l.getStartTime().toString(), l.getEndTime().toString(), l.getClassroom());
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         Time start = l.getStartTime();

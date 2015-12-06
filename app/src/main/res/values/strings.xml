@@ -11,6 +11,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
 
+    <string name="name">Name</string>
     <string name="title">Title</string>
     <string name="availability">Available from</string>
     <string name="cost">Cost</string>
@@ -233,7 +234,7 @@
     <string name="action_search">Search</string>
     <string name="title_activity_search">Search</string>
     <string name="search">Search</string>
-    <string name="teacher">Teacher name or a part of it</string>
+    <string name="professor">Teacher name or a part of it</string>
     <string name="course">Course name or a part of it</string>
     <string name="noResult">No results found</string>
     <string name="exportTitle">Export to Google Calendar</string>

@@ -29,17 +29,20 @@ import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Notice;
 import it.polito.mad.polilife.db.parcel.PNoticeData;
-import it.polito.mad.polilife.didactical.DidacticalHomeFragment;
 
 public class NoticeBoardActivity extends AppCompatActivity
-        implements DBCallbacks.FilterCallback<Notice> {
+        implements DBCallbacks.FilterCallback<Notice>, DBCallbacks.MultipleFetchCallback<Notice> {
 
     private static final int ADVANCED_SEARCH_REQUEST_CODE = 10;
 
     private Toolbar mToolbar;
     private ViewPager mViewPager;
 
-    private ProgressBar waitPB;
+    private ProgressBar mWait;
+    private Fragment[] sections = {
+            AllNoticesFragment.newInstance(),
+            MyNoticesFragment.newInstance("","")
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +58,10 @@ public class NoticeBoardActivity extends AppCompatActivity
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        waitPB = (ProgressBar) findViewById(R.id.wait);
-        waitPB.setVisibility(View.VISIBLE);
+        mWait = (ProgressBar) findViewById(R.id.wait);
+        mWait.setVisibility(View.VISIBLE);
+
+        PoliLifeDB.getAllObjects(Notice.class, this);
     }
 
     @Override
@@ -74,6 +79,21 @@ public class NoticeBoardActivity extends AppCompatActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFetchSuccess(List<Notice> result) {
+        mWait.setVisibility(View.INVISIBLE);
+        for (Fragment f : sections){
+            if (f instanceof NoticesListener){
+                ((NoticesListener) f).update(result);
+            }
+        }
+    }
+
+    @Override
+    public void onFetchError(Exception exception) {
+        mWait.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -96,6 +116,7 @@ public class NoticeBoardActivity extends AppCompatActivity
 
     @Override
     public void onDataFiltered(List<Notice> result) {
+        mWait.setVisibility(View.INVISIBLE);
         List<PNoticeData> list = new LinkedList<>();
         for (Notice n : result){
             PNoticeData pNoticeData = new PNoticeData();
@@ -107,20 +128,15 @@ public class NoticeBoardActivity extends AppCompatActivity
                 ((NoticesListener) f).update(list);
             }
         }*/
-        waitPB.setVisibility(View.INVISIBLE);
+        mWait.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void onFilterError(Exception exception) {
-
+        mWait.setVisibility(View.INVISIBLE);
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        private Fragment[] sections = {
-                AllNoticesFragment.newInstance(),
-                MyNoticesFragment.newInstance("","")
-        };
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);

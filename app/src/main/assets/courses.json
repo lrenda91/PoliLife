@@ -1,4 +1,55 @@
 {
+  "teacher": [
+    {
+      "ID": "d021836",
+      "name": "Giovanni Malnati",
+      "email": "d021836@polito.it",
+      "phone": "165465165",
+      "office": "IS Mario Boella"
+    },
+    {
+      "ID": "d764259",
+      "name": "Riccardo Sisto",
+      "email": "d764259@polito.it",
+      "phone": "54565636",
+      "office": "IS Mario Boella"
+    },
+    {
+      "ID": "d182856",
+      "name": "Guido Albertengo",
+      "email": "d182856@polito.it",
+      "phone": "15415355",
+      "office": "IS Mario Boella"
+    },
+    {
+      "ID": "d218689",
+      "name": "Antonio Lioy",
+      "email": "d218689@polito.it",
+      "phone": "215691563",
+      "office": "IS Mario Boella"
+    },
+    {
+      "ID": "d658149",
+      "name": "Enrico Masala",
+      "email": "d658149@polito.it",
+      "phone": "215691563",
+      "office": "IS Mario Boella"
+    },
+    {
+      "ID": "d586327",
+      "name": "Giampiero Cabodi",
+      "email": "d586327@polito.it",
+      "phone": "12356387",
+      "office": "IS Mario Boella"
+    },
+    {
+      "ID": "d897432",
+      "name": "Marco Mezzalama",
+      "email": "d897432@polito.it",
+      "phone": "48923166",
+      "office": "IS Mario Boella"
+    }
+  ],
   "courses": [
     {
       "name": "Mobile Application Development",
@@ -12,12 +63,12 @@
     },
     {
       "name": "Programmazione Distribuita I",
-      "teacher": "Enrico Masala",
+      "teacher": "d658149",
       "description": "L'insegnamento si prefigge di far conoscere le principali tecniche per la realizzazione di applicazioni distribuite, a cominciare dalla cosiddetta 'programmazione di rete', per arrivare alla programmazione di un'applicazione distribuita basata sul paradigma web che includa anche l'uso di una base dati relazionale remota"
     },
     {
       "name": "Distributed Programming II",
-      "teacher": "Riccardo Sisto",
+      "teacher": "d764259",
       "description": "This course completes the students' knowledge and abilities that are taught in the previous course on Distributed Programming I and that are required for developing distributed applications. It focuses on the techniques for interactions among distributed applications, such as distributed services (web services) and XML"
     },
     {

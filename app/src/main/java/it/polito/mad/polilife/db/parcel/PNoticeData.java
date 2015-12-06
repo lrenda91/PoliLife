@@ -179,8 +179,8 @@ public class PNoticeData implements Parcelable, DBObjectBuilder<Notice> {
         title(item.getTitle());
         description(item.getDescription());
         contractType("" + item.getContractType());
-        cost(item.getCost());
-        propertyType("" + item.getType());
+        cost(item.getPrice());
+        propertyType("" + item.getPropertyType());
         availableFrom(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));
         cal.setTime(item.getPublishedAt());
         publishedAt(cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR));

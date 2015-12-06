@@ -46,7 +46,7 @@ public class TimetableImpl implements Timetable {
 			boolean nameMatches = (courseName == null || course.getName()
 					.toLowerCase().contains((courseName.toLowerCase())));
 			boolean teacherMatches = (teacherName == null || course
-					.getTeacher().toLowerCase()
+					.getProfessor().getName().toLowerCase()
 					.contains(teacherName.toLowerCase()));
 			if (!nameMatches || !teacherMatches) {
 				continue;
@@ -72,13 +72,26 @@ public class TimetableImpl implements Timetable {
 			}
 			jsonObject = (JSONObject) new JSONParser().parse(content);
 
+            HashMap<String, Professor> profMap = new HashMap<>();
+            JSONArray teachersArray = (JSONArray) jsonObject.get("teacher");
+            for (int i = 0; i < teachersArray.size(); i++) {
+                JSONObject courseObj = (JSONObject) teachersArray.get(i);
+                String ID = (String) courseObj.get("ID");
+                String name = (String) courseObj.get("name");
+                String mail = (String) courseObj.get("email");
+                String phone = (String) courseObj.get("phone");
+                String office = (String) courseObj.get("office");
+                Professor p = new Professor(ID, name, mail, phone, office);
+                profMap.put(ID, p);
+            }
+
 			JSONArray coursesArray = (JSONArray) jsonObject.get("courses");
 			for (int i = 0; i < coursesArray.size(); i++) {
 				JSONObject courseObj = (JSONObject) coursesArray.get(i);
 				String name = (String) courseObj.get("name");
 				String teacher = (String) courseObj.get("teacher");
 				String description = (String) courseObj.get("description");
-				Course course = new Course(name, teacher, description);
+				Course course = new Course(name, profMap.get(teacher), description);
 				timetable.coursesByName.put(name, course);
 			}
 

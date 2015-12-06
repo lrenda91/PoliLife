@@ -7,14 +7,14 @@ import java.util.List;
 public class Course implements Serializable{
 
 	private String name;
-	private String teacher;
+	private Professor professor;
 	private String description;
 	
 	private List<Lecture> lectures;
 	
-	public Course(String name, String teacher, String description) {
+	public Course(String name, Professor professor, String description) {
 		this.name = name;
-		this.teacher = teacher;
+		this.professor = professor;
 		this.description = description;
 		this.lectures = new LinkedList<Lecture>();
 	}
@@ -23,8 +23,8 @@ public class Course implements Serializable{
 		return name;
 	}
 	
-	public String getTeacher() {
-		return teacher;
+	public Professor getProfessor() {
+		return professor;
 	}
 	
 	public String getDescription() {
@@ -37,6 +37,6 @@ public class Course implements Serializable{
 	
 	@Override
 	public String toString() {
-		return name+":"+teacher;
+		return name+":"+ professor;
 	}
 }
