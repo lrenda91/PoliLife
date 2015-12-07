@@ -3,4 +3,60 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_item_height"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:weightSum="20">
+
+        <ImageView
+            android:id="@+id/preferred_photo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="4" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="16"
+            android:orientation="horizontal"
+            android:weightSum="14"
+            android:paddingLeft="5dp" >
+
+            <TextView
+                android:id="@+id/professor_name"
+                android:gravity="end"
+                android:layout_width="match_parent"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/professor_office"
+                android:gravity="end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/prof_details_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <include layout="@layout/layout_material_list_item"
+            android:id="@+id/professor_phone" />
+
+        <include layout="@layout/layout_material_list_item"
+            android:id="@+id/professor_email" />
+
+    </LinearLayout>
+
 </LinearLayout>

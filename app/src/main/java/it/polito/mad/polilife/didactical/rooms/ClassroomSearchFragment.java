@@ -13,6 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -44,18 +45,30 @@ public class ClassroomSearchFragment extends Fragment implements DBCallbacks.Cla
         return fragment;
     }
 
+    private static final int WAITING = 0;
+    private static final int NO_RESULTS = 1;
+    private static final int LIST = 2;
+
+    private ViewFlipper mViewFlipper;
     private ListView mListView;
+
+    private void show(int curViewIdx){
+        mViewFlipper.setDisplayedChild(curViewIdx);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.fragment_classroom_search, container, false);
-        mListView = (ListView) root.findViewById(R.id.classroom_results);
+        return inflater.inflate(R.layout.fragment_classroom_search, container, false);
+    }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mViewFlipper = (ViewFlipper) view.findViewById(R.id.flipper);
+        mListView = (ListView) view.findViewById(R.id.classroom_results);
         String searchParam = getArguments().getString("param");
         PoliLifeDB.searchClassrooms(searchParam, this);
-
-        return root;
+        show(WAITING);
     }
 
     @Override
@@ -98,11 +111,12 @@ public class ClassroomSearchFragment extends Fragment implements DBCallbacks.Cla
                 return convertView;
             }
         });
+        show(result.isEmpty() ? NO_RESULTS : LIST);
     }
 
     @Override
     public void onClassroomSearchError(Exception exception) {
-        Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_SHORT);
+        show(NO_RESULTS);
     }
 
 }

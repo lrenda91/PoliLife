@@ -13,8 +13,9 @@
     <dimen name="hours_width">60dp</dimen>
 
     <!--  List Items dimension -->
-    <dimen name="list_item_height">62dp</dimen>
+    <dimen name="list_item_height">72dp</dimen>
     <dimen name="list_item_icon_dimen">32dp</dimen>
+    <dimen name="list_item_text_size_large">24sp</dimen>
     <dimen name="list_item_text_size">16sp</dimen>
     <dimen name="round_button_diameter">48dp</dimen>
     <dimen name="add_button_margin">16dp</dimen>
@@ -22,5 +23,6 @@
     <dimen name="elevation_high">8dp</dimen>
     <dimen name="content_left_margin_from_screen">72dp</dimen>
     <dimen name="header_image_height">180dp</dimen>
+
 
 </resources>

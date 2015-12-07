@@ -99,51 +99,52 @@ public class NoticeDetailsActivity extends AppCompatActivity
         mDescriptionView.setText(mNotice.getDescription() != null ? mNotice.getDescription() : "No description");
 
         ViewGroup details = (ViewGroup) findViewById(R.id.details_layout);
+        LayoutInflater inflater = LayoutInflater.from(this);
         details.removeAllViews();
         if (mNotice.getPrice() > 0){
-            View item = LayoutInflater.from(this).inflate(R.layout.layout_material_list_item, null, false);
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
             ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
             ((TextView) item.findViewById(R.id.rowText)).setText(mNotice.getPrice()+"");
             details.addView(item);
         }
         if (mNotice.getLocationName() != null){
-            View item = LayoutInflater.from(this).inflate(R.layout.layout_material_list_item, null, false);
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
             ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
             ((TextView) item.findViewById(R.id.rowText)).setText(mNotice.getLocationName());
             details.addView(item);
         }
         if (mNotice.getPublishedAt() != null){
-            View item = LayoutInflater.from(this).inflate(R.layout.layout_material_list_item, null, false);
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
             ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
             ((TextView) item.findViewById(R.id.rowText)).setText(mNotice.getPublishedAt().toString());
             details.addView(item);
         }
         if (mNotice.getPropertyType() != null){
-            View item = LayoutInflater.from(this).inflate(R.layout.layout_material_list_item, null, false);
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
             ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
             ((TextView) item.findViewById(R.id.rowText)).setText(mNotice.getPropertyType());
             details.addView(item);
         }
         if (mNotice.getContractType() != null){
-            View item = LayoutInflater.from(this).inflate(R.layout.layout_material_list_item, null, false);
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
             ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
             ((TextView) item.findViewById(R.id.rowText)).setText(mNotice.getContractType());
             details.addView(item);
         }
         if (mNotice.getSize() > 0){
-            View item = LayoutInflater.from(this).inflate(R.layout.layout_material_list_item, null, false);
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
             ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
             ((TextView) item.findViewById(R.id.rowText)).setText(mNotice.getSize()+"");
             details.addView(item);
         }
         if (mNotice.getAvailableFrom() != null){
-            View item = LayoutInflater.from(this).inflate(R.layout.layout_material_list_item, null, false);
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
             ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
             ((TextView) item.findViewById(R.id.rowText)).setText(mNotice.getAvailableFrom().toString());
             details.addView(item);
         }
         if (mNotice.getTags() != null && !mNotice.getTags().isEmpty()){
-            View item = LayoutInflater.from(this).inflate(R.layout.layout_material_list_item, null, false);
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
             ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
             ((TextView) item.findViewById(R.id.rowText)).setText(mNotice.getTags().toString());
             details.addView(item);

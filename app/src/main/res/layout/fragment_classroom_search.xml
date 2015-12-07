@@ -6,9 +6,23 @@
     android:layout_height="match_parent"
     tools:context="it.polito.mad.polilife.didactical.rooms.ClassroomSearchFragment">
 
-    <ListView
-        android:id="@+id/classroom_results"
+    <ViewFlipper
+        android:id="@+id/flipper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <include layout="@layout/layout_progress_bar" />
+
+        <TextView
+            android:text="No results"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_item_height" />
+
+        <ListView
+            android:id="@+id/classroom_results"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </ViewFlipper>
 
 </LinearLayout>

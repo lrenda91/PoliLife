@@ -58,7 +58,7 @@ public class Utility {
     }
 
     public static LectureLayout getView(Context context, Lecture l) {
-        LectureLayout ll = new LectureLayout(context, null,
+        LectureLayout ll = new LectureLayout(context, l,
                 l.getCourse().getName(), l.getCourse().getProfessor().getName(), ""+l.getDayOfWeek(),
                 l.getStartTime().toString(), l.getEndTime().toString(), l.getClassroom());
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();

@@ -1,5 +1,6 @@
 package it.polito.mad.polilife.news;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -28,6 +29,9 @@ import it.polito.mad.polilife.db.DBCallbacks.FilterCallback;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Notice;
 import it.polito.mad.polilife.db.classes.Position;
+import it.polito.mad.polilife.didactical.prof.ProfessorsActivity;
+import it.polito.mad.polilife.didactical.rooms.ClassroomActivity;
+import it.polito.mad.polilife.didactical.timetable.TimetableActivity;
 import it.polito.mad.polilife.noticeboard.NoticeDetailsActivity;
 
 public class NewsFragment extends Fragment
@@ -66,12 +70,35 @@ public class NewsFragment extends Fragment
         ExpandableListView expandableListView = (ExpandableListView) view.findViewById(R.id.lvExp);
         mAdapter = new ExpandableListAdapter(getActivity(), map);
         expandableListView.setAdapter(mAdapter);
+
+        final Activity myActivity = getActivity();
+        view.findViewById(R.id.timetable_select).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(myActivity, TimetableActivity.class);
+                //i.putExtra("model", data);
+                myActivity.startActivity(i);
+            }
+        });
+
+        view.findViewById(R.id.classrooms_select).setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                myActivity.startActivity(new Intent(myActivity, ClassroomActivity.class));
+            }
+        });
+
+        view.findViewById(R.id.teachers_select).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myActivity.startActivity(new Intent(myActivity, ProfessorsActivity.class));
+            }
+        });
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         PoliLifeDB.getRecentNoticesAndPositions(100, this);
     }
 

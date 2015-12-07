@@ -6,7 +6,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import it.polito.mad.polilife.didactical.timetable.data.Lecture;
 
 public class LectureDetailsActivity extends AppCompatActivity {
 
+
     private Toolbar mToolbar;
 
     @Override
@@ -35,26 +38,39 @@ public class LectureDetailsActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         Bundle extras = getIntent().getExtras();
+        Lecture data = (Lecture) extras.getSerializable("lecture");
 
         mToolbar.setBackgroundColor(ContextCompat.getColor(this, extras.getInt("color")));
 
-        ((TextView) findViewById(R.id.courseTextView)).setText(extras.getString("course"));
 
-        View classroomRow = findViewById(R.id.classroom_row);
-        TextView roomTV = (TextView) classroomRow.findViewById(R.id.rowText);
-        roomTV.setText(extras.getString("room"));
-        ((ImageView) classroomRow.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_setting_light);
+        if (data.getCourse() != null && data.getCourse().getName() != null) {
+            ((TextView) findViewById(R.id.courseTextView)).setText(data.getCourse().getName());
+        }
 
-        View teacherRow = findViewById(R.id.professor_row);
-        TextView teacherTV = (TextView) teacherRow.findViewById(R.id.rowText);
-        teacherTV.setText(extras.getString("teacher"));
-        ((ImageView) teacherRow.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_setting_light);
+        ViewGroup details = (ViewGroup) findViewById(R.id.lecture_details);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        if (data.getCourse() != null && data.getCourse().getProfessor() != null &&
+                data.getCourse().getProfessor().getName() != null){
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
+            ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
+            ((TextView) item.findViewById(R.id.rowText)).setText(data.getCourse().getProfessor().getName());
+            details.addView(item);
+        }
+        if (data.getClassroom() != null){
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
+            ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
+            ((TextView) item.findViewById(R.id.rowText)).setText(data.getClassroom());
+            details.addView(item);
+        }
+        if (data.getStartTime() != null && data.getEndTime() != null){
+            View item = inflater.inflate(R.layout.layout_material_list_item, details, false);
+            ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
+            ((TextView) item.findViewById(R.id.rowText)).setText(
+                    data.getStartTime() + " - " + data.getEndTime());
+            details.addView(item);
+        }
 
-        View scheduleRow = findViewById(R.id.schedule_row);
-        TextView scheduleTV = (TextView) scheduleRow.findViewById(R.id.rowText);
-        scheduleTV.setText(extras.getString("time"));
-        ((ImageView) scheduleRow.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_setting_light);
-
+/*
         String room = roomTV.getText().toString();
         PoliLifeDB.searchClassrooms(room, new DBCallbacks.ClassroomSearchCallback() {
             @Override
@@ -74,6 +90,7 @@ public class LectureDetailsActivity extends AppCompatActivity {
 
             }
         });
+        */
     }
 
     private void showFragment(Fragment fragment){

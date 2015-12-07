@@ -33,21 +33,10 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin" >
 
         <LinearLayout
+            android:id="@+id/lecture_details"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent" >
-
-            <include
-                android:id="@+id/professor_row"
-                layout="@layout/layout_material_list_item" />
-
-            <include
-                android:id="@+id/schedule_row"
-                layout="@layout/layout_material_list_item" />
-
-            <include
-                android:id="@+id/classroom_row"
-                layout="@layout/layout_material_list_item" />
 
             <FrameLayout
                 android:id="@+id/room_info_container"

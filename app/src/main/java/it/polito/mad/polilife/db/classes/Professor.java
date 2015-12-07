@@ -18,6 +18,7 @@ public class Professor extends ParseObject implements Parcelable {
     static final String EMAIL = "email";
     static final String PHONE = "phone";
     static final String OFFICE = "office";
+    static final String OFFICE_HOURS = "officeHours";
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public Professor createFromParcel(Parcel in) {
@@ -34,11 +35,13 @@ public class Professor extends ParseObject implements Parcelable {
         String mail = in.readString();
         String phone = in.readString();
         String office = in.readString();
+        String hours = in.readString();
         if (number != null) put(NUMBER, number);
         if (name != null) put(NAME, name);
         if (mail != null) put(EMAIL, mail);
         if (phone != null) put(PHONE, phone);
         if (office != null) put(OFFICE, office);
+        if (hours != null) put(OFFICE_HOURS, hours);
     }
 
     @Override
@@ -48,11 +51,12 @@ public class Professor extends ParseObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString((String) get(NUMBER));
-        dest.writeString((String) get(NAME));
-        dest.writeString((String) get(EMAIL));
-        dest.writeString((String) get(PHONE));
-        dest.writeString((String) get(OFFICE));
+        dest.writeString(getString(NUMBER));
+        dest.writeString(getString(NAME));
+        dest.writeString(getString(EMAIL));
+        dest.writeString(getString(PHONE));
+        dest.writeString(getString(OFFICE));
+        dest.writeString(getString(OFFICE_HOURS));
     }
 
     public Professor() {
@@ -67,32 +71,34 @@ public class Professor extends ParseObject implements Parcelable {
     }
 
     public String getIDNumber() {
-        return (String) get(NUMBER);
+        return getString(NUMBER);
     }
     public void setIDNumber(String value){
         put(NUMBER, value);
     }
 
     public String getEmail() {
-        return (String) get(EMAIL);
+        return getString(EMAIL);
     }
     public void setEmail(String value){
         put(EMAIL, value);
     }
 
     public String getPhone() {
-        return (String) get(PHONE);
+        return getString(PHONE);
     }
     public void setPhone(String value){
         put(PHONE, value);
     }
 
     public String getOffice() {
-        return (String) get(OFFICE);
+        return getString(OFFICE);
     }
     public void setOffice(String value){
         put(OFFICE, value);
     }
 
+    public String getOfficeHours(){ return getString(OFFICE_HOURS); }
+    public void setOfficeHours(String value){ put(OFFICE_HOURS, value); }
 
 }

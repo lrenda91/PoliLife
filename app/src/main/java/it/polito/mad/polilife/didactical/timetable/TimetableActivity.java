@@ -19,6 +19,7 @@ import android.widget.ViewFlipper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -51,7 +52,19 @@ public class TimetableActivity extends AppCompatActivity {
 
         mFlipper = (ViewFlipper) findViewById(R.id.flipper);
 
-        data = (Timetable) getIntent().getSerializableExtra("model");
+        //data = (Timetable) getIntent().getSerializableExtra("model");
+        if (savedInstanceState == null){
+            InputStream lecturesStream = null, coursesStream = null;
+            try {
+                lecturesStream = getAssets().open("timetable.json");
+                coursesStream = getAssets().open("courses.json");
+            } catch (IOException e) {}
+            data = TimetableImpl.newInstance(coursesStream, lecturesStream);
+        }
+        else{
+            data = (Timetable) savedInstanceState.getSerializable("model");
+        }
+
 
         dayPages = new View[NUM_DAYS];
         for (int i=0;i<NUM_DAYS;i++){
@@ -74,12 +87,9 @@ public class TimetableActivity extends AppCompatActivity {
                 //dayPages[i] = DayFragment.newInstance(i);
                 dayPages[i] = LayoutInflater.from(TimetableActivity.this).inflate(R.layout.dayview, null);
             }
-            //HashSet<Lecture> hs = (HashSet<Lecture>) dayPages[i].getArguments().getSerializable("lectures");
-            //hs.add(lecture);
             if (dayPages[i] instanceof ViewGroup){
                 ((ViewGroup) dayPages[i]).addView(Utility.getView(this, lecture));
             }
-
             //setup week mode
             ViewGroup vg = (ViewGroup) findViewById(dayLayoutIDs[i]);
             vg.addView(Utility.getView(this, lecture));
@@ -87,16 +97,17 @@ public class TimetableActivity extends AppCompatActivity {
 
         final ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
         final String[] titles = getResources().getStringArray(R.array.days);
-        //DayViewPagerAdapter adapter = new DayViewPagerAdapter(getSupportFragmentManager(), this);
         mViewPager.setAdapter(new PagerAdapter() {
             @Override
             public int getCount() {
                 return NUM_DAYS;
             }
+
             @Override
             public void destroyItem(ViewGroup container, int position, Object object) {
                 container.removeView((View) object);
             }
+
             @Override
             public Object instantiateItem(ViewGroup container, int position) {
                 //View page = LayoutInflater.from(TimetableActivity.this).inflate(R.layout.dayview, container, false);
@@ -105,6 +116,7 @@ public class TimetableActivity extends AppCompatActivity {
                 return page;
                 //return super.instantiateItem(container, position);
             }
+
             @Override
             public boolean isViewFromObject(View view, Object object) {
                 return view == object;
@@ -123,10 +135,18 @@ public class TimetableActivity extends AppCompatActivity {
                     }
                 };
         mViewPager.addOnPageChangeListener(pageChangeListener);
-        pageChangeListener.onPageSelected(0);
-        //TabLayout mTabLayout = (TabLayout) findViewById(R.id.tabs);
-        //mTabLayout.setupWithViewPager(mViewPager);
 
+        int curDayCalendar = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        int curDayIdx;
+        switch (curDayCalendar){
+            case Calendar.SATURDAY:
+            case Calendar.SUNDAY:
+                curDayIdx = 0;
+                break;
+            default: curDayIdx = curDayCalendar - 2;
+        }
+        mViewPager.setCurrentItem(curDayIdx);
+        pageChangeListener.onPageSelected(curDayIdx);
     }
 
     @Override
