@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+    android:layout_marginRight="@dimen/activity_horizontal_margin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/adv_name_layout"
+        layout="@layout/layout_material_list_item" />
+
+    <include
+        android:id="@+id/adv_mail_layout"
+        layout="@layout/layout_material_list_item" />
+
+    <include
+        android:id="@+id/adv_phone_layout"
+        layout="@layout/layout_material_list_item" />
+
+</LinearLayout>

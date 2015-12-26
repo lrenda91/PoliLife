@@ -36,6 +36,7 @@ public class Notice extends ParseObject implements Parcelable {
     }
 
     public Notice(Parcel in){
+        String type = in.readString();
         String title = in.readString();
         String description = in.readString();
         int price = in.readInt();
@@ -49,6 +50,7 @@ public class Notice extends ParseObject implements Parcelable {
         List<String> tags = new LinkedList<>();
         in.readStringList(tags);
 
+        if (type != null) put(TYPE, type);
         if (title != null) setTitle(title);
         if (description != null) setDescription(description);
         setCost(price);
@@ -59,6 +61,7 @@ public class Notice extends ParseObject implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getType());
         dest.writeString(getTitle());
         dest.writeString(getDescription());
         dest.writeInt(getPrice());
@@ -80,6 +83,7 @@ public class Notice extends ParseObject implements Parcelable {
     /**
      * 'Common' keys, e.g. which belong to all notices
      */
+    public static final String TYPE = "type";
     public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
     public static final String PRICE = "cost";
@@ -90,14 +94,17 @@ public class Notice extends ParseObject implements Parcelable {
     public static final String OWNER = "owner";
     public static final String PUBLICATED_AT = "createdAt";
 
+
     /**
      * House related notices' keys
      */
-    public static final String PROPERTY_TYPE = "type";
-    public static final String CONTRACT_TYPE = "contractType";
+    public static final String PROPERTY_TYPE = "property";
+    public static final String CONTRACT_TYPE = "contract";
     public static final String SIZE = "size";
     public static final String AVAILABILITY = "availableFrom";
 
+    private static final String HOME_TYPE = "home";
+    private static final String BOOK_TYPE = "book";
 
     public static class SortParam {
         public String key;
@@ -122,12 +129,14 @@ public class Notice extends ParseObject implements Parcelable {
             minSize = 0; minPrice = 0;
             maxSize = 10000; maxPrice = 10000;  //huge values
         }
-        public String title, location, contractType, propertyType;
+        public String type, title, location, contractType, propertyType;
         public List<String> tags = new LinkedList<>();
         public int minSize, maxSize, minPrice, maxPrice;
         public Double latitude = null, longitude = null;
         public int within = 1;
         public int daysAgo = -1;
+        public FilterData homeType(){ type = HOME_TYPE; return this; }
+        public FilterData bookType(){ type = BOOK_TYPE; return this; }
         public FilterData title(String value){ title = value; return this; }
         public FilterData location(String value){ location = value; return this; }
         public FilterData latitude(Double value){ latitude = value; return this; }
@@ -143,6 +152,9 @@ public class Notice extends ParseObject implements Parcelable {
         public FilterData removeTag(String value){ tags.remove(value); return this; }
     }
 
+    public String getType(){ return getString(TYPE); }
+    public void setHomeType(){ put(TYPE, HOME_TYPE); }
+    public void setBookType(){ put(TYPE, BOOK_TYPE); }
 
     public String getTitle(){
         return getString(TITLE);

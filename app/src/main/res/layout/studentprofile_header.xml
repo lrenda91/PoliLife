@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/headerStudent"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_image_height"
+        android:background="@drawable/wt4nrqa"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/headerStudent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/contactsStudentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/contacts"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <View
+            android:id="@+id/contactsStudentLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/contactsStudentTextView"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="10dp"
+            android:background="@color/facebook_color"/>
+
+        <LinearLayout
+            android:id="@+id/contactsStudentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <TextView
+            android:id="@+id/infoStudentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/infoStudent"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <View
+            android:id="@+id/infoStudentLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/contactsStudentTextView"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="10dp"
+            android:background="@color/facebook_color"/>
+
+        <LinearLayout
+            android:id="@+id/infoStudentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"/>
+
+        <TextView
+            android:id="@+id/skillsStudentTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/skills_text"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+        <View
+            android:id="@+id/skillsStudentLine"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/contactsStudentTextView"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="10dp"
+            android:background="@color/facebook_color"/>
+
+        <TextView
+            android:id="@+id/skills"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+
+</RelativeLayout>

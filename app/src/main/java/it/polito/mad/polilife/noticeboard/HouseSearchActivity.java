@@ -25,11 +25,9 @@ import java.util.ArrayList;
 
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.Utility;
-import it.polito.mad.polilife.db.DBCallbacks;
-import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Notice;
 
-public class AdvancedSearchActivity extends AppCompatActivity {
+public class HouseSearchActivity extends AppCompatActivity {
 
     private Notice.FilterData params = new Notice.FilterData();
 
@@ -44,17 +42,16 @@ public class AdvancedSearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_advanced_search);
+        setContentView(R.layout.activity_house_search);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                onBackPressed();
             }
         });
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -97,12 +94,12 @@ public class AdvancedSearchActivity extends AppCompatActivity {
 
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null){
-                    convertView = LayoutInflater.from(AdvancedSearchActivity.this)
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(HouseSearchActivity.this)
                             .inflate(R.layout.layout_tags_list_item, parent, false);
                 }
                 final String item = getItem(position);
-                ((TextView) convertView.findViewById(R.id.tag_value)).setText("#"+item);
+                ((TextView) convertView.findViewById(R.id.tag_value)).setText("#" + item);
                 convertView.findViewById(R.id.cancel_tag).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -131,13 +128,15 @@ public class AdvancedSearchActivity extends AppCompatActivity {
         withinSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                within.setText(String.valueOf(progress));
+                within.setText(String.valueOf(progress > 0 ? progress : 1));
             }
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
+        withinSeekBar.setProgress(1);
+        withinSeekBar.setMax(10);
 
         minPriceSeekBar.setProgress(0);
         minPriceSeekBar.setMax(1500);
@@ -254,6 +253,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_filter:
+                params.homeType();
                 String unspecified = getResources().getString(R.string.unspecified);
                 String locationName = locationEditText.getText().toString();
                 String propType = propertyTypeSpinner.getSelectedItem().toString();
@@ -270,7 +270,7 @@ public class AdvancedSearchActivity extends AppCompatActivity {
                 if (coordinates != null){
                     params.latitude(coordinates.latitude)
                             .longitude(coordinates.longitude)
-                            .within(1);
+                            .within(Integer.valueOf(within.getText().toString()));
                 }
 
                 Intent backIntent = new Intent();

@@ -44,11 +44,6 @@ public class DBCallbacks {
         void onDownloadError();
     }
 
-    public interface FilterCallback<T extends ParseObject> {
-        void onDataFiltered(List<T> result);
-        void onFilterError(Exception exception);
-    }
-
     public interface SortCallback<T extends ParseObject> {
         void done(List<T> result);
         void onSortError(Exception exception);

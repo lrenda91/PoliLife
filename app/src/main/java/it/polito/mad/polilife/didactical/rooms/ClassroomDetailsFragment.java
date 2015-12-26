@@ -75,7 +75,7 @@ public class ClassroomDetailsFragment extends Fragment implements OnMapReadyCall
         mMap.addMarker(new MarkerOptions().position(room).title(name));
 
         float zoom = Utility.calculateZoomLevel(getActivity(), 2000);
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(room));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(room, zoom));
     }
 
 }

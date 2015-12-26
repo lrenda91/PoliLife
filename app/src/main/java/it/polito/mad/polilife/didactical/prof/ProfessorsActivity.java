@@ -46,7 +46,7 @@ public class ProfessorsActivity extends AppCompatActivity
 
         mListView = (ListView) findViewById(R.id.professors_list);
 
-        PoliLifeDB.downloadProfessorsInfo(this);
+        PoliLifeDB.getAllObjects(Professor.class, this);
     }
 
     @Override

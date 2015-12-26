@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?><resources>
+    
+    <array name="student_drawer_icons">
+        <item>@drawable/ic_cast_light</item>
+        <item>@drawable/ic_cast_light</item>
+        <item>@drawable/ic_cast_light</item>
+        <item>@drawable/ic_cast_light</item>
+        <item>@drawable/ic_cast_light</item>
+        <item>@drawable/ic_cast_light</item>
+    </array>  
+    
+    <string-array name="student_drawer_titles">
+        <item>@string/profile</item>
+        <item>@string/didactics</item>
+        <item>@string/noticeboard</item>
+        <item>@string/placement</item>
+        <item>@string/chat</item>
+        <item>@string/news</item>
+    </string-array>
+
+</resources>

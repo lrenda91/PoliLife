@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import it.polito.mad.polilife.R;
@@ -28,15 +27,19 @@ import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Notice;
-import it.polito.mad.polilife.db.parcel.PNoticeData;
 
 public class NoticeBoardActivity extends AppCompatActivity
-        implements DBCallbacks.FilterCallback<Notice>, DBCallbacks.MultipleFetchCallback<Notice> {
+        implements DBCallbacks.MultipleFetchCallback<Notice> {
 
     private static final int ADVANCED_SEARCH_REQUEST_CODE = 10;
 
     private Toolbar mToolbar;
     private ViewPager mViewPager;
+
+    public static final String TYPE_KEY = "TYPE";
+    public static final String BOOK_TYPE = "book";
+    public static final String HOME_TYPE = "home";
+    private String mNoticesType;
 
     private ProgressBar mWait;
     private Fragment[] sections = {
@@ -48,6 +51,8 @@ public class NoticeBoardActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_board);
+
+        mNoticesType = getIntent().getStringExtra(NoticeBoardActivity.TYPE_KEY);
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
@@ -61,7 +66,12 @@ public class NoticeBoardActivity extends AppCompatActivity
         mWait = (ProgressBar) findViewById(R.id.wait);
         mWait.setVisibility(View.VISIBLE);
 
-        PoliLifeDB.getAllObjects(Notice.class, this);
+        Notice.FilterData filter = new Notice.FilterData();
+        if (mNoticesType.equals(HOME_TYPE)) filter.homeType();
+        else if (mNoticesType.equals(BOOK_TYPE)) filter.bookType();
+
+        boolean fromLocalDataStore = !Utility.networkIsUp(this);
+        PoliLifeDB.advancedNoticeFilter(filter, fromLocalDataStore, this);
     }
 
     @Override
@@ -74,7 +84,9 @@ public class NoticeBoardActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_search_notices:
-                Intent toAdvSearchPage = new Intent(NoticeBoardActivity.this, AdvancedSearchActivity.class);
+                Class<? extends Activity> target = mNoticesType.equals(HOME_TYPE) ?
+                        HouseSearchActivity.class : BookSearchActivity.class;
+                Intent toAdvSearchPage = new Intent(NoticeBoardActivity.this, target);
                 startActivityForResult(toAdvSearchPage, ADVANCED_SEARCH_REQUEST_CODE);
                 break;
         }
@@ -102,38 +114,14 @@ public class NoticeBoardActivity extends AppCompatActivity
         if (requestCode == ADVANCED_SEARCH_REQUEST_CODE){
             switch(resultCode){
                 case Activity.RESULT_OK:
-                    if (!Utility.networkIsUp(this)){
-                        return;
-                    }
+                    boolean fromLocalDataStore = !Utility.networkIsUp(this);
                     Notice.FilterData searchParams = (Notice.FilterData) data.getSerializableExtra("params");
-                    PoliLifeDB.advancedNoticeFilter(searchParams, this);
+                    PoliLifeDB.advancedNoticeFilter(searchParams, fromLocalDataStore, this);
                     break;
                 case Activity.RESULT_CANCELED:
                     break;
             }
         }
-    }
-
-    @Override
-    public void onDataFiltered(List<Notice> result) {
-        mWait.setVisibility(View.INVISIBLE);
-        List<PNoticeData> list = new LinkedList<>();
-        for (Notice n : result){
-            PNoticeData pNoticeData = new PNoticeData();
-            pNoticeData.fillFrom(n);
-            list.add(pNoticeData);
-        }
-        /*for (Fragment f : fragments) {
-            if (f instanceof NoticesListener) {
-                ((NoticesListener) f).update(list);
-            }
-        }*/
-        mWait.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void onFilterError(Exception exception) {
-        mWait.setVisibility(View.INVISIBLE);
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {

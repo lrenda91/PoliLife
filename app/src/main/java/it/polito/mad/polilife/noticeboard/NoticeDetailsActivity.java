@@ -1,5 +1,8 @@
 package it.polito.mad.polilife.noticeboard;
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -43,12 +46,13 @@ public class NoticeDetailsActivity extends AppCompatActivity
                 finish();
             }
         });
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         String id = getIntent().getStringExtra("data");
 
-        PoliLifeDB.retreiveObject(id, Notice.class, this);
+        //when I open this activity, Notice obj is HOWEVER inside local data store.
+        //so, let's retrieve it from local data store
+        PoliLifeDB.retrieveObject(id, Notice.class, true, this);
 
         if (savedInstanceState != null){
             loaded = savedInstanceState.getBoolean("load");
@@ -160,20 +164,49 @@ public class NoticeDetailsActivity extends AppCompatActivity
                 R.drawable.ic_mail,
                 R.drawable.ic_call_grey600_24dp
         };
-        ParseUser owner = mNotice.getOwner();
-        String fname = owner.getString(Student.FIRST_NAME);
-        String lname = owner.getString(Student.LAST_NAME);
-        String name = (fname != null && lname != null) ? fname+" "+lname : "null";
-        String phone = owner.getString(Student.CONTACT_PHONE);
+        final ParseUser owner = mNotice.getOwner();
+        final String fname = owner.getString(Student.FIRST_NAME);
+        final String lname = owner.getString(Student.LAST_NAME);
+        final String name = (fname != null && lname != null) ? fname+" "+lname : "null";
+        final String phone = owner.getString(Student.CONTACT_PHONE);
         String[] values = {
                 name,
-                owner.getEmail() != null ? owner.getEmail() : "null",
-                phone != null ? phone : "null"
+                owner.getEmail(),
+                phone
         };
         for (int i=0;i<advViews.length;i++){
             ((ImageView) advViews[i].findViewById(R.id.rowIcon)).setImageResource(icons[i]);
             ((TextView) advViews[i].findViewById(R.id.rowText)).setText(values[i]);
+            if (i == 1) {
+                advViews[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent email = new Intent(Intent.ACTION_SEND);
+                        email.putExtra(Intent.EXTRA_EMAIL, new String[]{owner.getEmail()});
+                        email.putExtra(Intent.EXTRA_SUBJECT, "subject");
+                        email.putExtra(Intent.EXTRA_TEXT, "");
+                        email.setType("message/rfc822");
+                        startActivity(Intent.createChooser(email, "Choose an Email client :"));
+                    }
+                });
+            }
+            if (i == 2) {
+                advViews[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            Intent callIntent = new Intent(Intent.ACTION_CALL);
+                            callIntent.setData(Uri.parse("tel:" + phone));
+                            startActivity(callIntent);
+                        } catch (ActivityNotFoundException e) {
+                            e.printStackTrace();
+                        } catch (SecurityException e) {
+                        }
+                    }
+                });
+            }
         }
+
     }
 
 }

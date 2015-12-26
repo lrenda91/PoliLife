@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Filter;
 
+import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.classes.*;
 import it.polito.mad.polilife.db.parcel.*;
 import it.polito.mad.polilife.db.DBCallbacks.*;
@@ -216,10 +217,6 @@ public class PoliLifeDB {
         });
     }
 
-    public static void downloadProfessorsInfo(final MultipleFetchCallback<Professor> listener){
-        getAllObjects(Professor.class, listener);
-    }
-
     public static <T extends ParseObject> void getAllObjects(
             Class<T> klass, final MultipleFetchCallback<T> listener){
         ParseQuery<T> query = ParseQuery.getQuery(klass);
@@ -234,7 +231,6 @@ public class PoliLifeDB {
             }
         });
     }
-
 
     public static void publishNewNotice(final PNoticeData data,
                                         final UpdateCallback<Notice> listener){
@@ -291,7 +287,8 @@ public class PoliLifeDB {
     }
 
     public static void advancedNoticeFilter(final Notice.FilterData filterData,
-                                            final FilterCallback<Notice> listener){
+                                            final boolean fromLocalDataStore,
+                                            final MultipleFetchCallback<Notice> listener){
         ParseQuery<Notice> query = ParseQuery.getQuery(Notice.class);
         ParseQuery<Notice> finalQuery = null;
         if (filterData != null) {
@@ -303,6 +300,9 @@ public class PoliLifeDB {
                 long DAY_IN_MS = 1000 * 60 * 60 * 24;
                 Date limit = new Date(System.currentTimeMillis() - (filterData.daysAgo * DAY_IN_MS));
                 query.whereGreaterThanOrEqualTo(Notice.PUBLICATED_AT, limit);
+            }
+            if (filterData.type != null){
+                query.whereEqualTo(Notice.TYPE, filterData.type);
             }
             if (filterData.title != null){
                 query.whereContains(Notice.TITLE, filterData.title);
@@ -337,25 +337,34 @@ public class PoliLifeDB {
         else{
             finalQuery = query;
         }
+        if (fromLocalDataStore){
+            finalQuery.fromLocalDatastore();
+        }
+        finalQuery.addDescendingOrder(Notice.PUBLICATED_AT);
         finalQuery.findInBackground(new FindCallback<Notice>() {
             @Override
             public void done(List<Notice> list, ParseException e) {
                 if (e != null) {
-                    if (listener != null) listener.onFilterError(e);
+                    if (listener != null) listener.onFetchError(e);
                     return;
                 }
-                if (listener != null) listener.onDataFiltered(list);
+                if (!fromLocalDataStore) {
+                    ParseObject.unpinAllInBackground("cachedNotices");
+                    ParseObject.pinAllInBackground("cachedNotices", list);
+                }
+                if (listener != null) listener.onFetchSuccess(list);
             }
         });
     }
 
-    public static void getRecentNoticesAndPositions(final int daysAgo, final FilterCallback<ParseObject> listener){
+    public static void getRecentNoticesAndPositions(final int daysAgo,
+            final boolean fromLocalDataStore, final MultipleFetchCallback<ParseObject> listener){
         final List<ParseObject> objs = new LinkedList<>();
         Notice.FilterData filter = new Notice.FilterData();
         filter.daysAgo = daysAgo;
-        advancedNoticeFilter(filter, new FilterCallback<Notice>() {
+        advancedNoticeFilter(filter, fromLocalDataStore, new MultipleFetchCallback<Notice>() {
             @Override
-            public void onDataFiltered(List<Notice> result) {
+            public void onFetchSuccess(List<Notice> result) {
                 objs.addAll(result);
                 ParseQuery<Position> query = ParseQuery.getQuery(Position.class);
                 if (daysAgo > 0) {
@@ -363,38 +372,56 @@ public class PoliLifeDB {
                     Date limit = new Date(System.currentTimeMillis() - (daysAgo * DAY_IN_MS));
                     query.whereGreaterThanOrEqualTo(Position.START_DATE, limit);
                 }
+                if (fromLocalDataStore){
+                    query.fromLocalDatastore();
+                }
                 query.findInBackground(new FindCallback<Position>() {
                     @Override
                     public void done(List<Position> list, ParseException e) {
                         if (e != null) {
-                            if (listener != null) listener.onFilterError(e);
+                            if (listener != null) listener.onFetchError(e);
                             return;
                         }
                         objs.addAll(list);
-                        if (listener != null) listener.onDataFiltered(objs);
+                        if (listener != null) listener.onFetchSuccess(objs);
                     }
                 });
             }
 
             @Override
-            public void onFilterError(Exception exception) {
-                if (listener != null) listener.onFilterError(exception);
+            public void onFetchError(Exception exception) {
+                if (listener != null) listener.onFetchError(exception);
             }
         });
     }
 
-    public static <T extends ParseObject> void retreiveObject(String id, Class<T> klass, final SingleFetchCallback<T> listener){
+    public static <T extends ParseObject> void retrieveObject(String id, Class<T> klass,
+            boolean fromLocalDataStore, final SingleFetchCallback<T> listener){
         T obj = ParseObject.createWithoutData(klass, id);
-        obj.fetchInBackground(new GetCallback<T>() {
-            @Override
-            public void done(T parseObject, ParseException e) {
-                if (e != null){
-                    if (listener != null) listener.onFetchError(e);
-                    return;
+        if (fromLocalDataStore){
+            obj.fetchFromLocalDatastoreInBackground(new GetCallback<T>() {
+                @Override
+                public void done(T parseObject, ParseException e) {
+                    if (e != null){
+                        if (listener != null) listener.onFetchError(e);
+                        return;
+                    }
+                    if (listener != null) listener.onFetchSuccess(parseObject);
                 }
-                if (listener != null) listener.onFetchSuccess(parseObject);
-            }
-        });
+            });
+        }
+        else {
+            obj.fetchInBackground(new GetCallback<T>() {
+                @Override
+                public void done(T parseObject, ParseException e) {
+                    if (e != null) {
+                        if (listener != null) listener.onFetchError(e);
+                        return;
+                    }
+                    if (listener != null) listener.onFetchSuccess(parseObject);
+                }
+            });
+        }
     }
 
 }

@@ -24,8 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import it.polito.mad.polilife.R;
+import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.DBCallbacks;
-import it.polito.mad.polilife.db.DBCallbacks.FilterCallback;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Notice;
 import it.polito.mad.polilife.db.classes.Position;
@@ -35,7 +35,7 @@ import it.polito.mad.polilife.didactical.timetable.TimetableActivity;
 import it.polito.mad.polilife.noticeboard.NoticeDetailsActivity;
 
 public class NewsFragment extends Fragment
-        implements FilterCallback<ParseObject> {
+        implements DBCallbacks.MultipleFetchCallback<ParseObject> {
 
     private HashMap<String, List<ParseObject>> map;
     private ExpandableListAdapter mAdapter;
@@ -99,11 +99,12 @@ public class NewsFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        PoliLifeDB.getRecentNoticesAndPositions(100, this);
+        boolean fromLocalDataStore = !Utility.networkIsUp(getActivity());
+        PoliLifeDB.getRecentNoticesAndPositions(100, fromLocalDataStore, this);
     }
 
     @Override
-    public void onDataFiltered(List<ParseObject> result) {
+    public void onFetchSuccess(List<ParseObject> result) {
         map.get(POSITIONS_KEY).clear();
         map.get(NOTICES_KEY).clear();
         mWait.setVisibility(View.INVISIBLE);
@@ -115,7 +116,7 @@ public class NewsFragment extends Fragment
     }
 
     @Override
-    public void onFilterError(Exception exception) {
+    public void onFetchError(Exception exception) {
         mWait.setVisibility(View.INVISIBLE);
     }
 
@@ -151,15 +152,19 @@ public class NewsFragment extends Fragment
                     convertView = LayoutInflater.from(_context).inflate(
                             R.layout.layout_notice_item, parent, false);
                 }
-                Notice n = (Notice) child;
-                ((TextView)convertView.findViewById(R.id.offer_title)).setText(n.getTitle());
+                final Notice n = (Notice) child;
+                String title = n.getTitle() != null ? n.getTitle() : _context.getString(R.string.no_title);
+                String location = n.getLocationName() != null ? n.getLocationName() :
+                        _context.getString(R.string.no_location);
+                String from = n.getAvailableFrom() != null ? n.getAvailableFrom().toString() :
+                        _context.getString(R.string.no_available_from);
+                ((TextView)convertView.findViewById(R.id.offer_title)).setText(title);
                 ((TextView)convertView.findViewById(R.id.offer_price)).setText(n.getPrice()+"");
-                ((TextView)convertView.findViewById(R.id.offer_location)).setText(n.getLocationName());
-                ((TextView)convertView.findViewById(R.id.offer_date)).setText(n.getAvailableFrom().toString());
+                ((TextView)convertView.findViewById(R.id.offer_location)).setText(location);
+                ((TextView)convertView.findViewById(R.id.offer_date)).setText(from);
                 convertView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Notice n = (Notice) child;
                         Intent i = new Intent(getActivity(), NoticeDetailsActivity.class);
                         i.putExtra("data", n.getObjectId());
                         startActivity(i);
