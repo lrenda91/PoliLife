@@ -3,16 +3,13 @@ package it.polito.mad.polilife.db;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
 
 import com.parse.*;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Filter;
 
-import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.classes.*;
 import it.polito.mad.polilife.db.parcel.*;
 import it.polito.mad.polilife.db.DBCallbacks.*;
@@ -40,6 +37,7 @@ public class PoliLifeDB {
         }
         Parse.enableLocalDatastore(context);
         Parse.initialize(context, APPLICATION_ID, CLIENT_KEY);
+        ParseInstallation.getCurrentInstallation().saveInBackground();
     }
 
     public static void signUpStudent(final PUserData userData,
@@ -286,46 +284,46 @@ public class PoliLifeDB {
         }.execute();
     }
 
-    public static void advancedNoticeFilter(final Notice.FilterData filterData,
+    public static void advancedNoticeFilter(final Notice.Filter filter,
                                             final boolean fromLocalDataStore,
                                             final MultipleFetchCallback<Notice> listener){
         ParseQuery<Notice> query = ParseQuery.getQuery(Notice.class);
         ParseQuery<Notice> finalQuery = null;
-        if (filterData != null) {
-            query.whereLessThanOrEqualTo(Notice.PRICE, filterData.maxPrice)
-                    .whereGreaterThanOrEqualTo(Notice.PRICE, filterData.minPrice)
-                    .whereLessThanOrEqualTo(Notice.SIZE, filterData.maxSize)
-                    .whereGreaterThanOrEqualTo(Notice.SIZE, filterData.minSize);
-            if (filterData.daysAgo > 0) {
+        if (filter != null) {
+            query.whereLessThanOrEqualTo(Notice.PRICE, filter.maxPrice)
+                    .whereGreaterThanOrEqualTo(Notice.PRICE, filter.minPrice)
+                    .whereLessThanOrEqualTo(Notice.SIZE, filter.maxSize)
+                    .whereGreaterThanOrEqualTo(Notice.SIZE, filter.minSize);
+            if (filter.daysAgo > 0) {
                 long DAY_IN_MS = 1000 * 60 * 60 * 24;
-                Date limit = new Date(System.currentTimeMillis() - (filterData.daysAgo * DAY_IN_MS));
+                Date limit = new Date(System.currentTimeMillis() - (filter.daysAgo * DAY_IN_MS));
                 query.whereGreaterThanOrEqualTo(Notice.PUBLICATED_AT, limit);
             }
-            if (filterData.type != null){
-                query.whereEqualTo(Notice.TYPE, filterData.type);
+            if (filter.type != null){
+                query.whereEqualTo(Notice.TYPE, filter.type);
             }
-            if (filterData.title != null){
-                query.whereContains(Notice.TITLE, filterData.title);
+            if (filter.title != null){
+                query.whereContains(Notice.TITLE, filter.title);
             }
-            if (filterData.location != null) {
-                query.whereContains(Notice.LOCATION_STRING, filterData.location);
+            if (filter.location != null) {
+                query.whereContains(Notice.LOCATION_STRING, filter.location);
             }
-            if (filterData.latitude != null && filterData.longitude != null){
-                ParseGeoPoint point = new ParseGeoPoint(filterData.latitude, filterData.longitude);
-                query.whereWithinKilometers(Notice.LOCATION_POINT, point, filterData.within);
+            if (filter.latitude != null && filter.longitude != null){
+                ParseGeoPoint point = new ParseGeoPoint(filter.latitude, filter.longitude);
+                query.whereWithinKilometers(Notice.LOCATION_POINT, point, filter.within);
             }
-            if (filterData.contractType != null) {
-                query.whereEqualTo(Notice.CONTRACT_TYPE, filterData.contractType);
+            if (filter.contractType != null) {
+                query.whereEqualTo(Notice.CONTRACT_TYPE, filter.contractType);
             }
-            if (filterData.propertyType != null) {
-                query.whereEqualTo(Notice.PROPERTY_TYPE, filterData.propertyType);
+            if (filter.propertyType != null) {
+                query.whereEqualTo(Notice.PROPERTY_TYPE, filter.propertyType);
             }
-            if (filterData.tags != null && !filterData.tags.isEmpty()) {
-                query.whereContainsAll(Notice.TAGS, filterData.tags);
+            if (filter.tags != null && !filter.tags.isEmpty()) {
+                query.whereContainsAll(Notice.TAGS, filter.tags);
             }
             List<ParseQuery<Notice>> res = new LinkedList<>();
             res.add(query);
-            for (String tag : filterData.tags) {
+            for (String tag : filter.tags) {
                 List<ParseQuery<Notice>> queries = new LinkedList<>();
                 queries.add(ParseQuery.getQuery(Notice.class).whereContains(Notice.TITLE, tag));
                 queries.add(ParseQuery.getQuery(Notice.class).whereContains(Notice.DESCRIPTION, tag));
@@ -357,10 +355,51 @@ public class PoliLifeDB {
         });
     }
 
+    public static void advancedPositionsFilter(final Position.Filter filter,
+                                            final boolean fromLocalDataStore,
+                                            final MultipleFetchCallback<Position> listener) {
+        ParseQuery<Position> query = ParseQuery.getQuery(Position.class);
+        if (filter != null){
+            if (filter.name != null){
+                query.whereContains(Position.NAME, filter.name);
+            }
+            if (filter.typeOfJob != null){
+                query.whereEqualTo(Position.TYPE_OF_JOB, filter.typeOfJob);
+            }
+            if (filter.typeOfDegree != null){
+                query.whereEqualTo(Position.TYPE_OF_DEGREE, filter.typeOfDegree);
+            }
+            if (filter.city != null){
+                query.whereEqualTo(Position.CITY, filter.city);
+            }
+            if (filter.startDate != null){
+                query.whereGreaterThanOrEqualTo(Position.START_DATE, filter.startDate);
+            }
+        }
+        query.addDescendingOrder(Position.START_DATE);
+        if (fromLocalDataStore){
+            query.fromLocalDatastore();
+        }
+        query.findInBackground(new FindCallback<Position>() {
+            @Override
+            public void done(List<Position> list, ParseException e) {
+                if (e != null) {
+                    if (listener != null) listener.onFetchError(e);
+                    return;
+                }
+                if (!fromLocalDataStore) {
+                    ParseObject.unpinAllInBackground("cachedPositions");
+                    ParseObject.pinAllInBackground("cachedPositions", list);
+                }
+                if (listener != null) listener.onFetchSuccess(list);
+            }
+        });
+    }
+
     public static void getRecentNoticesAndPositions(final int daysAgo,
             final boolean fromLocalDataStore, final MultipleFetchCallback<ParseObject> listener){
         final List<ParseObject> objs = new LinkedList<>();
-        Notice.FilterData filter = new Notice.FilterData();
+        Notice.Filter filter = new Notice.Filter();
         filter.daysAgo = daysAgo;
         advancedNoticeFilter(filter, fromLocalDataStore, new MultipleFetchCallback<Notice>() {
             @Override
@@ -372,7 +411,7 @@ public class PoliLifeDB {
                     Date limit = new Date(System.currentTimeMillis() - (daysAgo * DAY_IN_MS));
                     query.whereGreaterThanOrEqualTo(Position.START_DATE, limit);
                 }
-                if (fromLocalDataStore){
+                if (fromLocalDataStore) {
                     query.fromLocalDatastore();
                 }
                 query.findInBackground(new FindCallback<Position>() {
@@ -398,30 +437,51 @@ public class PoliLifeDB {
     public static <T extends ParseObject> void retrieveObject(String id, Class<T> klass,
             boolean fromLocalDataStore, final SingleFetchCallback<T> listener){
         T obj = ParseObject.createWithoutData(klass, id);
-        if (fromLocalDataStore){
-            obj.fetchFromLocalDatastoreInBackground(new GetCallback<T>() {
-                @Override
-                public void done(T parseObject, ParseException e) {
-                    if (e != null){
-                        if (listener != null) listener.onFetchError(e);
-                        return;
-                    }
-                    if (listener != null) listener.onFetchSuccess(parseObject);
+        GetCallback<T> cbk = new GetCallback<T>() {
+            @Override
+            public void done(T parseObject, ParseException e) {
+                if (e != null){
+                    if (listener != null) listener.onFetchError(e);
+                    return;
                 }
-            });
+                if (listener != null) listener.onFetchSuccess(parseObject);
+            }
+        };
+        if (fromLocalDataStore){
+            obj.fetchFromLocalDatastoreInBackground(cbk);
         }
         else {
-            obj.fetchInBackground(new GetCallback<T>() {
-                @Override
-                public void done(T parseObject, ParseException e) {
-                    if (e != null) {
-                        if (listener != null) listener.onFetchError(e);
-                        return;
-                    }
-                    if (listener != null) listener.onFetchSuccess(parseObject);
-                }
-            });
+            obj.fetchInBackground(cbk);
         }
+    }
+
+    public static void getConversations(final MultipleFetchCallback<ChatChannel> listener){
+        ParseInstallation.getCurrentInstallation().fetchInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                if (e != null) {
+                    if (listener != null) listener.onFetchError(e);
+                    return;
+                }
+                List<String> channels = (List<String>) parseObject.get("channels");
+                List<ParseQuery<ChatChannel>> queries = new LinkedList<>();
+                for (String s : channels) {
+                    if (s.isEmpty()) continue;
+                    queries.add(ParseQuery.getQuery(ChatChannel.class).whereEqualTo("objectId", s));
+                }
+                ParseQuery.or(queries).findInBackground(new FindCallback<ChatChannel>() {
+                    @Override
+                    public void done(List<ChatChannel> list, ParseException e) {
+                        if (e != null) {
+                            if (listener != null) listener.onFetchError(e);
+                            return;
+                        }
+                        if (listener != null) listener.onFetchSuccess(list);
+                    }
+                });
+            }
+        });
+
     }
 
 }

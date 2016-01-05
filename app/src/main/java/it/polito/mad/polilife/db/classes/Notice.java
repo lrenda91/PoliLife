@@ -84,7 +84,7 @@ public class Notice extends ParseObject implements Parcelable {
      * 'Common' keys, e.g. which belong to all notices
      */
     public static final String TYPE = "type";
-    public static final String TITLE = "title";
+    public static final String TITLE = "name";
     public static final String DESCRIPTION = "description";
     public static final String PRICE = "cost";
     public static final String LOCATION_STRING = "locationName";
@@ -124,8 +124,8 @@ public class Notice extends ParseObject implements Parcelable {
         return res;
     }
 
-    public static class FilterData implements Serializable {
-        public FilterData(){
+    public static class Filter implements Serializable {
+        public Filter(){
             minSize = 0; minPrice = 0;
             maxSize = 10000; maxPrice = 10000;  //huge values
         }
@@ -135,21 +135,21 @@ public class Notice extends ParseObject implements Parcelable {
         public Double latitude = null, longitude = null;
         public int within = 1;
         public int daysAgo = -1;
-        public FilterData homeType(){ type = HOME_TYPE; return this; }
-        public FilterData bookType(){ type = BOOK_TYPE; return this; }
-        public FilterData title(String value){ title = value; return this; }
-        public FilterData location(String value){ location = value; return this; }
-        public FilterData latitude(Double value){ latitude = value; return this; }
-        public FilterData longitude(Double value){ longitude = value; return this; }
-        public FilterData within(int value){ within = value; return this; }
-        public FilterData contractType(String value){ contractType = value; return this; }
-        public FilterData propertyType(String value){ propertyType = value; return this; }
-        public FilterData minSize(int value){ minSize = value; return this; }
-        public FilterData maxSize(int value){ maxSize = value; return this; }
-        public FilterData minPrice(int value){ minPrice = value; return this; }
-        public FilterData maxPrice(int value){ maxPrice = value; return this; }
-        public FilterData newTag(String value){ tags.add(value); return this; }
-        public FilterData removeTag(String value){ tags.remove(value); return this; }
+        public Filter homeType(){ type = HOME_TYPE; return this; }
+        public Filter bookType(){ type = BOOK_TYPE; return this; }
+        public Filter title(String value){ title = value; return this; }
+        public Filter location(String value){ location = value; return this; }
+        public Filter latitude(Double value){ latitude = value; return this; }
+        public Filter longitude(Double value){ longitude = value; return this; }
+        public Filter within(int value){ within = value; return this; }
+        public Filter contractType(String value){ contractType = value; return this; }
+        public Filter propertyType(String value){ propertyType = value; return this; }
+        public Filter minSize(int value){ minSize = value; return this; }
+        public Filter maxSize(int value){ maxSize = value; return this; }
+        public Filter minPrice(int value){ minPrice = value; return this; }
+        public Filter maxPrice(int value){ maxPrice = value; return this; }
+        public Filter newTag(String value){ tags.add(value); return this; }
+        public Filter removeTag(String value){ tags.remove(value); return this; }
     }
 
     public String getType(){ return getString(TYPE); }

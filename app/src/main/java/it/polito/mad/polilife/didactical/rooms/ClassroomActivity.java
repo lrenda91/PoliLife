@@ -94,7 +94,7 @@ public class ClassroomActivity extends AppCompatActivity
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         if(isSearchOpened){ //test if the search is open
             action.setDisplayShowCustomEnabled(false); //disable a custom view inside the actionbar
-            action.setDisplayShowTitleEnabled(true); //show the title in the action bar
+            action.setDisplayShowTitleEnabled(true); //show the name in the action bar
             //hides the keyboard
             imm.hideSoftInputFromWindow(edtSeach.getWindowToken(), 0);
             //add the search icon in the action bar
@@ -105,7 +105,7 @@ public class ClassroomActivity extends AppCompatActivity
             action.setDisplayShowCustomEnabled(true); //enable it to display a
             // custom view in the action bar.
             action.setCustomView(R.layout.layout_search_bar);//add the custom view
-            action.setDisplayShowTitleEnabled(false); //hide the title
+            action.setDisplayShowTitleEnabled(false); //hide the name
 
             edtSeach = (EditText) action.getCustomView().findViewById(R.id.edtSearch); //the text editor
             edtSeach.setOnClickListener(new View.OnClickListener() {

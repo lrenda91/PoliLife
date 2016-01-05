@@ -6,7 +6,9 @@ import com.parse.ParseObject;
 import com.parse.ParseRelation;
 import com.parse.ParseUser;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by luigi on 29/05/15.
@@ -24,9 +26,10 @@ public class Student extends ParseUser {
     public static final String CONTACT_PHONE = "contactPhone";
     public static final String ABOUT = "aboutMe";
     public static final String PHOTO = "photo";
+    public static final String CHANNELS = "channels";
 
     public Student() {
-
+        //addChannel("broadcast");
     }
 
     public StudentInfo getStudentInfo(){ return (StudentInfo) get(STUDENT_KEY); }
@@ -74,5 +77,10 @@ public class Student extends ParseUser {
 
     public String getAbout(){ return (String) get(ABOUT); }
     public void setAbout(String value){ put(ABOUT, value); }
+
+    public List<String> getChannels(){ return (List<String>) get(CHANNELS);  }
+    public void setChannels(List<String> value) {   put(CHANNELS, value);  }
+    public void addChannel(String value){ addUnique(CHANNELS, value); }
+    public void removeChannel(Collection<String> values){ removeAll(CHANNELS, values); }
 
 }

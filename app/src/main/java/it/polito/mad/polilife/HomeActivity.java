@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.parse.ParseUser;
 
+import it.polito.mad.polilife.chat.ChatFragment;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Student;
@@ -45,7 +46,7 @@ public class HomeActivity extends AppCompatActivity {
             DidacticalHomeFragment.newInstance(),
             NoticeboardHomeFragment.newInstance(),
             JobPlacementFragment.newInstance(),
-            NoticeboardHomeFragment.newInstance(),
+            ChatFragment.newInstance(),
             NewsFragment.newInstance()
     };
 
@@ -99,30 +100,20 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         //by default, we'd like to see immediately all news
-        showPage(NEWS);
+        showPage(CHAT);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        int id = R.menu.menu_home;
+        int id = R.menu.menu_empty;
         switch(mCurrentFeature){
-            case NOTICEBOARD:
-                id = R.menu.menu_home_noticeboard;
+            case NEWS:
+                id = R.menu.menu_home;
                 break;
         }
         getMenuInflater().inflate(id, menu);
         getSupportActionBar().setTitle(mTitles[mCurrentFeature]);
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_go_to_notices:
-                startActivity(new Intent(this, NoticeBoardActivity.class));
-                break;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void setUpNavigationDrawer() {
@@ -196,4 +187,5 @@ public class HomeActivity extends AppCompatActivity {
             mNavigationDrawer.close();
         }
     }
+
 }

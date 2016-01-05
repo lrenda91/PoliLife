@@ -19,7 +19,7 @@ public class StudentInfo extends ParseObject {
 
     private static final String LANGUAGES = "languages";
     private static final String AVAILABILITYSTART = "availableFrom";
-    private static final String AVAILABILITYEND = "availabileUntil";
+    private static final String AVAILABILITYEND = "availableUntil";
     private static final String FAVOURITE_COMPANIES = "favouriteCompanies";
     private static final String FAVOURITE_OFFERS = "favouriteOffers";
     private static final String CV = "CV";

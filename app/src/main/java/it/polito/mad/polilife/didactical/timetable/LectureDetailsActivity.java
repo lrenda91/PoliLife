@@ -93,11 +93,4 @@ public class LectureDetailsActivity extends AppCompatActivity {
         */
     }
 
-    private void showFragment(Fragment fragment){
-        FragmentManager frgManager = getSupportFragmentManager();
-        frgManager.beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
-                .replace(R.id.room_info_container, fragment).commit();
-    }
-
 }

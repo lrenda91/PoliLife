@@ -18,10 +18,6 @@ import com.parse.ParseUser;
 
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
-import it.polito.mad.polilife.db.classes.Company;
-import it.polito.mad.polilife.db.classes.Message;
-import it.polito.mad.polilife.db.classes.Student;
-import it.polito.mad.polilife.didactical.rooms.ClassroomActivity;
 import it.polito.mad.polilife.signup.SignUpActivity;
 
 public class MainActivity extends AppCompatActivity implements DBCallbacks.UserLoginCallback {

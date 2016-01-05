@@ -29,7 +29,7 @@ import it.polito.mad.polilife.db.classes.Notice;
 
 public class HouseSearchActivity extends AppCompatActivity {
 
-    private Notice.FilterData params = new Notice.FilterData();
+    private Notice.Filter params = new Notice.Filter();
 
     private ListView tagsList;
     private Toolbar mToolbar;

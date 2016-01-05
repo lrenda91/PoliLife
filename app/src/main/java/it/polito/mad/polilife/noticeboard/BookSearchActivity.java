@@ -20,7 +20,7 @@ import it.polito.mad.polilife.db.classes.Notice;
 
 public class BookSearchActivity extends AppCompatActivity {
 
-    private Notice.FilterData params = new Notice.FilterData();
+    private Notice.Filter params = new Notice.Filter();
 
     private AutoCompleteTextView locationEditText;
     private TextView within;

@@ -3,30 +3,31 @@ package it.polito.mad.polilife.db.classes;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseRelation;
+import com.parse.ParseUser;
 
 /**
  * Created by luigi on 29/05/15.
  */
-@ParseClassName("Group")
-public class Group extends ParseObject {
+@ParseClassName("Channel")
+public class ChatChannel extends ParseObject {
 
     static final String ADMIN = "Admin";
     static final String SUBSCRIBERS = "Subscribers";
 
-    public Group() {
+    public ChatChannel() {
 
     }
 
-    public StudentInfo getAdministrator(){ return (StudentInfo) get(ADMIN); }
-    public void setAdministrator(StudentInfo admin){ put(ADMIN, admin); }
+    public ParseUser getAdministrator(){ return (ParseUser) get(ADMIN); }
+    public void setAdministrator(ParseUser admin){ put(ADMIN, admin); }
 
-    public ParseRelation<StudentInfo> getSubscribers(){
+    public ParseRelation<ParseUser> getSubscribers(){
         return getRelation(SUBSCRIBERS);
     }
-    public void subscribe(StudentInfo value){
+    public void subscribe(ParseUser value){
         getRelation(SUBSCRIBERS).add(value);
     }
-    public void unsubscribe(StudentInfo value){
+    public void unsubscribe(ParseUser value){
         getRelation(SUBSCRIBERS).remove(value);
     }
 

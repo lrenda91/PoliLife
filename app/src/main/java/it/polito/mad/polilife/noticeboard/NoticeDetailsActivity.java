@@ -99,7 +99,7 @@ public class NoticeDetailsActivity extends AppCompatActivity
     }
 
     private void update(){
-        mTitleView.setText(mNotice.getTitle() != null ? mNotice.getTitle() : "No title");
+        mTitleView.setText(mNotice.getTitle() != null ? mNotice.getTitle() : "No name");
         mDescriptionView.setText(mNotice.getDescription() != null ? mNotice.getDescription() : "No description");
 
         ViewGroup details = (ViewGroup) findViewById(R.id.details_layout);

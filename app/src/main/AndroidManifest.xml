@@ -9,6 +9,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -17,6 +21,12 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <permission
+        android:name="it.polito.mad.polilife.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="it.polito.mad.polilife.permission.C2D_MESSAGE" />
 
     <application
         android:name=".PoliLifeApp"
@@ -73,6 +83,33 @@
         <activity android:name=".noticeboard.NoticeDetailsActivity" >
         </activity>
         <activity android:name=".noticeboard.BookSearchActivity" >
+        </activity>
+        <activity android:name=".placement.PositionDetailsActivity" >
+        </activity>
+
+        <service android:name="com.parse.PushService" />
+
+        <receiver
+            android:name=".chat.ParsePushBroadcastReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.parse.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="it.polito.mad.polilife" />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".chat.MessagingActivity" >
         </activity>
     </application>
 

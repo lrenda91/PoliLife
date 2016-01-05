@@ -2,7 +2,9 @@ package it.polito.mad.polilife.profile;
 
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -21,151 +23,102 @@ import java.util.Map;
 
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.db.classes.Student;
+import it.polito.mad.polilife.db.classes.StudentInfo;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment {
 
-    private Student user = (Student) ParseUser.getCurrentUser();
+    private Student mUser;
+    private StudentInfo mInfo;
+
+    private ViewGroup contactsLayout, infoLayout;
+    private GridView skillsGrid;
 
     public static ProfileFragment newInstance(){
         return new ProfileFragment();
     }
 
-    private FrameLayout headerStudent;
-    //private OnScrollListener mListener;
-
     public ProfileFragment() {
+        ParseUser user = ParseUser.getCurrentUser();
+        assert user != null &&
+                user instanceof Student &&
+                ((Student) user).getStudentInfo() != null;
+        mUser = (Student) user;
+        mInfo = mUser.getStudentInfo();
     }
 
-    //Student contacts
-    private int[] contactsIcons = {R.drawable.ic_mail, R.drawable.ic_call_grey600_24dp};
-    private String[] contactsTypes = {"email", "phone"};
-
-    //Student Info
-    private String[] itemPersonalInfoStudent = {"DateOfBirth", "Gender", "Nationality", "Country", "City"
-            , "Address"};
-    private String[] infoTypes = {"dateOfBirth", "gender", "nationality", "country", "city"
-            , "address"};
-    private ArrayList<String> skills = new ArrayList<>();
-
-    private Map<String, String> contactsMap, infoMap;
-
-    //@Override
-    public void updateContent() {
-        Student student = user;
-        contactsMap = new HashMap<>();
-        contactsMap.put("name", student.getFirstName()+ " "+ student.getLastName());
-        contactsMap.put("email", ParseUser.getCurrentUser().getUsername());
-        contactsMap.put("phone", student.getContactPhone());
-
-        infoMap = new HashMap<>();
-        Date birthDate = student.getBirthDate();
-        if (birthDate != null){
-            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-            infoMap.put("dateOfBirth", df.format(student.getBirthDate()));
-        }
-        else {
-            infoMap.put("dateOfBirth", "Not available");
-        }
-
-        //infoMap.put("gender", student.getGender());
-        //infoMap.put("nationality", student.getNationality());
-        infoMap.put("country", student.getCountry());
-        infoMap.put("city", student.getCity());
-        infoMap.put("address", student.getAddress());
-
-
-        List<String> skillssList = student.getStudentInfo().getSkills();
-        if(skillssList!=null){
-            skills = new ArrayList<>(skillssList);
-        }else{
-            skills= new ArrayList<>();
-        }
-
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        updateContent();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        headerStudent = (FrameLayout) view.findViewById(R.id.headerStudent);
-        //listener for the scrolling effect
-        final ScrollView scrollView = (ScrollView) view.findViewById(R.id.scrollViewStudent);
-        scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                int scrollX = scrollView.getScrollX(); //for horizontalScrollView
-                int scrollY = scrollView.getScrollY(); //for verticalScrollView
-/*
-                if (mListener != null) {
-                    abbassaHeader(scrollY);
-                    mListener.onScrolled(scrollX, scrollY);
-                }*/
-
-            }
-        });
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        contactsLayout = (ViewGroup) view.findViewById(R.id.contactsStudentLayout);
+        infoLayout = (ViewGroup) view.findViewById(R.id.infoStudentLayout);
+        skillsGrid = (GridView) view.findViewById(R.id.skills);
     }
-
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        Resources res = getActivity().getResources();
+        DateFormat df = new SimpleDateFormat(res.getString(R.string.date_format));
 
-        Activity activity = getActivity();
-        if (activity instanceof AppCompatActivity)
-            ((AppCompatActivity) activity).getSupportActionBar().setTitle(contactsMap.get("name"));
+        //adding contacts info
+        String phone = mUser.getContactPhone() != null ?
+                mUser.getContactPhone() : res.getString(R.string.no_phone);
+        String mail = mUser.getEmail() != null ?
+                mUser.getEmail() : res.getString(R.string.no_mail);
+        View phoneView = inflater.inflate(R.layout.layout_list_item_edtable, null, false);
+        ((TextView) phoneView.findViewById(R.id.item_text)).setText(phone);
+        ((EditText) phoneView.findViewById(R.id.item_editText)).setText(phone);
+        View mailView = inflater.inflate(R.layout.layout_list_item_edtable, null, false);
+        ((TextView) mailView.findViewById(R.id.item_text)).setText(mail);
+        ((EditText) mailView.findViewById(R.id.item_editText)).setText(mail);
+        contactsLayout.addView(phoneView);
+        contactsLayout.addView(mailView);
 
-        LinearLayout contactsLayout = (LinearLayout) getActivity().findViewById(R.id.contactsStudentLayout);
-        View infoItem = null;
-        for (int i = 0; i < contactsTypes.length; i++) {
-            infoItem = getActivity().getLayoutInflater().inflate(R.layout.layout_list_item_edtable, null);
-            contactsLayout.addView(infoItem);
+        //adding basic info
+        String name = mUser.getFirstName() != null ?
+                mUser.getFirstName() : res.getString(R.string.no_name);
+        String surname = mUser.getLastName() != null ?
+                mUser.getLastName() : "" ;
+        String complete = name + " " + surname;
+        View completeNameView = inflater.inflate(R.layout.layout_list_item_edtable, null, false);
+        ((TextView) completeNameView.findViewById(R.id.item_text)).setText(complete);
+        ((EditText) completeNameView.findViewById(R.id.item_editText)).setText(complete);
+        String dob = mUser.getBirthDate() != null ?
+                df.format(mUser.getBirthDate()) : res.getString(R.string.no_dob);
+        View dobView = inflater.inflate(R.layout.layout_list_item_edtable, null, false);
+        ((TextView) dobView.findViewById(R.id.item_text)).setText(dob);
+        ((EditText) dobView.findViewById(R.id.item_editText)).setText(dob);
+        String location =
+                mUser.getAddress() != null ? mUser.getAddress() : res.getString(R.string.no_address)
+                + ", " +
+                mUser.getCity() != null ? mUser.getCity() : res.getString(R.string.no_city)
+                + ", " +
+                mUser.getCountry() != null ? mUser.getCountry() : res.getString(R.string.no_country);
+        View locationView = inflater.inflate(R.layout.layout_list_item_edtable, null, false);
+        ((TextView) locationView.findViewById(R.id.item_text)).setText(location);
+        ((EditText) locationView.findViewById(R.id.item_editText)).setText(location);
+        String aboutMe = mUser.getAbout() != null ? mUser.getAbout() : "";
+        View aboutView = inflater.inflate(R.layout.layout_list_item_edtable, null, false);
+        ((TextView) aboutView.findViewById(R.id.item_text)).setText(aboutMe);
+        ((EditText) aboutView.findViewById(R.id.item_editText)).setText(aboutMe);
+        infoLayout.addView(completeNameView);
+        infoLayout.addView(dobView);
+        infoLayout.addView(locationView);
+        infoLayout.addView(aboutView);
 
-            ImageView icon = (ImageView) infoItem.findViewById(R.id.item_icon);
-            icon.setImageDrawable(getActivity().getResources().getDrawable(contactsIcons[i]));
-            TextView text = (TextView) infoItem.findViewById(R.id.item_text);
-            text.setText(contactsMap.get(contactsTypes[i]));
-        }
-
-        LinearLayout personalInfoLayout = (LinearLayout) getActivity().findViewById(R.id.infoStudentLayout);
-
-        for (int i = 0; i < infoTypes.length; i++) {
-            infoItem = getActivity().getLayoutInflater().inflate(R.layout.item_personalinfo_student, null);
-            personalInfoLayout.addView(infoItem);
-
-            TextView text = (TextView) infoItem.findViewById(R.id.itemPersonaInfoStudent);
-            text.setText((itemPersonalInfoStudent[i]));
-
-            TextView textContent = (TextView) infoItem.findViewById(R.id.itemPersonaInfoStudentContent);
-            textContent.setText(infoMap.get(infoTypes[i]));
-        }
-
-        if(!skills.isEmpty()){
-            //Fill fields of work company
-            TextView textSkills = (TextView) getActivity().findViewById(R.id.skills);
-            for (int k = 0; k < skills.size(); k++) {
-                textSkills.append(skills.get(k));
-                if(k < skills.size()-1){
-                    textSkills.append(" - ");
-                }
-            }
-        }
-    }
-
-    private void abbassaHeader(int dy) {
-        headerStudent.setTranslationY(dy / 2);
+        List<String> skills = mUser.getStudentInfo().getSkills() != null ?
+                mUser.getStudentInfo().getSkills() : new ArrayList<String>();
+        skillsGrid.setAdapter(new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, skills));
     }
 
 }

@@ -247,5 +247,20 @@
     <string name="no_title">No title</string>
     <string name="no_location">No location</string>
     <string name="no_available_from">No start date</string>
+    <string name="no_phone">No phone number</string>
+    <string name="no_mail">No e-mail</string>
+    <string name="no_name">No name</string>
+    <string name="no_dob">No date of birth</string>
+    <string name="no_address">No address</string>
+    <string name="no_city">No city</string>
+    <string name="no_country">No country</string>
+    <string name="no_start_date">No start date</string>
+    <string name="no_about">No details</string>
+
+    <string name="offers">Browse offers</string>
+    <string name="candidatures">My candidatures</string>
+    <string name="cvs">My CVs</string>
+
+    <string name="date_format">dd/MM/yyyy</string>
 
 </resources>

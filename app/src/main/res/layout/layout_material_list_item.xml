@@ -9,7 +9,6 @@
         android:id="@+id/rowIcon"
         android:layout_width="56dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_cast_disabled_light"
         android:layout_gravity="center_vertical" />
 
     <TextView
@@ -18,7 +17,6 @@
         android:textSize="15dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:text="gfdfhdfgdfadgffdgegdefgd"
         android:gravity="center" />
 
 </LinearLayout>

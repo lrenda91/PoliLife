@@ -66,7 +66,7 @@ public class NoticeBoardActivity extends AppCompatActivity
         mWait = (ProgressBar) findViewById(R.id.wait);
         mWait.setVisibility(View.VISIBLE);
 
-        Notice.FilterData filter = new Notice.FilterData();
+        Notice.Filter filter = new Notice.Filter();
         if (mNoticesType.equals(HOME_TYPE)) filter.homeType();
         else if (mNoticesType.equals(BOOK_TYPE)) filter.bookType();
 
@@ -115,7 +115,7 @@ public class NoticeBoardActivity extends AppCompatActivity
             switch(resultCode){
                 case Activity.RESULT_OK:
                     boolean fromLocalDataStore = !Utility.networkIsUp(this);
-                    Notice.FilterData searchParams = (Notice.FilterData) data.getSerializableExtra("params");
+                    Notice.Filter searchParams = (Notice.Filter) data.getSerializableExtra("params");
                     PoliLifeDB.advancedNoticeFilter(searchParams, fromLocalDataStore, this);
                     break;
                 case Activity.RESULT_CANCELED:

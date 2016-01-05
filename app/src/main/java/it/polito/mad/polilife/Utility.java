@@ -43,19 +43,10 @@ public class Utility {
                 context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         NetworkInfo mobileInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        return wifiInfo.isConnected() || mobileInfo.isConnected();
+        return (wifiInfo != null && wifiInfo.isConnectedOrConnecting()) ||
+                (mobileInfo != null && mobileInfo.isConnectedOrConnecting());
     }
 
-    public static void slide_down(Context ctx, View v){
-        Animation a = AnimationUtils.loadAnimation(ctx, R.anim.slide_down);
-        if(a != null){
-            a.reset();
-            if(v != null){
-                v.clearAnimation();
-                v.startAnimation(a);
-            }
-        }
-    }
 
     public static LectureLayout getView(Context context, Lecture l) {
         LectureLayout ll = new LectureLayout(context, l,
@@ -76,17 +67,6 @@ public class Utility {
         params.topMargin = topMargin_px;
         ll.setLayoutParams(params);
         return ll;
-    }
-
-    public static void slide_up(Context ctx, View v){
-        Animation a = AnimationUtils.loadAnimation(ctx, R.anim.slide_up);
-        if(a != null){
-            a.reset();
-            if(v != null){
-                v.clearAnimation();
-                v.startAnimation(a);
-            }
-        }
     }
 
     public static Bitmap getBitmap(byte[] rawData){

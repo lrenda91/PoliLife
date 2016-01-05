@@ -75,7 +75,7 @@ public class DBCallbacks {
     }
 
     public interface NewGroupCallback {
-        void onNewGroupCreated(Group group);
+        void onNewGroupCreated(ChatChannel group);
         void onError(Exception exception);
     }
 

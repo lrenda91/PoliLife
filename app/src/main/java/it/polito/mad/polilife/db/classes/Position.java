@@ -2,7 +2,9 @@ package it.polito.mad.polilife.db.classes;
 
 import com.parse.*;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @ParseClassName("Position")
@@ -11,11 +13,11 @@ public class Position extends ParseObject {
 
 
     /* Enum values */
-    public enum TypeOfContract {
+    public enum TypeOfJob {
         FULL_TIME, PART_TIME, CONTRACT, INTERNSHIP, TEMPORARY, OTHER;
     }
-    public enum TypeOfJob {
-
+    public enum TypeOfDegree {
+        BACHELOR, MASTER
     }
 
 
@@ -24,21 +26,25 @@ public class Position extends ParseObject {
     public static final String ABOUT = "about";
     public static final String COMPANY = "company";
     public static final String APPLIEDSTUS = "applied";
-    public static final String TYPEOFJOB = "typeOfJob";
-    public static final String TYPEOFDEGREE = "typeOfDegree";
-    public static final String TYPEOFCONTRACT = "typeOfContract";
+    public static final String TYPE_OF_JOB = "typeOfJob";
+    public static final String TYPE_OF_DEGREE = "typeOfDegree";
     public static final String CITY = "city";
     public static final String COUNTRY = "country";
     public static final String CLOGO = "clogo";
     public static final String START_DATE = "availableFrom";
 
-    public String getTypeOfContract(){
-        return ((String) get(TYPEOFCONTRACT));
+    public static class Filter implements Serializable {
+        public Filter(){
+        }
+        public String name, typeOfJob, typeOfDegree, city;
+        public Date startDate;
+        public int daysAgo = -1;
+        public Filter name(String value){ name = value; return this; }
+        public Filter typeOfJob(String value){ typeOfJob = value; return this; }
+        public Filter startDate(Date value){ startDate = value; return this; }
+        public Filter typeOfDegree(String value){ typeOfDegree = value; return this; }
+        public Filter city(String value){ city = value; return this; }
     }
-    public void setTypeOfContract(String typeOfContract){
-        put(TYPEOFCONTRACT, typeOfContract);
-    }
-
 
     public Company getParentCompany(){
         return ((Company) get(COMPANY));
@@ -89,18 +95,18 @@ public class Position extends ParseObject {
         put(NAME, name);
     }
     public String getTypeOfDegree(){
-        return (String) get(TYPEOFDEGREE);
+        return (String) get(TYPE_OF_DEGREE);
     }
 
     public void setTypeOfDegree(String typeOfDegree){
-        put(TYPEOFDEGREE, typeOfDegree);
+        put(TYPE_OF_DEGREE, typeOfDegree);
     }
     public String getTypeOfJob(){
-        return (String) get(TYPEOFJOB);
+        return (String) get(TYPE_OF_JOB);
     }
 
     public void setTypeOfJob(String typeOfJob){
-        put(TYPEOFJOB, typeOfJob);
+        put(TYPE_OF_JOB, typeOfJob);
     }
 
 
