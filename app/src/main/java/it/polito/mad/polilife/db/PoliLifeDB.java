@@ -455,33 +455,19 @@ public class PoliLifeDB {
         }
     }
 
-    public static void getConversations(final MultipleFetchCallback<ChatChannel> listener){
-        ParseInstallation.getCurrentInstallation().fetchInBackground(new GetCallback<ParseObject>() {
+    public static void getUsersByName(String name, final MultipleFetchCallback<ParseUser> listener){
+        ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
+        query.whereContains("username", name);
+        query.findInBackground(new FindCallback<ParseUser>() {
             @Override
-            public void done(ParseObject parseObject, ParseException e) {
-                if (e != null) {
+            public void done(List<ParseUser> list, ParseException e) {
+                if (e != null){
                     if (listener != null) listener.onFetchError(e);
                     return;
                 }
-                List<String> channels = (List<String>) parseObject.get("channels");
-                List<ParseQuery<ChatChannel>> queries = new LinkedList<>();
-                for (String s : channels) {
-                    if (s.isEmpty()) continue;
-                    queries.add(ParseQuery.getQuery(ChatChannel.class).whereEqualTo("objectId", s));
-                }
-                ParseQuery.or(queries).findInBackground(new FindCallback<ChatChannel>() {
-                    @Override
-                    public void done(List<ChatChannel> list, ParseException e) {
-                        if (e != null) {
-                            if (listener != null) listener.onFetchError(e);
-                            return;
-                        }
-                        if (listener != null) listener.onFetchSuccess(list);
-                    }
-                });
+                if (listener != null) listener.onFetchSuccess(list);
             }
         });
-
     }
 
 }

@@ -109,7 +109,11 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".chat.MessagingActivity" >
+        <activity
+            android:name=".chat.MessagingActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        <activity android:name=".chat.CreateChatActivity" >
         </activity>
     </application>
 

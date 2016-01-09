@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@drawable/ic_cast_light"
         app:layout_anchor="@id/my_notices_list"
         app:layout_anchorGravity="bottom|right|end"/>
 

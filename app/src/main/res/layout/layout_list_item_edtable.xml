@@ -14,8 +14,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_web_grey600_24dp"/>
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"/>
 
         <ViewSwitcher
             android:id="@+id/item_viewSwitcher"

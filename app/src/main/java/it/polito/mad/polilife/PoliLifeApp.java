@@ -50,7 +50,6 @@ public class PoliLifeApp extends Application {
                 Classroom.class,
                 Student.class,
                 Notice.class,
-                ChatChannel.class,
                 Message.class);
     }
 }

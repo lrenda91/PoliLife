@@ -1,6 +1,7 @@
 package it.polito.mad.polilife.chat;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,13 +66,14 @@ public class ChatMessagesBaseAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ChatMessage msg = getItem(position);
         if (convertView == null) {
-            int layoutID = msg.getUsername().equals(mCurrentUsername) ?
+            int layoutID = msg.username.equals(mCurrentUsername) ?
                     R.layout.layout_message_right :
                     R.layout.layout_message_left;
             convertView = LayoutInflater.from(mContext).inflate(layoutID, parent, false);
+            Log.d("PUBNUB", "Dest: "+msg.username+" , layout="+
+                    ((layoutID==R.layout.layout_message_right) ? "right" : "left"));
         }
-                mContext.getString(R.string.no_available_from);
-        ((TextView)convertView.findViewById(R.id.msg_text)).setText(msg.getMessage());
+        ((TextView)convertView.findViewById(R.id.msg_text)).setText(msg.message);
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

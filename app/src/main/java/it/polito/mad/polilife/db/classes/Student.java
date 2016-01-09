@@ -83,4 +83,8 @@ public class Student extends ParseUser {
     public void addChannel(String value){ addUnique(CHANNELS, value); }
     public void removeChannel(Collection<String> values){ removeAll(CHANNELS, values); }
 
+    @Override
+    public String toString() {
+        return getUsername();
+    }
 }

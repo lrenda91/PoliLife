@@ -162,7 +162,7 @@ public class NoticeDetailsActivity extends AppCompatActivity
         int[] icons = {
                 R.drawable.ic_user,
                 R.drawable.ic_mail,
-                R.drawable.ic_call_grey600_24dp
+                android.R.drawable.ic_menu_call
         };
         final ParseUser owner = mNotice.getOwner();
         final String fname = owner.getString(Student.FIRST_NAME);

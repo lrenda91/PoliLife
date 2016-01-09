@@ -52,6 +52,8 @@
     <string name="comp_positions">My positions</string>
     <string name="search_students">Search for students</string>
 
+    <string name="group_name_empty">Group name is empty</string>
+    <string name="group_name_hint">Type group name here</string>
 
     <string name="username_text">Username</string>
     <string name="email_text">Email</string>

@@ -98,7 +98,7 @@ public class ClassroomActivity extends AppCompatActivity
             //hides the keyboard
             imm.hideSoftInputFromWindow(edtSeach.getWindowToken(), 0);
             //add the search icon in the action bar
-            mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_action_search));
+            mSearchAction.setIcon(getResources().getDrawable(android.R.drawable.ic_menu_search));
             isSearchOpened = false;
         }
         else {
@@ -132,7 +132,7 @@ public class ClassroomActivity extends AppCompatActivity
             imm.showSoftInput(edtSeach, InputMethodManager.SHOW_IMPLICIT);
 
             //add the close icon
-            mSearchAction.setIcon(getResources().getDrawable(R.drawable.ic_clear_grey600_24dp));
+            mSearchAction.setIcon(getResources().getDrawable(android.R.drawable.ic_menu_close_clear_cancel));
             isSearchOpened = true;
         }
     }

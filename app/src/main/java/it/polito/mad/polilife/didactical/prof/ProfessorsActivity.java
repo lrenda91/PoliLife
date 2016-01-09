@@ -91,7 +91,7 @@ public class ProfessorsActivity extends AppCompatActivity
                         item.getOffice() + '\n' + item.getOfficeHours());
                 final View phone = convertView.findViewById(R.id.professor_phone);
                 final View email = convertView.findViewById(R.id.professor_email);
-                ((ImageView) phone.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_call_grey600_24dp);
+                ((ImageView) phone.findViewById(R.id.rowIcon)).setImageResource(android.R.drawable.ic_menu_call);
                 ((TextView) phone.findViewById(R.id.rowText)).setText(item.getPhone());
                 ((ImageView) email.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
                 ((TextView) email.findViewById(R.id.rowText)).setText(item.getEmail());

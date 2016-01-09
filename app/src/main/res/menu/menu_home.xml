@@ -10,15 +10,12 @@
         <menu>
             <item android:id="@+id/timetable_menu"
                 android:title="i1"
-                android:icon="@drawable/ic_timetable"
                 app:showAsAction="ifRoom"/>
             <item android:id="@+id/classroom_menu"
                 android:title="i2"
-                android:icon="@drawable/ic_classroom"
                 app:showAsAction="ifRoom"/>
             <item android:id="@+id/professor_menu"
                 android:title="i3"
-                android:icon="@drawable/ic_professor"
                 app:showAsAction="ifRoom"/>
         </menu>
 

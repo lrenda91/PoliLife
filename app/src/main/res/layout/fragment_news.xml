@@ -11,21 +11,18 @@
         android:weightSum="3">
         <ImageButton
             android:id="@+id/timetable_select"
-            android:background="@drawable/ic_timetable"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent" />
 
         <ImageButton
             android:id="@+id/classrooms_select"
-            android:background="@drawable/ic_classroom"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent" />
 
         <ImageButton
             android:id="@+id/teachers_select"
-            android:background="@drawable/ic_professor"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent" />

@@ -8,6 +8,7 @@ import com.parse.ParseUser;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
+import com.pubnub.api.PubnubException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import it.polito.mad.polilife.db.classes.Student;
 
 /**
  * Created by luigi on 04/01/16.
@@ -32,17 +32,14 @@ public class PubnubChatManager {
 
     private static final String PUBLIC_CHANNEL = "public";
 
-    private Student mUser;
     private Pubnub mPubnub;
     private ChatListener mListener;
-    private Handler mMainhandler;
+    private Handler mMainHandler;
 
-    public PubnubChatManager(){
-        mMainhandler = new Handler(Looper.getMainLooper());
-        mUser = (Student) ParseUser.getCurrentUser();
+    public PubnubChatManager(String UUID){
+        mMainHandler = new Handler(Looper.getMainLooper());
         mPubnub = new Pubnub(PUBLISH_KEY, SUBSCRIBE_KEY);
-        mPubnub.setUUID(mUser.getUsername());
-        init();
+        mPubnub.setUUID(UUID);
     }
 
     public String getUUID(){
@@ -53,13 +50,11 @@ public class PubnubChatManager {
         mListener = listener;
     }
 
-    public void init(){
+    public void init(List<String> channels){
         try {
-            List<String> channels = mUser.getChannels() != null ?
-                    mUser.getChannels() : new ArrayList<String>();
-            channels.add(PUBLIC_CHANNEL);
-            String[] ss = new String[channels.size()];
-            for (int i=0;i<ss.length;i++) ss[i] = channels.get(i);
+            String[] ss = new String[channels.size()+1];
+            for (int i=0;i<channels.size();i++) ss[i] = channels.get(i);
+            ss[ss.length-1] = PUBLIC_CHANNEL;
             mPubnub.subscribe(ss, mSubscribeCallback);
             //mPubnub.presence(this.mPrivateChannel, mPresenceCallback);
         } catch (Exception e){ e.printStackTrace(); }
@@ -80,6 +75,7 @@ public class PubnubChatManager {
         }
         catch(Exception e){
             e.printStackTrace();
+            if (mListener != null) mListener.onError(e);
         }
     }
 
@@ -107,7 +103,14 @@ public class PubnubChatManager {
     }
 
     public void sendMessage(String channel, String content){
-        mPubnub.publish(channel, content, mPublishCallback);
+        ChatMessage msg = new ChatMessage(mPubnub.getUUID(), content, System.currentTimeMillis());
+        try{
+            mPubnub.publish(channel, msg.toJson(), mPublishCallback);
+        }
+        catch(JSONException e){
+            Log.e(TAG, "Error in sendMessage(): "+e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 
@@ -141,54 +144,75 @@ public class PubnubChatManager {
                             }
                         }
                     }
-                }
-                catch(Exception e){
-                    e.printStackTrace();
-                    Log.e(TAG, "Error in subscribe, "+e.getClass().getSimpleName()+" : "+e.getMessage());
-                }
-            }
-            else if (message instanceof String){
-                final ChatMessage msg = new ChatMessage(mPubnub.getUUID(), (String)message, System.currentTimeMillis());
-                mMainhandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mListener != null) mListener.onTextMessageReceived(channel, msg);
+                    else if (jsonObject.has("ts")){
+                        final ChatMessage msg = ChatMessage.fromJSON(jsonObject);
+                        mMainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mListener != null)
+                                    mListener.onTextMessageReceived(channel, msg);
+                            }
+                        });
                     }
-                });
+                }
+                catch(JSONException e){
+                    e.printStackTrace();
+                    Log.e(TAG, "Error on jsons in subscribe, "+e.getClass().getSimpleName()+" : "+e.getMessage());
+                }
+                catch(PubnubException e){
+                    e.printStackTrace();
+                    Log.e(TAG, "Error on pubnub in subscribe, "+e.getClass().getSimpleName()+" : "+e.getMessage());
+                }
             }
         }
         @Override
         public void connectCallback(final String channel, Object message) {
             Log.d(TAG, "Subscription on channel '" + channel + "' OK! " + message.toString());
-            mMainhandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mListener != null) mListener.onSubscribedToChannel(channel);
-                }
-            });
             if (!channel.equals(PUBLIC_CHANNEL)) {
-                mUser.addChannel(channel);
-                mUser.saveInBackground();
                 hereNow(channel);
+                mMainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mListener != null) mListener.onSubscribedToChannel(channel);
+                    }
+                });
             }
         }
         @Override
         public void errorCallback(String s, PubnubError pubnubError) {
             Log.e(TAG, "Error in subscribe(): " + pubnubError.toString());
         }
+
+        @Override
+        public void reconnectCallback(String s, Object o) {
+            super.reconnectCallback(s, o);
+        }
+
+        @Override
+        public void disconnectCallback(String s, Object o) {
+            super.disconnectCallback(s, o);
+        }
     };
 
     private Callback mPublishCallback = new Callback() {
         @Override
         public void successCallback(final String s, Object o) {
-            Log.d(TAG, "Publish success: " + o);
-            final ChatMessage msg = new ChatMessage(mPubnub.getUUID(), o.toString(), System.currentTimeMillis());
-            mMainhandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mListener != null) mListener.onTextMessageSent(s, msg);
+            Log.d(TAG, "Publish success: " + o.getClass().getSimpleName() + "->" + o.toString());
+            if (o instanceof JSONObject){
+                JSONObject jsonObject = (JSONObject) o;
+                try{
+                    final ChatMessage msg = ChatMessage.fromJSON(jsonObject);
+                    mMainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mListener != null) mListener.onTextMessageSent(s, msg);
+                        }
+                    });
                 }
-            });
+                catch(JSONException e){
+
+                }
+            }
         }
 
         @Override
@@ -201,32 +225,32 @@ public class PubnubChatManager {
         @Override
         public void successCallback(final String channel, final Object message) {
             Log.d(TAG, "History success: " + message.toString());
-            try {
-                JSONArray json = (JSONArray) message;
-                final JSONArray messages = json.getJSONArray(0);
+            if (message instanceof JSONArray){
+                JSONArray historyArray = (JSONArray) message;
+                JSONArray messages = null;
+                try {
+                    messages = historyArray.getJSONArray(0);
+                }
+                catch(JSONException e){
+                    return;
+                }
                 final List<ChatMessage> chatMsgs = new LinkedList<>();
-                for (int i = 0; i < messages.length(); i++) {
-                    try {/*
-                        if (!messages.getJSONObject(i).has("data")) continue;
-                        JSONObject jsonMsg = messages.getJSONObject(i).getJSONObject("data");
-                        String name = jsonMsg.getString("chatUser");
-                        String msg = jsonMsg.getString("chatMsg");
-                        long time = jsonMsg.getLong("chatTime");*/
-                        String msg = messages.getString(i);
-                        ChatMessage chatMsg = new ChatMessage(mPubnub.getUUID(), msg, System.currentTimeMillis());
-                        chatMsgs.add(chatMsg);
-                    } catch (JSONException e) { // Handle errors silently
-                        e.printStackTrace();
+                for (int i=0; i<messages.length(); i++){
+                    try{
+                        JSONObject jsonMessage = messages.getJSONObject(i);
+                        chatMsgs.add(ChatMessage.fromJSON(jsonMessage));
+                    }
+                    catch(JSONException e){
+                        Log.w(TAG, "History message #"+i+" is not a message json");
+                        continue;
                     }
                 }
-                mMainhandler.post(new Runnable() {
+                mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         if (mListener != null) mListener.onHistory(channel, chatMsgs);
                     }
                 });
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
 
@@ -284,11 +308,12 @@ public class PubnubChatManager {
         return UUID1 + "-" + UUID2;
     }
 
-    public interface ChatListener {
-        void onTextMessageReceived(String channel, ChatMessage message);
-        void onTextMessageSent(String channel, ChatMessage message);
-        void onSubscribedToChannel(String channel);
-        void onHistory(String channel, List<ChatMessage> messages);
+    public static abstract class ChatListener {
+        void onTextMessageReceived(String channel, ChatMessage message){}
+        void onTextMessageSent(String channel, ChatMessage message){}
+        void onSubscribedToChannel(String channel){}
+        void onHistory(String channel, List<ChatMessage> messages){}
+        void onError(Exception e){}
     }
 
 }

@@ -13,7 +13,6 @@
 
     <ImageView
         android:id="@+id/previous_page_arrow"
-        android:src="@drawable/ic_cast_disabled_light"
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:foregroundGravity="center"
@@ -22,7 +21,6 @@
 
     <ImageView
         android:id="@+id/next_page_arrow"
-        android:src="@drawable/ic_cast_disabled_light"
         android:layout_width="@android:dimen/app_icon_size"
         android:layout_height="@android:dimen/app_icon_size"
         android:foregroundGravity="center"

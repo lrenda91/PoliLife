@@ -74,9 +74,4 @@ public class DBCallbacks {
         void onClassroomSearchError(Exception exception);
     }
 
-    public interface NewGroupCallback {
-        void onNewGroupCreated(ChatChannel group);
-        void onError(Exception exception);
-    }
-
 }
