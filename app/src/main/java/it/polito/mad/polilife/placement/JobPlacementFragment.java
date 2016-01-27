@@ -4,32 +4,22 @@ package it.polito.mad.polilife.placement;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ViewFlipper;
+import android.widget.Button;
 
-import java.util.List;
-
-import it.polito.mad.polilife.MainActivity;
 import it.polito.mad.polilife.R;
-import it.polito.mad.polilife.Utility;
-import it.polito.mad.polilife.db.DBCallbacks;
-import it.polito.mad.polilife.db.PoliLifeDB;
-import it.polito.mad.polilife.db.classes.Position;
 
-public class JobPlacementFragment extends Fragment
-        implements DBCallbacks.MultipleFetchCallback<Position> {
+public class JobPlacementFragment extends Fragment {
 
-    //private ViewPager mViewPager;
-    private ListView mOffersListView, mCandidaturesListView;
-    private PositionsBaseAdapter mOffersAdapter;
+    public interface Listener {
+        void onSelectAppliedJobs();
+        void onSelectSavedJobs();
+        void onProfileSelected();
+    }
+
+    private Button mSearchBtn, mSavedBtn, mAppliedBtn;
 
     public JobPlacementFragment() {
     }
@@ -55,81 +45,44 @@ public class JobPlacementFragment extends Fragment
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mOffersAdapter = new PositionsBaseAdapter(getActivity());
-        mOffersAdapter.setOnClickListener(new PositionsBaseAdapter.OnPositionClickListener() {
+        Button profileButton = (Button) view.findViewById(R.id.profile_button);
+        Button searchButton = (Button) view.findViewById(R.id.search_jobs);
+        Button appliedButton = (Button) view.findViewById(R.id.applied_button);
+        Button savedButton = (Button) view.findViewById(R.id.saved_jobs_button);
+
+        profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPositionItemClick(View itemView, int position, Position item) {
-                Intent intent = new Intent(getActivity(), PositionDetailsActivity.class);
-                String id = item.getObjectId();
-                intent.putExtra("id", id);
-                startActivity(intent);
+            public void onClick(View v) {
+                if (getActivity() instanceof Listener){
+                    ((Listener) getActivity()).onProfileSelected();
+                }
             }
         });
 
-        mOffersListView = (ListView) view.findViewById(R.id.offers_list);
-        //mOffersListView = new ListView(getActivity());
-        //mCandidaturesListView = new ListView(getActivity());
-        //mViewPager = (ViewPager) view.findViewById(R.id.pager);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        mOffersListView.setAdapter(mOffersAdapter);
-
-
-        final View[] pages = {
-                mOffersListView,
-                mCandidaturesListView
-        };
-        final String[] titles = {
-                "Offers",
-                "Candidatures"
-        };
-
-        /*mViewPager.setAdapter(new PagerAdapter() {
+        searchButton.setOnClickListener(new View.OnClickListener(){
             @Override
-            public int getCount() {
-                return pages.length;
-            }
-
-            @Override
-            public boolean isViewFromObject(View view, Object object) {
-                return object instanceof View;
-            }
-
-            @Override
-            public Object instantiateItem(ViewGroup container, int position) {
-                View v = pages[position];
-                container.addView(v);
-                return v;
-            }
-
-            @Override
-            public void destroyItem(ViewGroup container, int position, Object object) {
-                container.removeView((View) object);
-            }
-
-            @Override
-            public CharSequence getPageTitle(int position) {
-                return titles[position];
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), JobsSearchActivity.class));
             }
         });
-        */
-        boolean fromLocalDataStore = !Utility.networkIsUp(getActivity());
-        PoliLifeDB.advancedPositionsFilter(null, fromLocalDataStore, this);
-    }
 
-    @Override
-    public void onFetchSuccess(List<Position> result) {
-        mOffersAdapter.setData(result);
-        mOffersAdapter.notifyDataSetChanged();
-    }
+        appliedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() instanceof Listener){
+                    ((Listener) getActivity()).onSelectAppliedJobs();
+                }
+            }
+        });
 
-    @Override
-    public void onFetchError(Exception exception) {
-        Toast.makeText(getActivity(), exception.getMessage(), Toast.LENGTH_LONG).show();
+        savedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() instanceof Listener){
+                    ((Listener) getActivity()).onSelectSavedJobs();
+                }
+            }
+        });
     }
 
 }

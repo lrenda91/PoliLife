@@ -14,10 +14,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <FrameLayout
+            <RelativeLayout
                 android:id="@+id/headerStudent"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/header_image_height"/>
+                android:layout_height="@dimen/header_image_height">
+                <ImageView
+                    android:id="@+id/profile_photo"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"/>
+            </RelativeLayout>
 
 
             <LinearLayout
@@ -43,11 +50,10 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/facebook_color"/>
 
-                <LinearLayout
-                    android:id="@+id/contactsStudentLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"/>
+                <include layout="@layout/layout_list_item_edtable"
+                    android:id="@+id/phone_item_editable" />
+                <include layout="@layout/layout_list_item_edtable"
+                    android:id="@+id/mail_item_editable" />
 
                 <TextView
                     android:id="@+id/infoStudentTextView"
@@ -66,6 +72,15 @@
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:layout_marginTop="10dp"
                     android:background="@color/facebook_color"/>
+
+                <include layout="@layout/layout_list_item_edtable"
+                    android:id="@+id/name_item_editable" />
+                <include layout="@layout/layout_list_item_edtable"
+                    android:id="@+id/dob_item_editable" />
+                <include layout="@layout/layout_list_item_edtable"
+                    android:id="@+id/location_item_editable" />
+                <include layout="@layout/layout_list_item_edtable"
+                    android:id="@+id/about_item_editable" />
 
                 <LinearLayout
                     android:id="@+id/infoStudentLayout"

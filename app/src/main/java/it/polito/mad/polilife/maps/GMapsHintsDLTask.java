@@ -21,7 +21,7 @@ import java.util.Locale;
 import it.polito.mad.polilife.R;
 
 /**
- * Created by luigi on 15/06/15.
+ * Created by luigi onSelectAppliedJobs 15/06/15.
  */
 
 public class GMapsHintsDLTask extends AsyncTask<String, Void, ArrayList<String>> {

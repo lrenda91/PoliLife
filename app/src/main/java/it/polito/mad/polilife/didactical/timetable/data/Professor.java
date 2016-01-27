@@ -3,7 +3,7 @@ package it.polito.mad.polilife.didactical.timetable.data;
 import java.io.Serializable;
 
 /**
- * Created by luigi on 03/12/15.
+ * Created by luigi onSelectAppliedJobs 03/12/15.
  */
 public class Professor implements Serializable {
 

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?><resources>
     
     <array name="student_drawer_icons">
-        <item>@android:drawable/ic_menu_manage</item>
-        <item>@android:drawable/ic_menu_manage</item>
-        <item>@android:drawable/ic_menu_manage</item>
-        <item>@android:drawable/ic_menu_manage</item>
-        <item>@android:drawable/ic_menu_manage</item>
-        <item>@android:drawable/ic_menu_manage</item>
+        <item>@drawable/ic_user</item>
+        <item>@drawable/ic_didactics</item>
+        <item>@drawable/ic_noticeboard</item>
+        <item>@drawable/ic_cast_light</item>
+        <item>@drawable/ic_chat</item>
+        <item>@drawable/ic_news</item>
     </array>  
     
     <string-array name="student_drawer_titles">

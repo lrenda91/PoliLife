@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 /**
  * Parcelable wrapper for a ParseFile, so its data can be forwarded through intents
- * Created by luigi on 09/06/15.
+ * Created by luigi onSelectAppliedJobs 09/06/15.
  */
 public class PFileData implements Parcelable, DBObjectBuilder<ParseFile> {
 

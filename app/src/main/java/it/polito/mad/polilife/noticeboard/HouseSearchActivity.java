@@ -71,7 +71,7 @@ public class HouseSearchActivity extends AppCompatActivity {
         tagsList.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
+                // Disallow the touch request for parent scroll onSelectAppliedJobs touch of child view
                 v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             }

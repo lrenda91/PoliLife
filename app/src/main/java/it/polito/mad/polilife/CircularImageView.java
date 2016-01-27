@@ -84,7 +84,7 @@ public class CircularImageView extends ImageView {
 			// The child can be as large as it wants up to the specified size.
 			result = specSize;
 		} else {
-			// The parent has not imposed any constraint on the child.
+			// The parent has not imposed any constraint onSelectAppliedJobs the child.
 			result = canvasSize;
 		}
 

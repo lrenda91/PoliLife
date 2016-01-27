@@ -1,10 +1,8 @@
 package it.polito.mad.polilife.news;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,12 +11,12 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
-import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 
-import com.parse.Parse;
 import com.parse.ParseObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,15 +25,12 @@ import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
+import it.polito.mad.polilife.db.classes.Job;
 import it.polito.mad.polilife.db.classes.Notice;
-import it.polito.mad.polilife.db.classes.Position;
-import it.polito.mad.polilife.didactical.prof.ProfessorsActivity;
-import it.polito.mad.polilife.didactical.rooms.ClassroomActivity;
-import it.polito.mad.polilife.didactical.timetable.TimetableActivity;
 import it.polito.mad.polilife.noticeboard.NoticeDetailsActivity;
 
 public class NewsFragment extends Fragment
-        implements DBCallbacks.MultipleFetchCallback<ParseObject> {
+        implements DBCallbacks.GetListCallback<ParseObject> {
 
     private HashMap<String, List<ParseObject>> map;
     private ExpandableListAdapter mAdapter;
@@ -70,7 +65,7 @@ public class NewsFragment extends Fragment
         ExpandableListView expandableListView = (ExpandableListView) view.findViewById(R.id.lvExp);
         mAdapter = new ExpandableListAdapter(getActivity(), map);
         expandableListView.setAdapter(mAdapter);
-
+        /*
         final Activity myActivity = getActivity();
         view.findViewById(R.id.timetable_select).setOnClickListener(new View.OnClickListener(){
             @Override
@@ -94,6 +89,7 @@ public class NewsFragment extends Fragment
                 myActivity.startActivity(new Intent(myActivity, ProfessorsActivity.class));
             }
         });
+        */
     }
 
     @Override
@@ -110,7 +106,7 @@ public class NewsFragment extends Fragment
         mWait.setVisibility(View.INVISIBLE);
         for (ParseObject obj : result){
             if (obj instanceof Notice) map.get(NOTICES_KEY).add(obj);
-            else if (obj instanceof Position) map.get(POSITIONS_KEY).add(obj);
+            else if (obj instanceof Job) map.get(POSITIONS_KEY).add(obj);
         }
         mAdapter.notifyDataSetChanged();
     }
@@ -147,6 +143,7 @@ public class NewsFragment extends Fragment
         public View getChildView(int groupPosition, final int childPosition,
                                  boolean isLastChild, View convertView, ViewGroup parent) {
             final Object child = getChild(groupPosition, childPosition);
+            DateFormat df = new SimpleDateFormat(_context.getString(R.string.date_format));
             if (child instanceof Notice){
                 if (convertView == null) {
                     convertView = LayoutInflater.from(_context).inflate(
@@ -156,7 +153,7 @@ public class NewsFragment extends Fragment
                 String title = n.getTitle() != null ? n.getTitle() : _context.getString(R.string.no_title);
                 String location = n.getLocationName() != null ? n.getLocationName() :
                         _context.getString(R.string.no_location);
-                String from = n.getAvailableFrom() != null ? n.getAvailableFrom().toString() :
+                String from = n.getAvailableFrom() != null ? df.format(n.getAvailableFrom()) :
                         _context.getString(R.string.no_available_from);
                 ((TextView)convertView.findViewById(R.id.offer_title)).setText(title);
                 ((TextView)convertView.findViewById(R.id.offer_price)).setText(n.getPrice()+"");
@@ -171,15 +168,19 @@ public class NewsFragment extends Fragment
                     }
                 });
             }
-            else if (child instanceof Position){
+            else if (child instanceof Job){
                 if (convertView == null) {
                     convertView = LayoutInflater.from(_context).inflate(
                             R.layout.layout_position_item, parent, false);
                 }
-                Position p = (Position) child;
-                ((TextView) convertView.findViewById(R.id.offer_title)).setText(p.getName());
-                ((TextView)convertView.findViewById(R.id.offer_location)).setText(p.getCity());
-                ((TextView)convertView.findViewById(R.id.offer_date)).setText(p.getStartDate().toString());
+                Job p = (Job) child;
+                String name = p.getName() != null ? p.getName() : _context.getString(R.string.no_name);
+                String city = p.getCity() != null ? p.getCity() : _context.getString(R.string.no_city);
+                String start = p.getStartDate() != null ? df.format(p.getStartDate()) :
+                        _context.getString(R.string.no_start_date);
+                ((TextView) convertView.findViewById(R.id.offer_title)).setText(name);
+                ((TextView)convertView.findViewById(R.id.offer_location)).setText(city);
+                ((TextView)convertView.findViewById(R.id.offer_date)).setText(start);
             }
             else{
                 throw new RuntimeException();

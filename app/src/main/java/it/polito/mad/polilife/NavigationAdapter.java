@@ -1,7 +1,7 @@
 package it.polito.mad.polilife;
 
 /**
- * Created by luigi on 04/05/15.
+ * Created by luigi onSelectAppliedJobs 04/05/15.
  */
 
 import android.graphics.Bitmap;
@@ -135,7 +135,7 @@ public class NavigationAdapter extends RecyclerView.Adapter<NavigationAdapter.Vi
         }
         else if (holder.Holderid == TYPE_FOOTER){
             holder.Name.setText(R.string.logout);
-            //holder.iconImageView.setImageResource(R.drawable.ic_action_logout);
+            holder.iconImageView.setImageResource(R.drawable.ic_logout);
         }
     }
 

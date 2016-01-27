@@ -11,7 +11,7 @@ import android.widget.AutoCompleteTextView;
 import java.util.List;
 
 /**
- * Created by luigi on 17/06/15.
+ * Created by luigi onSelectAppliedJobs 17/06/15.
  */
 public class GoogleMapsAddressTextView extends AutoCompleteTextView {
 

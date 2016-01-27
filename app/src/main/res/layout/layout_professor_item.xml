@@ -1,48 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/list_item_height"
+        android:layout_height="52dp"
         android:orientation="horizontal"
         android:padding="5dp"
-        android:weightSum="20">
+        android:weightSum="20" >
 
         <ImageView
             android:id="@+id/preferred_photo"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="4" />
+            android:layout_weight="4"
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="16"
             android:orientation="horizontal"
-            android:weightSum="14"
             android:paddingLeft="5dp" >
 
             <TextView
                 android:id="@+id/professor_name"
-                android:gravity="end"
+                android:gravity="right"
                 android:layout_width="match_parent"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_height="wrap_content"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/professor_office"
-                android:gravity="end"
+                android:gravity="right"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold" />
-
         </LinearLayout>
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/prof_details_layout"
@@ -50,7 +48,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone">
-
+        <TextView
+            android:id="@+id/professor_office_hours"
+            android:gravity="left"
+            android:layout_marginLeft="@dimen/list_item_icon_width"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/list_item_text_size" />
         <include layout="@layout/layout_material_list_item"
             android:id="@+id/professor_phone" />
 

@@ -37,8 +37,8 @@
 
 
     <string name="news">News</string>
-    <string name="search_positions">Search for positions</string>
-    <string name="savedPos">Favorite positions</string>
+    <string name="search_positions">Search for jobs</string>
+    <string name="savedPos">Favorite jobs</string>
     <string name="search_companies">Search for companies</string>
     <string name="savedComp">Favorite companies</string>
     <string name="profile">Profile</string>
@@ -49,11 +49,14 @@
     <string name="chat">Chat</string>
 
     <string name="fav_students">Favourite Students</string>
-    <string name="comp_positions">My positions</string>
+    <string name="comp_positions">My jobs</string>
     <string name="search_students">Search for students</string>
 
     <string name="group_name_empty">Group name is empty</string>
     <string name="group_name_hint">Type group name here</string>
+
+    <string name="job_contract_hint">Select type of contract</string>
+    <string name="job_degree_hint">Select level of study</string>
 
     <string name="username_text">Username</string>
     <string name="email_text">Email</string>
@@ -86,10 +89,8 @@
     </string-array>
 
     <string-array name="required_career_arrays">
-        <item>Required Career</item>
-        <item>Bachelor</item>
-        <item>Degree</item>
-        <item>Master</item>
+        <item>Bachelor degree</item>
+        <item>Master degree</item>
         <item>PhD</item>
     </string-array>
 
@@ -116,17 +117,14 @@
 
 
     <string-array name="types_of_contract">
-        <item>Select Contract</item>
         <item>FULL_TIME</item>
         <item>PART_TIME</item>
-        <item>CONTRACT</item>
         <item>INTERNSHIP</item>
         <item>TEMPORARY</item>
         <item>OTHER</item>
     </string-array>
 
     <string-array name="type_arrays">
-        <item>Select Position</item>
         <item>Course</item>
         <item>Media</item>
         <item>Sales</item>
@@ -231,12 +229,13 @@
     <string name="room">Classroom</string>
     <string name="menu">Context Menu</string>
     <string name="clear_text">Clear text</string>
-    <string name="details_title">Course details</string>
+    <string name="course_details_title">Course details</string>
+    <string name="room_details_title">Classroom details</string>
     <string name="title_activity_details">Details</string>
     <string name="action_search">Search</string>
     <string name="title_activity_search">Search</string>
     <string name="search">Search</string>
-    <string name="professor">Teacher name or a part of it</string>
+    <string name="professor_hint">Teacher name or a part of it</string>
     <string name="course">Course name or a part of it</string>
     <string name="noResult">No results found</string>
     <string name="exportTitle">Export to Google Calendar</string>
@@ -245,6 +244,13 @@
     <string name="confirmExport">Are you sure?</string>
     <string name="title_activity_classroom_details">Map</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="professors">Professors</string>
+    <string name="classrooms">Classrooms</string>
+    <string name="timetable">Timetable</string>
+
+    <string name="timetable_subtitle">Take a look at daily and weekly timetable</string>
+    <string name="professors_subtitle">Find your professors and their related information</string>
+    <string name="classrooms_subtitle">Find classrooms by name and discover their job</string>
 
     <string name="no_title">No title</string>
     <string name="no_location">No location</string>
@@ -258,11 +264,16 @@
     <string name="no_country">No country</string>
     <string name="no_start_date">No start date</string>
     <string name="no_about">No details</string>
+    <string name="no_web_page">No web page</string>
 
     <string name="offers">Browse offers</string>
     <string name="candidatures">My candidatures</string>
     <string name="cvs">My CVs</string>
 
     <string name="date_format">dd/MM/yyyy</string>
+    <string name="datetime_format">dd/MM/yyyy HH:mm</string>
+
+    <string name="search_result">Search result</string>
+    <string name="count_result"> results found</string>
 
 </resources>

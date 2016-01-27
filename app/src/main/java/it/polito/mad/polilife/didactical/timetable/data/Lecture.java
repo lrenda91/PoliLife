@@ -39,7 +39,7 @@ public class Lecture implements Serializable {
 	
 	@Override
 	public String toString() {
-		return "{"+course.getName()+" on "+dayOfWeek+" "+startTime+"-"+endTime+" "+classroom+"}";
+		return "{"+course.getName()+" onSelectAppliedJobs "+dayOfWeek+" "+startTime+"-"+endTime+" "+classroom+"}";
 	}
 	
 }

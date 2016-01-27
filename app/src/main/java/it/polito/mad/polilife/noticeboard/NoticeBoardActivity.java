@@ -29,7 +29,7 @@ import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Notice;
 
 public class NoticeBoardActivity extends AppCompatActivity
-        implements DBCallbacks.MultipleFetchCallback<Notice> {
+        implements DBCallbacks.GetListCallback<Notice> {
 
     private static final int ADVANCED_SEARCH_REQUEST_CODE = 10;
 

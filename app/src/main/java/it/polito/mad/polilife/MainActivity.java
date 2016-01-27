@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.PushService;
 
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
@@ -31,6 +33,8 @@ public class MainActivity extends AppCompatActivity implements DBCallbacks.UserL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.d("MAIN_ACTIVITY", getIntent().hasExtra("json") ? getIntent().getStringExtra("json") : "null");
 
         username = (EditText) findViewById(R.id.email_editText);
         password = (EditText) findViewById(R.id.password_editText);
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements DBCallbacks.UserL
     public void onStudentLoginSuccess(ParseUser student) {
         setUserInteractionEnabled(true);
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        if (getIntent().hasExtra("json")) intent.putExtra("json",getIntent().getStringExtra("json"));
         startActivity(intent);
         finish();
     }

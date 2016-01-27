@@ -10,7 +10,7 @@ import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.*;
 
 /**
- * Created by Luigi on 27/10/2015.
+ * Created by Luigi onSelectAppliedJobs 27/10/2015.
  */
 public class PoliLifeApp extends Application {
 
@@ -46,7 +46,7 @@ public class PoliLifeApp extends Application {
                 StudentInfo.class,
                 Professor.class,
                 Company.class,
-                Position.class,
+                Job.class,
                 Classroom.class,
                 Student.class,
                 Notice.class,

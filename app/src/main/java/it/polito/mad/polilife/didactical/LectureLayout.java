@@ -31,9 +31,10 @@ public class LectureLayout extends RelativeLayout {
 		classroomName = classroom;*/
 		
 		((TextView) findViewById(R.id.textView1)).setText(lecture.getCourse().getName());
+		View bar = findViewById(R.id.color_bar);
 
 		final int colorResID = Utility.getColorID(this.getContext(), course);
-		setBackgroundColor(getResources().getColor(colorResID));
+		bar.setBackgroundColor(getResources().getColor(colorResID));
 		
 		setOnClickListener(new OnClickListener() {
 			@Override

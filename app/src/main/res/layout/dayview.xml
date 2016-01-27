@@ -7,61 +7,61 @@
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
 		android:layout_marginTop="0dp"
-		android:background="@color/medium_dark_gray" />
+		android:background="@color/grey_400" />
     <View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="60dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="120dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="180dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="240dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="300dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="360dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="420dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="480dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="540dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="600dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 	<View 
 	    android:layout_width="match_parent"
 	    android:layout_height="1dp"
 	    android:layout_marginTop="660dp"
-	    android:background="@color/medium_dark_gray" />
+	    android:background="@color/grey_400" />
 </RelativeLayout>
 

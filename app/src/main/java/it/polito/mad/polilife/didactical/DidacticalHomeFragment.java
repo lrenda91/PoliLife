@@ -20,7 +20,7 @@ import it.polito.mad.polilife.didactical.timetable.data.Timetable;
 import it.polito.mad.polilife.didactical.timetable.data.TimetableImpl;
 
 /**
- * Created by luigi on 13/11/15.
+ * Created by luigi onSelectAppliedJobs 13/11/15.
  */
 public class DidacticalHomeFragment extends Fragment {
 
@@ -69,7 +69,7 @@ public class DidacticalHomeFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_didactical_home, container, false);
+        View root = inflater.inflate(R.layout.fragment_didactical, container, false);
 
         final Activity myActivity = getActivity();
         root.findViewById(R.id.timetable_select).setOnClickListener(new View.OnClickListener(){

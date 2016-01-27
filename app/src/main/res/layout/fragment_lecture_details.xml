@@ -8,8 +8,7 @@
     <RelativeLayout
         android:id="@+id/backgroundCourseLayout"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/darkorange" >
+        android:layout_height="100dp" >
 
         <TextView
             android:id="@+id/courseTextView"

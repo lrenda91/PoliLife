@@ -10,7 +10,7 @@ import it.polito.mad.polilife.ViewBinder;
 import it.polito.mad.polilife.db.classes.Professor;
 
 /**
- * Created by luigi on 07/12/15.
+ * Created by luigi onSelectAppliedJobs 07/12/15.
  */
 public class ProfViewBinder implements ViewBinder<Professor> {
     @Override

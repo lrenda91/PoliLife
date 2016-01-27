@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -19,7 +21,7 @@ import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.Utility;
 
 /**
- * Created by luigi on 12/11/15.
+ * Created by luigi onSelectAppliedJobs 12/11/15.
  */
 public class ClassroomDetailsFragment extends Fragment implements OnMapReadyCallback {
 
@@ -40,18 +42,20 @@ public class ClassroomDetailsFragment extends Fragment implements OnMapReadyCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View root = inflater.inflate(R.layout.fragment_classroom_details, container, false);
+        return inflater.inflate(R.layout.fragment_classroom_details, container, false);
+    }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        String details = getArguments().getString("details");
+        ((TextView) view.findViewById(R.id.room_details)).setText(details);
         SupportMapFragment mapFragment = new SupportMapFragment();
         FragmentTransaction ft = getChildFragmentManager().beginTransaction();
         ft.replace(R.id.map_container, mapFragment); // map_container is your FrameLayout container
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         //ft.addToBackStack(null);
         ft.commit();
-
         mapFragment.getMapAsync(this);
-
-        return root;
     }
 
     /**
@@ -59,7 +63,7 @@ public class ClassroomDetailsFragment extends Fragment implements OnMapReadyCall
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
      * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
+     * If Google Play services is not installed onSelectAppliedJobs the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */

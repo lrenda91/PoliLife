@@ -16,15 +16,18 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.parse.ParseFile;
+
 import java.util.List;
 
 import it.polito.mad.polilife.R;
+import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Professor;
 
 public class ProfessorsActivity extends AppCompatActivity
-        implements DBCallbacks.MultipleFetchCallback<Professor> {
+        implements DBCallbacks.GetListCallback<Professor> {
 
     private Toolbar mToolbar;
     private ListView mListView;
@@ -86,9 +89,21 @@ public class ProfessorsActivity extends AppCompatActivity
                     }
                 });
                 final Professor item = getItem(position);
+                ParseFile photo = item.getPhoto();
+                ImageView photoIV = (ImageView) convertView.findViewById(R.id.preferred_photo);
+                try {
+                    if (photoIV != null) {
+                        photoIV.setImageBitmap(Utility.getBitmap(photo.getData()));
+                    } else {
+                        photoIV.setImageResource(R.drawable.logo);
+                    }
+                } catch (Exception e) {
+                    photoIV.setImageResource(R.drawable.logo);
+                }
                 ((TextView) convertView.findViewById(R.id.professor_name)).setText(item.getName());
-                ((TextView) convertView.findViewById(R.id.professor_office)).setText(
-                        item.getOffice() + '\n' + item.getOfficeHours());
+                ((TextView) convertView.findViewById(R.id.professor_office)).setText(item.getOffice());
+                ((TextView) convertView.findViewById(R.id.professor_office_hours)).setText(
+                        item.getOfficeHours());
                 final View phone = convertView.findViewById(R.id.professor_phone);
                 final View email = convertView.findViewById(R.id.professor_email);
                 ((ImageView) phone.findViewById(R.id.rowIcon)).setImageResource(android.R.drawable.ic_menu_call);

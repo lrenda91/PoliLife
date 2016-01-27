@@ -177,7 +177,7 @@ public class SignUpPagerAdapter extends FragmentPagerAdapter {
             };
             for (EditText et : editTexts){
                 if (et.getText() == null || et.getText().toString().isEmpty()){
-                    //track error on editText
+                    //track error onSelectAppliedJobs editText
                     Toast.makeText(getActivity(),
                             "Please complete the sign up form",
                             Toast.LENGTH_SHORT).show();

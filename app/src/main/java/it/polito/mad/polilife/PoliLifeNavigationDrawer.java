@@ -9,7 +9,7 @@ package it.polito.mad.polilife;
 
 
 /**
- * Created by luigi on 05/05/15.
+ * Created by luigi onSelectAppliedJobs 05/05/15.
  */
 public class PoliLifeNavigationDrawer {
 
@@ -64,7 +64,7 @@ public class PoliLifeNavigationDrawer {
     }
 
     /*
-     * Sets user name and mail on the header of the navigation drawer.
+     * Sets user name and mail onSelectAppliedJobs the header of the navigation drawer.
      * Profile image is provided by a resource ID
      */
     public void setUserData(String username, String mail, int profileResourceID){
@@ -76,7 +76,7 @@ public class PoliLifeNavigationDrawer {
     }
 
     /*
-     * Sets user name and mail on the header of the navigation drawer.
+     * Sets user name and mail onSelectAppliedJobs the header of the navigation drawer.
      * Profile image is provided by a Bitmap
      */
     public void setUserData(String username, String mail, Bitmap bitmap){

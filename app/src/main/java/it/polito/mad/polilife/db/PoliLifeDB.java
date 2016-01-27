@@ -1,25 +1,30 @@
 package it.polito.mad.polilife.db;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.parse.*;
+
+import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import it.polito.mad.polilife.MainActivity;
 import it.polito.mad.polilife.db.classes.*;
-import it.polito.mad.polilife.db.parcel.*;
 import it.polito.mad.polilife.db.DBCallbacks.*;
+import it.polito.mad.polilife.db.parcel.PStudentData;
+import it.polito.mad.polilife.db.parcel.PUserData;
 
 /**
- * Created by Luigi on 27/10/2015.
+ * Created by Luigi onSelectAppliedJobs 27/10/2015.
  */
 public class PoliLifeDB {
 
     private PoliLifeDB(){}
+
+    private static final String TAG = "ParseDB";
 
     private static final String APPLICATION_ID = "UWm5ltXVvvea4XrTKFFYX63GbuOX90WS4ec8hZg5";
     private static final String CLIENT_KEY = "4HPCLcygPRGkVEImYdsDYUFi8A0zXeZF80pPEYtf";
@@ -119,6 +124,10 @@ public class PoliLifeDB {
                 }
                 Student student = (Student) parseUser;
                 ParseObject studentInfo = student.getStudentInfo();
+                //prova
+                ParseInstallation.getCurrentInstallation().put("user", student);
+                ParseInstallation.getCurrentInstallation().saveEventually();
+                //fine prova
                 try {
                     student.fetchIfNeeded();
                     studentInfo.fetchIfNeeded();
@@ -159,6 +168,8 @@ public class PoliLifeDB {
                     if (e != null) {
                         listener.onLogoutError(e);
                     } else {
+                        ParseInstallation.getCurrentInstallation().put("user", JSONObject.NULL);
+                        ParseInstallation.getCurrentInstallation().saveInBackground();
                         listener.onLogoutSuccess();
                     }
                 }
@@ -168,11 +179,7 @@ public class PoliLifeDB {
 
 
     /**
-     * Updates student data
-     * @param data The parcelable user data. For each field you must change, its content will be
-     *             not null
-     * @param listener
-     */
+
     public static void updateStudentData(PStudentData data, final UpdateCallback<StudentInfo> listener){
         ParseObject po = (ParseObject) ParseUser.getCurrentUser().get(STUDENT_KEY);
         if (po == null || !(po instanceof StudentInfo)) throw new AssertionError();
@@ -194,29 +201,31 @@ public class PoliLifeDB {
             }
         });
     }
+    */
 
-
-    public static void searchClassrooms(String param, final ClassroomSearchCallback listener){
+    public static void searchClassrooms(String param, boolean exactMatch,
+                                        final GetListCallback<Classroom> listener){
         ParseQuery<Classroom> query = ParseQuery.getQuery(Classroom.class);
-        query.whereContains(Classroom.NAME, param);
+        if (exactMatch) query.whereEqualTo(Classroom.NAME, "Aula "+param);
+        else query.whereContains(Classroom.NAME, param);
         query.findInBackground(new FindCallback<Classroom>() {
             @Override
             public void done(List<Classroom> list, ParseException e) {
                 if (e != null) {
                     if (listener != null) {
-                        listener.onClassroomSearchError(e);
+                        listener.onFetchError(e);
                     }
                     return;
                 }
                 if (listener != null) {
-                    listener.onClassroomsFound(list);
+                    listener.onFetchSuccess(list);
                 }
             }
         });
     }
 
     public static <T extends ParseObject> void getAllObjects(
-            Class<T> klass, final MultipleFetchCallback<T> listener){
+            Class<T> klass, final GetListCallback<T> listener){
         ParseQuery<T> query = ParseQuery.getQuery(klass);
         query.findInBackground(new FindCallback<T>() {
             @Override
@@ -229,7 +238,7 @@ public class PoliLifeDB {
             }
         });
     }
-
+/*
     public static void publishNewNotice(final PNoticeData data,
                                         final UpdateCallback<Notice> listener){
         final ParseUser currentUser = ParseUser.getCurrentUser();
@@ -283,10 +292,11 @@ public class PoliLifeDB {
             }
         }.execute();
     }
+    */
 
     public static void advancedNoticeFilter(final Notice.Filter filter,
                                             final boolean fromLocalDataStore,
-                                            final MultipleFetchCallback<Notice> listener){
+                                            final GetListCallback<Notice> listener){
         ParseQuery<Notice> query = ParseQuery.getQuery(Notice.class);
         ParseQuery<Notice> finalQuery = null;
         if (filter != null) {
@@ -355,41 +365,41 @@ public class PoliLifeDB {
         });
     }
 
-    public static void advancedPositionsFilter(final Position.Filter filter,
-                                            final boolean fromLocalDataStore,
-                                            final MultipleFetchCallback<Position> listener) {
-        ParseQuery<Position> query = ParseQuery.getQuery(Position.class);
+    public static void advancedJobsFilter(final Job.Filter filter,
+                                          final boolean fromLocalDataStore,
+                                          final GetListCallback<Job> listener) {
+        ParseQuery<Job> query = ParseQuery.getQuery(Job.class);
         if (filter != null){
             if (filter.name != null){
-                query.whereContains(Position.NAME, filter.name);
+                query.whereContains(Job.NAME, filter.name);
             }
-            if (filter.typeOfJob != null){
-                query.whereEqualTo(Position.TYPE_OF_JOB, filter.typeOfJob);
+            if (filter.typeOfContract != null){
+                query.whereEqualTo(Job.TYPE_OF_CONTRACT, filter.typeOfContract);
             }
             if (filter.typeOfDegree != null){
-                query.whereEqualTo(Position.TYPE_OF_DEGREE, filter.typeOfDegree);
+                query.whereEqualTo(Job.TYPE_OF_DEGREE, filter.typeOfDegree);
             }
             if (filter.city != null){
-                query.whereEqualTo(Position.CITY, filter.city);
+                query.whereEqualTo(Job.CITY, filter.city);
             }
             if (filter.startDate != null){
-                query.whereGreaterThanOrEqualTo(Position.START_DATE, filter.startDate);
+                query.whereGreaterThanOrEqualTo(Job.START_DATE, filter.startDate);
             }
         }
-        query.addDescendingOrder(Position.START_DATE);
+        query.addDescendingOrder(Job.START_DATE);
         if (fromLocalDataStore){
             query.fromLocalDatastore();
         }
-        query.findInBackground(new FindCallback<Position>() {
+        query.findInBackground(new FindCallback<Job>() {
             @Override
-            public void done(List<Position> list, ParseException e) {
+            public void done(List<Job> list, ParseException e) {
                 if (e != null) {
                     if (listener != null) listener.onFetchError(e);
                     return;
                 }
                 if (!fromLocalDataStore) {
-                    ParseObject.unpinAllInBackground("cachedPositions");
-                    ParseObject.pinAllInBackground("cachedPositions", list);
+                    ParseObject.unpinAllInBackground(getPinName(Job.class));
+                    ParseObject.pinAllInBackground(getPinName(Job.class), list);
                 }
                 if (listener != null) listener.onFetchSuccess(list);
             }
@@ -397,26 +407,26 @@ public class PoliLifeDB {
     }
 
     public static void getRecentNoticesAndPositions(final int daysAgo,
-            final boolean fromLocalDataStore, final MultipleFetchCallback<ParseObject> listener){
+            final boolean fromLocalDataStore, final GetListCallback<ParseObject> listener){
         final List<ParseObject> objs = new LinkedList<>();
         Notice.Filter filter = new Notice.Filter();
         filter.daysAgo = daysAgo;
-        advancedNoticeFilter(filter, fromLocalDataStore, new MultipleFetchCallback<Notice>() {
+        advancedNoticeFilter(filter, fromLocalDataStore, new GetListCallback<Notice>() {
             @Override
             public void onFetchSuccess(List<Notice> result) {
                 objs.addAll(result);
-                ParseQuery<Position> query = ParseQuery.getQuery(Position.class);
+                ParseQuery<Job> query = ParseQuery.getQuery(Job.class);
                 if (daysAgo > 0) {
                     long DAY_IN_MS = 1000 * 60 * 60 * 24;
                     Date limit = new Date(System.currentTimeMillis() - (daysAgo * DAY_IN_MS));
-                    query.whereGreaterThanOrEqualTo(Position.START_DATE, limit);
+                    query.whereGreaterThanOrEqualTo(Job.START_DATE, limit);
                 }
                 if (fromLocalDataStore) {
                     query.fromLocalDatastore();
                 }
-                query.findInBackground(new FindCallback<Position>() {
+                query.findInBackground(new FindCallback<Job>() {
                     @Override
-                    public void done(List<Position> list, ParseException e) {
+                    public void done(List<Job> list, ParseException e) {
                         if (e != null) {
                             if (listener != null) listener.onFetchError(e);
                             return;
@@ -434,40 +444,93 @@ public class PoliLifeDB {
         });
     }
 
-    public static <T extends ParseObject> void retrieveObject(String id, Class<T> klass,
-            boolean fromLocalDataStore, final SingleFetchCallback<T> listener){
-        T obj = ParseObject.createWithoutData(klass, id);
-        GetCallback<T> cbk = new GetCallback<T>() {
+    public static <T extends ParseObject> void retrieveObject(final String id, final Class<T> klass,
+            final GetOneCallback<T> listener){
+        final T obj = ParseObject.createWithoutData(klass, id);
+        obj.fetchFromLocalDatastoreInBackground(new GetCallback<T>() {
             @Override
             public void done(T parseObject, ParseException e) {
-                if (e != null){
-                    if (listener != null) listener.onFetchError(e);
+                if (e != null) {
+                    obj.fetchInBackground(new GetCallback<T>() {
+                        @Override
+                        public void done(T parseObject, ParseException e) {
+                            if (e != null) {
+                                if (listener != null) listener.onFetchError(e);
+                                return;
+                            }
+                            Log.d(TAG, "Found " + klass.getSimpleName() + "[" + id + "] online");
+                            parseObject.pinInBackground(getPinName(klass));
+                            if (listener != null) listener.onFetchSuccess(parseObject);
+                        }
+                    });
                     return;
                 }
+                Log.d(TAG, "Found " + klass.getSimpleName() + "[" + id + "] onSelectAppliedJobs local data store");
                 if (listener != null) listener.onFetchSuccess(parseObject);
             }
-        };
-        if (fromLocalDataStore){
-            obj.fetchFromLocalDatastoreInBackground(cbk);
-        }
-        else {
-            obj.fetchInBackground(cbk);
-        }
+        });
     }
 
-    public static void getUsersByName(String name, final MultipleFetchCallback<ParseUser> listener){
+    public static void getUsersByName(String name, final GetListCallback<ParseUser> listener){
         ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
         query.whereContains("username", name);
         query.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(List<ParseUser> list, ParseException e) {
-                if (e != null){
+                if (e != null) {
                     if (listener != null) listener.onFetchError(e);
                     return;
                 }
                 if (listener != null) listener.onFetchSuccess(list);
             }
         });
+    }
+
+    public static void apply(Job job, final UpdateCallback<StudentInfo> listener) {
+        final StudentInfo info = ((Student) ParseUser.getCurrentUser()).getStudentInfo();
+        info.addAppliedJob(job);
+        info.saveEventually(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    if (listener != null) listener.onUpdateError(e);
+                    return;
+                }
+                if (listener != null) listener.onUpdateSuccess(info);
+            }
+        });
+    }
+
+    public static void getAppliedJobs(final GetListCallback<Job> listener){
+        StudentInfo info = ((Student) ParseUser.getCurrentUser()).getStudentInfo();
+        info.getAppliedJobs().getQuery().findInBackground(new FindCallback<Job>() {
+            @Override
+            public void done(List<Job> list, ParseException e) {
+                if (e != null) {
+                    if (listener != null) listener.onFetchError(e);
+                    return;
+                }
+                if (listener != null) listener.onFetchSuccess(list);
+            }
+        });
+    }
+
+    public static void getCachedJobs(final GetListCallback<Job> listener){
+        ParseQuery.getQuery(Job.class).fromPin(getPinName(Job.class))
+                .findInBackground(new FindCallback<Job>() {
+            @Override
+            public void done(List<Job> list, ParseException e) {
+                if (e != null) {
+                    if (listener != null) listener.onFetchError(e);
+                    return;
+                }
+                if (listener != null) listener.onFetchSuccess(list);
+            }
+        });
+    }
+
+    private static <T extends ParseObject> String getPinName(Class<T> klass){
+        return "cache" + klass.getSimpleName(); 
     }
 
 }

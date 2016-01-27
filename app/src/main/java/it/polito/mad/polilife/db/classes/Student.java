@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by luigi on 29/05/15.
+ * Created by luigi onSelectAppliedJobs 29/05/15.
  */
 @ParseClassName("_User")
 public class Student extends ParseUser {

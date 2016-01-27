@@ -1,7 +1,7 @@
 package it.polito.mad.polilife.db.classes;
 
 /**
- * Created by Luigi on 27/10/2015.
+ * Created by Luigi onSelectAppliedJobs 27/10/2015.
  */
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
@@ -61,21 +61,21 @@ public class StudentInfo extends ParseObject {
         relation.add(company);
     }
 
-    public ParseRelation<Position> getAppliedPositions(){
+    public ParseRelation<Job> getAppliedJobs(){
         return getRelation(APPLIED);
     }
-    public void addAppliedPositions(ParseRelation relation, Position position){
-        relation.add(position);
+    public void addAppliedJob(Job job){
+        getRelation(APPLIED).add(job);
     }
-    public void removeAppliedPosition(ParseRelation relation, Position position){
-        relation.remove(position);
+    public void removeAppliedJob(Job job){
+        getRelation(APPLIED).remove(job);
     }
 
-    public ParseRelation<Position> getFavoritePositions(){
+    public ParseRelation<Job> getFavoritePositions(){
         return getRelation(FAVOURITE_OFFERS);
     }
-    public void addFavoritePositions(ParseRelation relation, Position position){
-        relation.add(position);
+    public void addFavoritePositions(ParseRelation relation, Job job){
+        relation.add(job);
     }
 
     public List<String> getLanguages(){ return (List<String>) get(LANGUAGES);  }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
@@ -14,11 +15,15 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -32,7 +37,7 @@ import it.polito.mad.polilife.didactical.timetable.data.Time;
 import it.polito.mad.polilife.maps.GMapsHintsDLTask;
 
 /**
- * Created by luigi on 13/05/15.
+ * Created by luigi onSelectAppliedJobs 13/05/15.
  */
 public class Utility {
 
@@ -152,6 +157,29 @@ public class Utility {
         }
         Address a = addresses.get(0);
         return new LatLng(a.getLatitude(), a.getLongitude());
+    }
+
+    public static void setupSpinnerWithHint(Context c, Spinner s, String[] items, String hint){
+        String[] all = new String[items.length+1];
+        all[0] = hint;
+        for (int i=1;i<all.length;i++) all[i] = ""+items[i-1];
+        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                c,android.R.layout.simple_spinner_dropdown_item, all){
+            @Override
+            public boolean isEnabled(int position){
+                return position > 0;
+            }
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                tv.setTextColor(position == 0 ? Color.GRAY : Color.BLACK);
+                return view;
+            }
+        };
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        s.setAdapter(spinnerArrayAdapter);
     }
 
 }

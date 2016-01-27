@@ -4,20 +4,19 @@ import com.parse.*;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 @ParseClassName("Position")
-public class Position extends ParseObject {
+public class Job extends ParseObject {
 
 
 
     /* Enum values */
-    public enum TypeOfJob {
-        FULL_TIME, PART_TIME, CONTRACT, INTERNSHIP, TEMPORARY, OTHER;
+    public enum TypeOfContract {
+        FULL_TIME, PART_TIME, INTERNSHIP, TEMPORARY, OTHER;
     }
     public enum TypeOfDegree {
-        BACHELOR, MASTER
+        BACHELOR, MASTER, PHD
     }
 
 
@@ -26,7 +25,7 @@ public class Position extends ParseObject {
     public static final String ABOUT = "about";
     public static final String COMPANY = "company";
     public static final String APPLIEDSTUS = "applied";
-    public static final String TYPE_OF_JOB = "typeOfJob";
+    public static final String TYPE_OF_CONTRACT = "typeOfContract";
     public static final String TYPE_OF_DEGREE = "typeOfDegree";
     public static final String CITY = "city";
     public static final String COUNTRY = "country";
@@ -36,11 +35,11 @@ public class Position extends ParseObject {
     public static class Filter implements Serializable {
         public Filter(){
         }
-        public String name, typeOfJob, typeOfDegree, city;
+        public String name, typeOfContract, typeOfDegree, city;
         public Date startDate;
         public int daysAgo = -1;
         public Filter name(String value){ name = value; return this; }
-        public Filter typeOfJob(String value){ typeOfJob = value; return this; }
+        public Filter typeOfContract(String value){ typeOfContract = value; return this; }
         public Filter startDate(Date value){ startDate = value; return this; }
         public Filter typeOfDegree(String value){ typeOfDegree = value; return this; }
         public Filter city(String value){ city = value; return this; }
@@ -101,12 +100,12 @@ public class Position extends ParseObject {
     public void setTypeOfDegree(String typeOfDegree){
         put(TYPE_OF_DEGREE, typeOfDegree);
     }
-    public String getTypeOfJob(){
-        return (String) get(TYPE_OF_JOB);
+    public String getTypeOfContract(){
+        return (String) get(TYPE_OF_CONTRACT);
     }
 
-    public void setTypeOfJob(String typeOfJob){
-        put(TYPE_OF_JOB, typeOfJob);
+    public void setTypeOfContract(String typeOfJob){
+        put(TYPE_OF_CONTRACT, typeOfJob);
     }
 
 

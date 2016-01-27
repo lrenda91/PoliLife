@@ -1,0 +1,60 @@
+{
+  "lectures": [
+    {
+      "day": 0,
+      "classroom": "4D",
+      "start": "10:00",
+      "end": "13:00",
+      "course": "Mobile Application Development"
+    },
+    {
+      "day": 0,
+      "classroom": "12C",
+      "start": "15:00",
+      "end": "18:00",
+      "course": "Distributed Programming II"
+    },
+    {
+      "day": 1,
+      "classroom": "12D",
+      "start": "15:30",
+      "end": "18:30",
+      "course": "Programmazione Distribuita I"
+    },
+    {
+      "day": 1,
+      "classroom": "4D",
+      "start": "08:30",
+      "end": "10:30",
+      "course": "Computer Systems Security"
+    },
+    {
+      "day": 2,
+      "classroom": "5I",
+      "start": "10:30",
+      "end": "13:30",
+      "course": "Programmazione di Sistema"
+    },
+    {
+      "day": 3,
+      "classroom": "8I",
+      "start": "14:30",
+      "end": "17:30",
+      "course": "Computer Systems Security"
+    },
+    {
+      "day": 4,
+      "classroom": "12D",
+      "start": "08:30",
+      "end": "10:30",
+      "course": "Programmazione Distribuita I"
+    },
+    {
+      "day": 4,
+      "classroom": "6I",
+      "start": "11:30",
+      "end": "13:30",
+      "course": "Mobile Application Development"
+    }
+  ]
+}

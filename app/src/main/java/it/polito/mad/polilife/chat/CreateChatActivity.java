@@ -15,22 +15,27 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.ParseUser;
+import com.parse.ParseFile;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import it.polito.mad.polilife.R;
+import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
+import it.polito.mad.polilife.db.classes.Student;
 
 public class CreateChatActivity extends AppCompatActivity
-    implements DBCallbacks.MultipleFetchCallback<ParseUser> {
+    implements DBCallbacks.GetListCallback<Student> {
+
+    public static final int NEW_CHAT_REQUEST_CODE = 1;
 
     public static final int ONE_TO_ONE = 0;
     public static final int ONE_TO_MANY = 1;
@@ -39,11 +44,11 @@ public class CreateChatActivity extends AppCompatActivity
     //private ListView mListView;
 
     //only in 1 to 1 mode
-    private List<ParseUser> mAllUsers = new ArrayList<>();
+    private List<Student> mAllUsers = new ArrayList<>();
 
     //only in 1 to N mode
     private EditText mGroupNameEditText;
-    private List<ParseUser> mGroupMembers = new LinkedList<>();
+    private List<Student> mGroupMembers = new LinkedList<>();
     private List<String> mHints = new ArrayList<>();
     private ArrayAdapter<String> mHintsAdapter;
 
@@ -72,8 +77,8 @@ public class CreateChatActivity extends AppCompatActivity
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     String s = (String) parent.getItemAtPosition(position);
-                    ParseUser user = null;
-                    for (ParseUser pu : mAllUsers){
+                    Student user = null;
+                    for (Student pu : mAllUsers){
                         if (pu.getUsername().equals(s)){
                             user = pu;
                             break;
@@ -99,7 +104,7 @@ public class CreateChatActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        PoliLifeDB.getAllObjects(ParseUser.class, this);
+        PoliLifeDB.getAllObjects(Student.class, this);
     }
 
     @Override
@@ -115,7 +120,8 @@ public class CreateChatActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_new_group_chat:
-                if (mGroupNameEditText.getText().length() == 0){
+                String groupName = mGroupNameEditText.getText().toString();
+                if (groupName.length() == 0){
                     Toast.makeText(this, R.string.group_name_empty, Toast.LENGTH_SHORT).show();
                     break;
                 }
@@ -125,6 +131,7 @@ public class CreateChatActivity extends AppCompatActivity
                 }
                 Intent backIntent = new Intent();
                 backIntent.putExtra("mode", mMode);
+                backIntent.putExtra("groupName", groupName);
                 backIntent.putStringArrayListExtra("params", UUIDs);
                 setResult(Activity.RESULT_OK, backIntent);
                 finish();
@@ -134,7 +141,7 @@ public class CreateChatActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFetchSuccess(List<ParseUser> result) {
+    public void onFetchSuccess(List<Student> result) {
         mAllUsers = result;
         if (mMode == ONE_TO_ONE) {
             mAllUsersAdapter.notifyDataSetChanged();
@@ -142,7 +149,7 @@ public class CreateChatActivity extends AppCompatActivity
         else{
             mGroupMembers.clear();
             mHints.clear();
-            for (ParseUser user : result) {
+            for (Student user : result) {
                 mHints.add(user.getUsername());
             }
             mHintsAdapter.notifyDataSetChanged();
@@ -160,7 +167,7 @@ public class CreateChatActivity extends AppCompatActivity
             return mAllUsers.size();
         }
         @Override
-        public ParseUser getItem(int position) {
+        public Student getItem(int position) {
             return mAllUsers.get(position);
         }
         @Override
@@ -173,7 +180,15 @@ public class CreateChatActivity extends AppCompatActivity
                 convertView = LayoutInflater.from(CreateChatActivity.this).inflate(
                         R.layout.layout_chat_friends_item, parent, false);
             }
-            final ParseUser item = getItem(position);
+            ImageView photoIV = (ImageView) convertView.findViewById(R.id.user_photo);
+            final Student item = getItem(position);
+            ParseFile photo = item.getPhoto();
+            try{
+                photoIV.setImageBitmap(Utility.getBitmap(photo.getData()));
+            }
+            catch(Exception e){
+                photoIV.setImageResource(R.drawable.ic_user);
+            }
             ((TextView) convertView.findViewById(R.id.friend_name)).setText(item.getUsername());
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -195,7 +210,7 @@ public class CreateChatActivity extends AppCompatActivity
             return mGroupMembers.size();
         }
         @Override
-        public ParseUser getItem(int position) {
+        public Student getItem(int position) {
             return mGroupMembers.get(position);
         }
         @Override
@@ -206,9 +221,17 @@ public class CreateChatActivity extends AppCompatActivity
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(CreateChatActivity.this).inflate(
-                        R.layout.layout_chat_cancelable_friends_item, parent, false);
+                        R.layout.layout_chat_friends_item_cancelable, parent, false);
             }
-            final ParseUser item = getItem(position);
+            ImageView photoIV = (ImageView) convertView.findViewById(R.id.user_photo);
+            final Student item = getItem(position);
+            ParseFile photo = item.getPhoto();
+            try{
+                photoIV.setImageBitmap(Utility.getBitmap(photo.getData()));
+            }
+            catch(Exception e){
+                photoIV.setImageResource(R.drawable.ic_user);
+            }
             ((TextView) convertView.findViewById(R.id.friend_name)).setText(item.getUsername());
             convertView.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
                 @Override

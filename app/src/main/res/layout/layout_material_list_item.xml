@@ -2,19 +2,19 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="@dimen/list_item_height"
     android:orientation="horizontal" >
 
     <ImageView
         android:id="@+id/rowIcon"
-        android:layout_width="56dp"
+        android:layout_width="@dimen/list_item_icon_width"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical" />
 
     <TextView
         android:id="@+id/rowText"
         android:textStyle="bold"
-        android:textSize="15dp"
+        android:textSize="@dimen/list_item_text_size"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center" />

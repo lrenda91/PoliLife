@@ -1,7 +1,7 @@
 package it.polito.mad.polilife.db.classes;
 
 /**
- * Created by luigi on 07/05/15.
+ * Created by luigi onSelectAppliedJobs 07/05/15.
  */
 import com.parse.*;
 
@@ -18,8 +18,9 @@ public class Company extends ParseObject {
     private static final String CITY= "city";
     private static final String CONTACT_PHONE = "contactPhone";
     private static final String WEB_PAGE = "webPage";
-    private static final String MISSION = "mission";
+    private static final String ABOUT = "about";
     private static final String POSITIONS = "positions";
+    public static final String LOGO = "logo";
 
 
     public List<String> getFieldsOfWork(){
@@ -31,12 +32,12 @@ public class Company extends ParseObject {
     }
 
 
-    public List<Position> getPositions(){
-        return (List<Position>) get(POSITIONS);
+    public List<Job> getPositions(){
+        return (List<Job>) get(POSITIONS);
     }
 
-    public void setPositions(List<Position> positions){
-        put(POSITIONS, positions);
+    public void setPositions(List<Job> jobs){
+        put(POSITIONS, jobs);
     }
 
     public String getWebPage(){
@@ -46,12 +47,11 @@ public class Company extends ParseObject {
     public void setWebPage(String webPage){
         put(WEB_PAGE, webPage);
     }
-    public String getMission(){
-        return (String) get(MISSION);
+    public String getAbout(){
+        return (String) get(ABOUT);
     }
-
-    public void setMission(String mission){
-        put(MISSION, mission);
+    public void setAbout(String value){
+        put(ABOUT, value);
     }
     public String getContactPhone(){
         return (String) get(CONTACT_PHONE);
@@ -81,16 +81,19 @@ public class Company extends ParseObject {
         put(COUNTRY, value);
     }
 
-    public void addPosition(ParseRelation<Position> relationPositions, Position value){
+    public void addPosition(ParseRelation<Job> relationPositions, Job value){
         relationPositions.add(value);
     }
 
-    public ParseRelation<Position> getRelationPositions() {
+    public ParseRelation<Job> getRelationPositions() {
         return getRelation(POSITIONS);
     }
 
     public void addFieldsOfWork(Collection<String> fields){
         addAllUnique(FIELDS, fields);
     }
+
+    public ParseFile getLogo(){ return (ParseFile) get(LOGO); }
+    public void setLogo(ParseFile value){ put(LOGO, value); }
 
 }

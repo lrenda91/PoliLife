@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * Models a Notice, but it could deal with houses OR book/notes so we must discriminate it
- * Created by luigi on 29/05/15.
+ * Created by luigi onSelectAppliedJobs 29/05/15.
  */
 @ParseClassName("Notice")
 public class Notice extends ParseObject implements Parcelable {

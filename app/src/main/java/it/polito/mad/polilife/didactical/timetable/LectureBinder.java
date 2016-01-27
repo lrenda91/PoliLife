@@ -13,7 +13,7 @@ import it.polito.mad.polilife.didactical.timetable.data.Lecture;
 import it.polito.mad.polilife.didactical.timetable.data.Time;
 
 /**
- * Created by luigi on 07/12/15.
+ * Created by luigi onSelectAppliedJobs 07/12/15.
  */
 public class LectureBinder implements ViewBinder<Lecture> {
     @Override

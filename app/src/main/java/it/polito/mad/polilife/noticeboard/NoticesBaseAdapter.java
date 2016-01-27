@@ -15,7 +15,7 @@ import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.db.classes.Notice;
 
 /**
- * Created by luigi on 26/12/15.
+ * Created by luigi onSelectAppliedJobs 26/12/15.
  */
 public class NoticesBaseAdapter extends BaseAdapter {
 

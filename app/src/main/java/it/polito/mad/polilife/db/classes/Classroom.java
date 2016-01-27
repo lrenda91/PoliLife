@@ -8,7 +8,7 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
 /**
- * Created by luigi on 29/05/15.
+ * Created by luigi onSelectAppliedJobs 29/05/15.
  */
 @ParseClassName("Classroom")
 public class Classroom extends ParseObject implements Parcelable {

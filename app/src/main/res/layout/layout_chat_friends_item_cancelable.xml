@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="8"
+    android:layout_height="56dp">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2">
+        <it.polito.mad.polilife.CircularImageView
+            android:id="@+id/user_photo"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/friend_name"
+        android:layout_weight="5"
+        android:textStyle="bold"
+        android:textSize="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+        android:layout_gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="30dp"
+        android:paddingRight="@dimen/activity_horizontal_margin"/>
+
+</LinearLayout>

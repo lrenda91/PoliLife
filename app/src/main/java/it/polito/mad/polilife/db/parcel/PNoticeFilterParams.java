@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by luigi on 09/06/15.
+ * Created by luigi onSelectAppliedJobs 09/06/15.
  */
 public class PNoticeFilterParams implements Parcelable {
 

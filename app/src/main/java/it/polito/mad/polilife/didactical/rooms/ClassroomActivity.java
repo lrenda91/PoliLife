@@ -114,7 +114,7 @@ public class ClassroomActivity extends AppCompatActivity
                     imm.showSoftInput(edtSeach, InputMethodManager.SHOW_IMPLICIT);
                 }
             });
-            //this is a listener to do a search when the user clicks on search button
+            //this is a listener to do a search when the user clicks onSelectAppliedJobs search button
             edtSeach.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

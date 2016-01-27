@@ -4,11 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 
 /**
- * Created by luigi on 29/05/15.
+ * Created by luigi onSelectAppliedJobs 29/05/15.
  */
 @ParseClassName("Professor")
 public class Professor extends ParseObject implements Parcelable {
@@ -19,6 +20,7 @@ public class Professor extends ParseObject implements Parcelable {
     static final String PHONE = "phone";
     static final String OFFICE = "office";
     static final String OFFICE_HOURS = "officeHours";
+    public static final String PHOTO = "photo";
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
         public Professor createFromParcel(Parcel in) {
@@ -100,5 +102,8 @@ public class Professor extends ParseObject implements Parcelable {
 
     public String getOfficeHours(){ return getString(OFFICE_HOURS); }
     public void setOfficeHours(String value){ put(OFFICE_HOURS, value); }
+
+    public ParseFile getPhoto(){ return (ParseFile) get(PHOTO); }
+    public void setPhoto(ParseFile value){ put(PHOTO, value); }
 
 }

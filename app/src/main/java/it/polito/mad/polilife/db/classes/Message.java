@@ -10,7 +10,7 @@ import java.util.Date;
 
 
 /**
- * Created by luigi on 29/05/15.
+ * Created by luigi onSelectAppliedJobs 29/05/15.
  */
 @ParseClassName("Message")
 public class Message extends ParseObject implements Parcelable {

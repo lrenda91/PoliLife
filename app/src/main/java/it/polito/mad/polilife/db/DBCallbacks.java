@@ -8,7 +8,7 @@ import java.util.List;
 import it.polito.mad.polilife.db.classes.*;
 
 /**
- * Created by luigi on 29/05/15.
+ * Created by luigi onSelectAppliedJobs 29/05/15.
  */
 public class DBCallbacks {
 
@@ -49,12 +49,12 @@ public class DBCallbacks {
         void onSortError(Exception exception);
     }
 
-    public interface SingleFetchCallback<T extends ParseObject> {
+    public interface GetOneCallback<T extends ParseObject> {
         void onFetchSuccess(T result);
         void onFetchError(Exception exception);
     }
 
-    public interface MultipleFetchCallback<T extends ParseObject> {
+    public interface GetListCallback<T extends ParseObject> {
         void onFetchSuccess(List<T> result);
         void onFetchError(Exception exception);
     }

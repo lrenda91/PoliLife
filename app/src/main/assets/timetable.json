@@ -34,6 +34,34 @@
       "start": "10:30",
       "end": "13:30",
       "course": "Programmazione di Sistema"
+    },
+    {
+      "day": 3,
+      "classroom": "8I",
+      "start": "14:30",
+      "end": "17:30",
+      "course": "Computer Systems Security"
+    },
+	{
+      "day": 3,
+      "classroom": "2I",
+      "start": "09:30",
+      "end": "12:00",
+      "course": "Programmazione di Sistema"
+    },
+    {
+      "day": 4,
+      "classroom": "12D",
+      "start": "08:30",
+      "end": "10:30",
+      "course": "Programmazione Distribuita I"
+    },
+    {
+      "day": 4,
+      "classroom": "6I",
+      "start": "11:30",
+      "end": "13:30",
+      "course": "Mobile Application Development"
     }
   ]
 }

@@ -10,7 +10,7 @@ import it.polito.mad.polilife.db.classes.StudentInfo;
 
 /**
  * Parcelable wrapper for a Student instance, so that its data can be forwarded through intents
- * Created by luigi on 10/06/15.
+ * Created by luigi onSelectAppliedJobs 10/06/15.
  */
 public class PStudentData implements DBObjectBuilder<StudentInfo>, Parcelable {
 

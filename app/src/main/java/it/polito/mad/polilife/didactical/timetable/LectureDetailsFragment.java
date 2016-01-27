@@ -18,7 +18,7 @@ import it.polito.mad.polilife.didactical.ClassroomSelectionListener;
 import it.polito.mad.polilife.didactical.ProfessorSelectionListener;
 
 /**
- * Created by luigi on 16/11/15.
+ * Created by luigi onSelectAppliedJobs 16/11/15.
  */
 public class LectureDetailsFragment extends Fragment {
 
@@ -69,7 +69,7 @@ public class LectureDetailsFragment extends Fragment {
             public void onClick(View v) {
                 String room = roomTV.getText().toString();
 
-                PoliLifeDB.searchClassrooms(room, new DBCallbacks.ClassroomSearchCallback() {
+                /*PoliLifeDB.searchClassrooms(room, new DBCallbacks.ClassroomSearchCallback() {
                     @Override
                     public void onClassroomsFound(List<Classroom> result) {
                         Classroom classroom = result.get(0);
@@ -83,7 +83,7 @@ public class LectureDetailsFragment extends Fragment {
 
                     }
                 });
-
+*/
 
             }
         });

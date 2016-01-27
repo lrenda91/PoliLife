@@ -5,7 +5,7 @@ import java.util.List;
 import it.polito.mad.polilife.db.classes.Notice;
 
 /**
- * Created by luigi on 06/12/15.
+ * Created by luigi onSelectAppliedJobs 06/12/15.
  */
 public interface NoticesListener {
 

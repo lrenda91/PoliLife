@@ -22,7 +22,7 @@ import it.polito.mad.polilife.db.classes.Notice;
 import it.polito.mad.polilife.db.classes.Student;
 
 public class NoticeDetailsActivity extends AppCompatActivity
-        implements DBCallbacks.SingleFetchCallback<Notice> {
+        implements DBCallbacks.GetOneCallback<Notice> {
 
     private Notice mNotice;
     private Toolbar mToolbar;
@@ -52,7 +52,7 @@ public class NoticeDetailsActivity extends AppCompatActivity
 
         //when I open this activity, Notice obj is HOWEVER inside local data store.
         //so, let's retrieve it from local data store
-        PoliLifeDB.retrieveObject(id, Notice.class, true, this);
+        PoliLifeDB.retrieveObject(id, Notice.class, this);
 
         if (savedInstanceState != null){
             loaded = savedInstanceState.getBoolean("load");

@@ -17,7 +17,7 @@ import it.polito.mad.polilife.db.classes.Notice;
 /**
  * Parcelable wrapper for a notice, so its data can be forwarded through intents.<BR>
  * It implements Builder design pattern, by chaining setter methods to build a Notice instance.
- * Created by luigi on 09/06/15.
+ * Created by luigi onSelectAppliedJobs 09/06/15.
  */
 public class PNoticeData implements Parcelable, DBObjectBuilder<Notice> {
 

@@ -14,31 +14,31 @@ import java.util.LinkedList;
 import java.util.List;
 
 import it.polito.mad.polilife.R;
-import it.polito.mad.polilife.db.classes.Position;
+import it.polito.mad.polilife.db.classes.Job;
 
 /**
- * Created by luigi on 27/12/15.
+ * Created by luigi onSelectAppliedJobs 27/12/15.
  */
 public class PositionsBaseAdapter extends BaseAdapter {
 
-    interface OnPositionClickListener {
-        void onPositionItemClick(View itemView, int position, Position item);
+    interface OnJobClickListener {
+        void onPositionItemClick(View itemView, int position, Job item);
     }
 
     private Context mContext;
-    private List<Position> mData;
-    private OnPositionClickListener mOnClickListener;
+    private List<Job> mData;
+    private OnJobClickListener mOnClickListener;
 
     public PositionsBaseAdapter(Context context){
         mContext = context;
         mData = new LinkedList<>();
     }
 
-    public void setOnClickListener(OnPositionClickListener listener) {
+    public void setOnClickListener(OnJobClickListener listener) {
         this.mOnClickListener = listener;
     }
 
-    public void setData(List<Position> data){
+    public void setData(List<Job> data){
         mData = data;
     }
 
@@ -48,7 +48,7 @@ public class PositionsBaseAdapter extends BaseAdapter {
     }
 
     @Override
-    public Position getItem(int position) {
+    public Job getItem(int position) {
         return mData.get(position);
     }
 
@@ -63,7 +63,7 @@ public class PositionsBaseAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.layout_position_item, parent, false);
         }
-        final Position p = getItem(position);
+        final Job p = getItem(position);
         Resources res = mContext.getResources();
         DateFormat df = new SimpleDateFormat(res.getString(R.string.date_format));
         String name = p.getName() != null ? p.getName() : res.getString(R.string.no_name);

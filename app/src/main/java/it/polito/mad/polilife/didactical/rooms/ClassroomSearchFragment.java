@@ -1,41 +1,28 @@
 package it.polito.mad.polilife.didactical.rooms;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import java.util.LinkedList;
 import java.util.List;
 
 import it.polito.mad.polilife.R;
-import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Classroom;
 import it.polito.mad.polilife.didactical.ClassroomSelectionListener;
 
 /**
- * Created by luigi on 12/11/15.
+ * Created by luigi onSelectAppliedJobs 12/11/15.
  */
-public class ClassroomSearchFragment extends Fragment implements DBCallbacks.ClassroomSearchCallback {
+public class ClassroomSearchFragment extends Fragment
+        implements DBCallbacks.GetListCallback<Classroom> {
 
     public static ClassroomSearchFragment newInstance(String searchParam){
         Bundle args = new Bundle();
@@ -67,12 +54,12 @@ public class ClassroomSearchFragment extends Fragment implements DBCallbacks.Cla
         mViewFlipper = (ViewFlipper) view.findViewById(R.id.flipper);
         mListView = (ListView) view.findViewById(R.id.classroom_results);
         String searchParam = getArguments().getString("param");
-        PoliLifeDB.searchClassrooms(searchParam, this);
+        PoliLifeDB.searchClassrooms(searchParam, false, this);
         show(WAITING);
     }
 
     @Override
-    public void onClassroomsFound(final List<Classroom> result) {
+    public void onFetchSuccess(final List<Classroom> result) {
         mListView.setAdapter(new BaseAdapter() {
             @Override
             public int getCount() {
@@ -115,7 +102,7 @@ public class ClassroomSearchFragment extends Fragment implements DBCallbacks.Cla
     }
 
     @Override
-    public void onClassroomSearchError(Exception exception) {
+    public void onFetchError(Exception exception) {
         show(NO_RESULTS);
     }
 

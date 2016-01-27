@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
@@ -28,11 +30,9 @@ import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.db.classes.Student;
 
 /**
- * Created by luigi on 01/01/16.
+ * Created by luigi onSelectAppliedJobs 01/01/16.
  */
 public class ChatFragment extends Fragment {
-
-    private static final int NEW_CHAT_REQUEST_CODE = 1;
 
     public static ChatFragment newInstance(){
         return new ChatFragment();
@@ -40,7 +40,7 @@ public class ChatFragment extends Fragment {
 
     private Student mUser = (Student) ParseUser.getCurrentUser();
 
-    private PubnubChatManager mChatManager;
+    private PubnubChatManager mChatManager = PubnubChatManager.getInstance();
 
     private ListView mConversations;
     private List<String> mSubscriptions;
@@ -49,12 +49,22 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String UUID = mUser.getUsername();
-        mChatManager = new PubnubChatManager(UUID);
+        mChatManager.init();
         mChatManager.setChatListener(new PubnubChatManager.ChatListener() {
             @Override
             void onSubscribedToChannel(final String channel) {
-                if (!mSubscriptions.contains(channel)) {
+                ParsePush.subscribeInBackground(channel, new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null){
+                            Log.e("Parse", "error: "+e.getMessage());
+                            return;
+                        }
+                        mSubscriptions.add(channel);
+                        ((BaseAdapter) mConversations.getAdapter()).notifyDataSetChanged();
+                    }
+                });
+                /*if (!mSubscriptions.contains(channel)) {
                     mUser.addChannel(channel);
                     mUser.saveInBackground(new SaveCallback() {
                         @Override
@@ -68,6 +78,12 @@ public class ChatFragment extends Fragment {
                         }
                     });
                 }
+                */
+            }
+            @Override
+            void onJoinRequestReceived(String channel) {
+                Toast.makeText(getActivity(), "Join request to channel "+channel, Toast.LENGTH_SHORT).show();
+                onSubscribedToChannel(channel);
             }
         });
     }
@@ -95,7 +111,7 @@ public class ChatFragment extends Fragment {
                             case DialogInterface.BUTTON_POSITIVE:
                                 Intent i = new Intent(getActivity(), CreateChatActivity.class);
                                 i.putExtra("mode",mSelected);
-                                startActivityForResult(i, NEW_CHAT_REQUEST_CODE);
+                                startActivityForResult(i, CreateChatActivity.NEW_CHAT_REQUEST_CODE);
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE:
                                 dialog.dismiss();
@@ -115,6 +131,7 @@ public class ChatFragment extends Fragment {
             }
         });
         mSubscriptions = mUser.getChannels() != null ? mUser.getChannels() : new ArrayList<String>();
+
         mConversations = (ListView) view.findViewById(R.id.conversations_list);
         mConversations.setAdapter(new BaseAdapter() {
             @Override
@@ -144,20 +161,50 @@ public class ChatFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(getActivity(), MessagingActivity.class);
-                        intent.putExtra("UUID", mChatManager.getUUID());
+                        intent.putExtra("UUID", mUser.getUsername());
                         intent.putExtra("CHANNEL", item);
                         startActivity(intent);
+                    }
+                });
+                convertView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle("Cancel chat");
+                        DialogInterface.OnClickListener onClick = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which){
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        List<String> l = new ArrayList<String>();
+                                        l.add(item);
+                                        mSubscriptions.remove(item);
+                                        mUser.removeChannel(l);
+                                        mUser.saveEventually();
+                                        notifyDataSetChanged();
+                                        break;
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        dialog.dismiss();
+                                        break;
+                                }
+                            }
+                        };
+                        builder.setCancelable(false)
+                                .setPositiveButton("OK", onClick)
+                                .setNegativeButton("Cancel", onClick);
+                        final AlertDialog alert = builder.create();
+                        alert.show();
+                        return false;
                     }
                 });
                 return convertView;
             }
         });
-        mChatManager.init(mSubscriptions);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == NEW_CHAT_REQUEST_CODE){
+        if (requestCode == CreateChatActivity.NEW_CHAT_REQUEST_CODE){
             if (resultCode == Activity.RESULT_OK){
                 switch(data.getIntExtra("mode", -1)){
                     case CreateChatActivity.ONE_TO_ONE:
@@ -165,11 +212,12 @@ public class ChatFragment extends Fragment {
                         mChatManager.newOneToOneChat(otherUUID);
                         break;
                     case CreateChatActivity.ONE_TO_MANY:
+                        String groupName = data.getStringExtra("groupName");
                         List<String> UUIDs = data.getStringArrayListExtra("params");
-                        mChatManager.newGroupChat("a", UUIDs);
+                        mChatManager.newGroupChat(groupName, UUIDs);
                         break;
                 }
             }
         }
-    }
+     }
 }
