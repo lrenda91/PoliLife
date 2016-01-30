@@ -4,11 +4,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.parse.ParsePush;
 import com.parse.ParseUser;
 import com.pubnub.api.Callback;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
+import com.pubnub.api.PubnubException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import it.polito.mad.polilife.db.classes.Student;
+import it.polito.mad.polilife.db.push.JSONFactory;
 import it.polito.mad.polilife.db.push.PushManager;
 
 
@@ -43,7 +45,7 @@ public class PubnubChatManager {
         return mInstance;
     }
 
-
+    private static final Student sUser = (Student) ParseUser.getCurrentUser();
 
     private Pubnub mPubnub;
     private ChatListener mListener;
@@ -63,6 +65,13 @@ public class PubnubChatManager {
         mListener = listener;
     }
 
+        public void handleJSON(String json){
+        try{
+            JSONObject jsonObject = new JSONObject(json);
+            mSubscribeCallback.successCallback(PUBLIC_CHANNEL, jsonObject);
+        }catch(JSONException e){}
+    }
+
     public void init(String... channels){
         List<String> list = new LinkedList<>();
         for (String s : channels) list.add(s);
@@ -71,15 +80,14 @@ public class PubnubChatManager {
     }
 
     public void init(List<String> channels){
-        ParsePush.subscribeInBackground(PUBLIC_CHANNEL);
         try {
             String[] ss = new String[channels.size()+1];
             for (int i=0;i<channels.size();i++) ss[i] = channels.get(i);
             ss[ss.length-1] = PUBLIC_CHANNEL;
             mPubnub.subscribe(ss, mSubscribeCallback);
-
-            mPubnub.history(PUBLIC_CHANNEL, 100, false, mHistoryCallback);
-            //mPubnub.presence(this.mPrivateChannel, mPresenceCallback);
+            for (String s : channels){
+                mPubnub.presence(s, mPresenceCallback);
+            }
         } catch (Exception e){ e.printStackTrace(); }
     }
 
@@ -96,16 +104,11 @@ public class PubnubChatManager {
         if (mPubnub.getUUID().equals(receiverUUID)){
             return;
         }
-        JSONObject obj = new JSONObject();
         try {
-            obj.put("type", "setup_1_to_1");
-            obj.put("senderID", mPubnub.getUUID());
-            obj.put("receiverID", receiverUUID);
-            String newPairChannelName = getChannelName(mPubnub.getUUID(), receiverUUID);
-            //mPubnub.publish(PUBLIC_CHANNEL, obj, mPublishCallback);
-            mPubnub.subscribe(newPairChannelName, mSubscribeCallback);
-
-            PushManager.sendPushNotification(Arrays.asList(PUBLIC_CHANNEL), obj, null);
+            String pairChannel = getChannelName(mPubnub.getUUID(), receiverUUID);
+            List<String> receivers = Arrays.asList(mPubnub.getUUID(), receiverUUID);
+            JSONObject request = JSONFactory.createChatSetupMessage(pairChannel, receivers);
+            PushManager.sendPushNotification(Arrays.asList(PUBLIC_CHANNEL), request, null);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -113,17 +116,11 @@ public class PubnubChatManager {
         }
     }
 
-    public void newGroupChat(String groupName, List<String> receiversUUID){
-        JSONObject obj = new JSONObject();
+    public void newGroupChat(String groupName, List<String> receiversUUIDs){
+        receiversUUIDs.add(mPubnub.getUUID());
         try {
-            obj.put("type", "setup_1_to_N");
-            obj.put("senderID", mPubnub.getUUID());
-            obj.put("group", groupName);
-            obj.put("receiverID", new JSONArray(receiversUUID));
-            //mPubnub.publish(PUBLIC_CHANNEL, obj, mPublishCallback);
-            mPubnub.subscribe(groupName, mSubscribeCallback);
-
-            PushManager.sendPushNotification(Arrays.asList(PUBLIC_CHANNEL), obj, null);
+            JSONObject request = JSONFactory.createChatSetupMessage(groupName, receiversUUIDs);
+            PushManager.sendPushNotification(Arrays.asList(PUBLIC_CHANNEL), request, null);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -153,40 +150,27 @@ public class PubnubChatManager {
     private Callback mSubscribeCallback = new Callback() {
         @Override
         public void successCallback(final String channel, Object message) {
-            Log.d(TAG, "Received onSelectAppliedJobs channel: " + channel + " Msg: " + message.toString());
             if (message instanceof JSONObject){
                 try {
                     JSONObject jsonObject = (JSONObject) message;
-                    if (jsonObject.has("type")) {
-                        if (jsonObject.getString("type").equals("setup_1_to_1")) {
-                            String receiver = jsonObject.getString("receiverID");
-                            if (!receiver.equals(mPubnub.getUUID())){
-                                Log.d(TAG, "Discard!! I'm not the receiver");
-                                return;
-                            }
-                            String sender = jsonObject.getString("senderID");
-                            final String newChannel = getChannelName(sender, receiver);
-                            mMainHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mListener != null)
-                                        mListener.onJoinRequestReceived(newChannel);
-                                }
-                            });
-                            //mPubnub.subscribe(newChannel, this);
-                        }
-                        else if (jsonObject.getString("type").equals("setup_1_to_N")) {
-                            JSONArray uuids = jsonObject.getJSONArray("receiverID");
-                            for (int i=0; i<uuids.length(); i++){
-                                String id = uuids.getString(i);
+                    if (channel.equals(PUBLIC_CHANNEL)){
+                        if (jsonObject.has("type") && jsonObject.get("type").equals("setup")){
+                            //String sender = jsonObject.getString("senderID");
+                            JSONArray receivers = jsonObject.getJSONArray("receiverIDs");
+                            for (int i=0; i<receivers.length(); i++){
+                                String id = receivers.getString(i);
                                 if (id.equals(mPubnub.getUUID())){  //I'm one of receivers
-                                    final String groupChannelName = jsonObject.getString("group");
-                                    //mPubnub.subscribe(groupChannelName, this);
+                                    final String channelToSetup = jsonObject.getString("group");
+                                    JSONObject state = new JSONObject();
+                                    state.put("first", sUser.getFirstName());
+                                    state.put("last", sUser.getLastName());
+                                    mPubnub.setState(channelToSetup, id, state, new Callback() {});
+                                    mPubnub.subscribe(channelToSetup, this);
                                     mMainHandler.post(new Runnable() {
                                         @Override
                                         public void run() {
                                             if (mListener != null)
-                                                mListener.onJoinRequestReceived(groupChannelName);
+                                                mListener.onJoinRequestReceived(channelToSetup);
                                         }
                                     });
                                     break;
@@ -209,15 +193,66 @@ public class PubnubChatManager {
                             }
                         });
                     }
+
+
+
+
+
+
+
+
+                    /*if (jsonObject.has("type")) {
+                        if (jsonObject.getString("type").equals("setup_1_to_1")) {
+                            String receiver = jsonObject.getString("receiverIDs");
+                            String sender = jsonObject.getString("senderID");
+                            if (!receiver.equals(mPubnub.getUUID()) &&
+                                    !sender.equals(mPubnub.getUUID()) ){
+                                return;
+                            }
+                            final String newChannel = getChannelName(sender, receiver);
+                            //This message will be received ALSO by myself
+                            JSONObject state = new JSONObject();
+                            state.put("first", sUser.getFirstName());
+                            state.put("last", sUser.getLastName());
+                            mPubnub.setState(newChannel, mPubnub.getUUID(), state, new Callback() {});
+
+                            mMainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (mListener != null)
+                                        mListener.onJoinRequestReceived(newChannel);
+                                }
+                            });
+                        }
+                        else if (jsonObject.getString("type").equals("setup_1_to_N")) {
+                            JSONArray uuids = jsonObject.getJSONArray("receiverIDs");
+                            for (int i=0; i<uuids.length(); i++){
+                                String id = uuids.getString(i);
+                                if (id.equals(mPubnub.getUUID())){  //I'm one of receivers
+                                    final String groupChannelName = jsonObject.getString("group");
+                                    mMainHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (mListener != null)
+                                                mListener.onJoinRequestReceived(groupChannelName);
+                                        }
+                                    });
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    */
+
                 }
                 catch(JSONException e){
                     e.printStackTrace();
                     Log.e(TAG, "Error onSelectAppliedJobs jsons in subscribe, "+e.getClass().getSimpleName()+" : "+e.getMessage());
                 }
-                /*catch(PubnubException e){
+                catch(PubnubException e){
                     e.printStackTrace();
-                    Log.e(TAG, "Error onSelectAppliedJobs pubnub in subscribe, "+e.getClass().getSimpleName()+" : "+e.getMessage());
-                }*/
+                    Log.e(TAG, "Error onSelectAppliedJobs jsons in subscribe, "+e.getClass().getSimpleName()+" : "+e.getMessage());
+                }
             }
         }
         @Override
@@ -228,7 +263,7 @@ public class PubnubChatManager {
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (mListener != null) mListener.onSubscribedToChannel(channel);
+                        if (mListener != null) mListener.onSubscribed(channel);
                     }
                 });
             }
@@ -303,14 +338,31 @@ public class PubnubChatManager {
 
     private Callback mPresenceCallback = new Callback() {
         @Override
-        public void successCallback(String channel, Object response) {
-            Log.i(TAG, "Presence success: " + response.toString() + " class: " + response.getClass().toString());
+        public void successCallback(final String channel, Object response) {
+            //Log.i(TAG, "Presence success: " + response.toString() + " class: " + response.getClass().toString());
             if (response instanceof JSONObject){
                 final JSONObject json = (JSONObject) response;
                 try {
                     final int occ = json.getInt("occupancy");
                     final String user = json.getString("uuid");
                     final String action = json.getString("action");
+                    if (action.equals("join")){
+                        mMainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mListener != null) mListener.onJoin(channel, user, occ);
+                            }
+                        });
+                    }
+                    else if (action.equals("leave")){
+                        mMainHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mListener != null) mListener.onLeave(channel, user, occ);
+                            }
+                        });
+                    }
+                    Log.i(TAG, json.toString());
                 } catch (JSONException e){ e.printStackTrace(); }
             }
         }
@@ -324,8 +376,6 @@ public class PubnubChatManager {
         @Override
         public void successCallback(String channel, Object response) {
             try {
-                Log.d(TAG, "HereNow onSelectAppliedJobs channel '"+channel+"': "+response.toString());
-                System.out.println(response.toString());
                 JSONObject json = (JSONObject) response;
                 final int occ = json.getInt("occupancy");
                 final JSONArray hereNowJSON = json.getJSONArray("uuids");
@@ -345,15 +395,18 @@ public class PubnubChatManager {
     };
 
     private static String getChannelName(String UUID1, String UUID2){
-        return UUID1 + "-" + UUID2;
+        if (UUID1.compareTo(UUID2) <= 0) return UUID1 + "-" + UUID2;
+        return UUID2 + "-" + UUID1;
     }
 
     public static abstract class ChatListener {
         void onTextMessageReceived(String channel, ChatMessage message){}
         void onJoinRequestReceived(String channel){}
         void onTextMessageSent(String channel, ChatMessage message){}
-        void onSubscribedToChannel(String channel){}
+        void onSubscribed(String channel){}
         void onHistory(String channel, List<ChatMessage> messages){}
+        void onJoin(String channel, String UUID, int occupancy){}
+        void onLeave(String channel, String UUID, int occupancy){}
         void onError(Exception e){}
     }
 

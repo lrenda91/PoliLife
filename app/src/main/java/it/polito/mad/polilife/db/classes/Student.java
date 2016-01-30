@@ -27,10 +27,10 @@ public class Student extends ParseUser {
     public static final String ABOUT = "aboutMe";
     public static final String PHOTO = "photo";
     public static final String CHANNELS = "channels";
+    public static final String LAST_LOGIN = "lastLogin";
 
-    public Student() {
-        //addChannel("broadcast");
-    }
+    public Date getLastLogin(){ return (Date) get(LAST_LOGIN); }
+    public void setLastLogin(Date value){ put(LAST_LOGIN, value); }
 
     public StudentInfo getStudentInfo(){ return (StudentInfo) get(STUDENT_KEY); }
     public void setStudentInfo(StudentInfo value){ put(STUDENT_KEY, value); }

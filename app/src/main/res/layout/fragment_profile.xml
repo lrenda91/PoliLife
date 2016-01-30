@@ -16,14 +16,17 @@
 
             <RelativeLayout
                 android:id="@+id/headerStudent"
+                android:background="@color/colorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/header_image_height">
-                <ImageView
+                <it.polito.mad.polilife.CircularImageView
+                    android:layout_marginLeft="-16dp"
+                    android:layout_marginRight="-16dp"
                     android:id="@+id/profile_photo"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"/>
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"/>
             </RelativeLayout>
 
 

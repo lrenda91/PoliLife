@@ -41,8 +41,6 @@ public class PushManager {
          */
         ParseQuery<ParseUser> users = ParseQuery.or(queriesBasedOnSingleChannels);
 
-
-
         ParsePush push = new ParsePush();
         ParseQuery query = ParseInstallation.getQuery()
                 .whereMatchesQuery("user", users);

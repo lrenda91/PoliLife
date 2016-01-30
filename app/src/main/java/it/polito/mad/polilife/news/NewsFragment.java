@@ -28,6 +28,7 @@ import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Job;
 import it.polito.mad.polilife.db.classes.Notice;
 import it.polito.mad.polilife.noticeboard.NoticeDetailsActivity;
+import it.polito.mad.polilife.placement.PositionDetailsActivity;
 
 public class NewsFragment extends Fragment
         implements DBCallbacks.GetListCallback<ParseObject> {
@@ -156,7 +157,6 @@ public class NewsFragment extends Fragment
                 String from = n.getAvailableFrom() != null ? df.format(n.getAvailableFrom()) :
                         _context.getString(R.string.no_available_from);
                 ((TextView)convertView.findViewById(R.id.offer_title)).setText(title);
-                ((TextView)convertView.findViewById(R.id.offer_price)).setText(n.getPrice()+"");
                 ((TextView)convertView.findViewById(R.id.offer_location)).setText(location);
                 ((TextView)convertView.findViewById(R.id.offer_date)).setText(from);
                 convertView.setOnClickListener(new View.OnClickListener() {
@@ -173,14 +173,22 @@ public class NewsFragment extends Fragment
                     convertView = LayoutInflater.from(_context).inflate(
                             R.layout.layout_position_item, parent, false);
                 }
-                Job p = (Job) child;
-                String name = p.getName() != null ? p.getName() : _context.getString(R.string.no_name);
-                String city = p.getCity() != null ? p.getCity() : _context.getString(R.string.no_city);
-                String start = p.getStartDate() != null ? df.format(p.getStartDate()) :
+                final Job job = (Job) child;
+                String name = job.getName() != null ? job.getName() : _context.getString(R.string.no_name);
+                String city = job.getCity() != null ? job.getCity() : _context.getString(R.string.no_city);
+                String start = job.getStartDate() != null ? df.format(job.getStartDate()) :
                         _context.getString(R.string.no_start_date);
                 ((TextView) convertView.findViewById(R.id.offer_title)).setText(name);
                 ((TextView)convertView.findViewById(R.id.offer_location)).setText(city);
                 ((TextView)convertView.findViewById(R.id.offer_date)).setText(start);
+                convertView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent i = new Intent(getActivity(), PositionDetailsActivity.class);
+                        i.putExtra("id", job.getObjectId());
+                        startActivity(i);
+                    }
+                });
             }
             else{
                 throw new RuntimeException();
@@ -213,11 +221,11 @@ public class NewsFragment extends Fragment
                                  View convertView, ViewGroup parent) {
             String headerTitle = getGroup(groupPosition);
             if (convertView == null) {
-                convertView = new TextView(_context);
-                ((TextView) convertView).setTypeface(null, Typeface.BOLD);
-                ((TextView) convertView).setText(headerTitle);
+                convertView = LayoutInflater.from(_context).inflate(
+                        R.layout.layout_group_item, parent, false);
             }
-
+            ((TextView) convertView.findViewById(R.id.group_name)).setText(headerTitle);
+            ((ExpandableListView) parent).expandGroup(groupPosition);
             return convertView;
         }
 

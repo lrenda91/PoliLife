@@ -3,10 +3,12 @@ package it.polito.mad.polilife.chat;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +27,20 @@ public class MessagingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messaging);
-        String UUID = getIntent().getStringExtra("UUID");
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         mChannel = getIntent().getStringExtra("CHANNEL");
-        //mChatManager = new PubnubChatManager(UUID);
-        List<String> l = new ArrayList<>();
-        l.add(mChannel);
-        mChatManager.init(l);
+        mChatManager.init(mChannel);
+        getSupportActionBar().setTitle(mChannel);
 
         mMsgEditText = (EditText) findViewById(R.id.msg);
         mMessagesListView = (ListView) findViewById(R.id.messages_list);
@@ -39,26 +49,30 @@ public class MessagingActivity extends AppCompatActivity {
         mChatManager.setChatListener(new PubnubChatManager.ChatListener() {
             @Override
             public void onTextMessageReceived(String channel, ChatMessage message) {
-                Log.d("PUBNUB", "Received msg: "+message.toString());
                 adapter.addMessage(message);
             }
 
             @Override
             void onTextMessageSent(String channel, ChatMessage message) {
-                Log.d("PUBNUB", "Sent msg: "+message.toString());
                 adapter.addMessage(message);
                 mMsgEditText.setText("");
-            }
-
-            @Override
-            public void onSubscribedToChannel(String channel) {
-
             }
 
             @Override
             public void onHistory(String channel, List<ChatMessage> messages) {
                 adapter.setData(messages);
             }
+
+            @Override
+            void onJoin(String channel, String UUID, int occupancy) {
+                Toast.makeText(MessagingActivity.this, UUID+" joined", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            void onLeave(String channel, String UUID, int occupancy) {
+                Toast.makeText(MessagingActivity.this, UUID+" leaved", Toast.LENGTH_SHORT).show();
+            }
+
         });
 
         findViewById(R.id.send).setOnClickListener(new View.OnClickListener() {
@@ -68,7 +82,7 @@ public class MessagingActivity extends AppCompatActivity {
                 mChatManager.sendMessage(mChannel, msg);
             }
         });
-        mChatManager.history(mChannel, 30);
+        mChatManager.history(mChannel, 50);
     }
 
     @Override

@@ -22,6 +22,9 @@ import android.widget.Toast;
 
 import com.parse.ParseUser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import it.polito.mad.polilife.chat.ChatFragment;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
@@ -71,9 +74,19 @@ public class HomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //if activity starts thanks to notification (chat), let's start with chat page
-        if (getIntent().getStringExtra("json") != null){
-            mCurrentFeature = CHAT;
+        //if activity starts thanks to notification, let's start with suitable page
+        if (getIntent().hasExtra("json")){
+            try{
+                JSONObject obj = new JSONObject(getIntent().getStringExtra("json"));
+                if (obj.has("feature")) {
+                    String pushFeature = obj.getString("feature");
+                    if (pushFeature.equals("chat")) {
+                        mCurrentFeature = CHAT;
+                    } else if (pushFeature.equals("didactical")){
+                        mCurrentFeature = NEWS;
+                    }
+                }
+            }catch(JSONException e){}
         }
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);

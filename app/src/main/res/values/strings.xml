@@ -276,4 +276,7 @@
     <string name="search_result">Search result</string>
     <string name="count_result"> results found</string>
 
+    <string name="didactical_push_subtitle">Didactical notification. Touch to open app</string>
+    <string name="chat_push_subtitle">Chat notification. Touch to open app</string>
+
 </resources>

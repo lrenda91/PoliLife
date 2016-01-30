@@ -2,14 +2,17 @@ package it.polito.mad.polilife.db;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.parse.*;
 
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import it.polito.mad.polilife.MainActivity;
 import it.polito.mad.polilife.db.classes.*;
@@ -33,7 +36,7 @@ public class PoliLifeDB {
 
     public static final String NOTICES = "notices";
 
-    public static void initialize(Context context, Class<? extends ParseObject>... classesToRegister) {
+    public static void initialize(final Context context, Class<? extends ParseObject>... classesToRegister) {
         if (context == null) {
             throw new RuntimeException("context must be non null");
         }
@@ -107,6 +110,8 @@ public class PoliLifeDB {
         } catch (ParseException e) {
             return null;
         }
+        student.setLastLogin(new Date());
+        student.saveEventually();
         return current;
     }
 
@@ -123,6 +128,8 @@ public class PoliLifeDB {
                     return;
                 }
                 Student student = (Student) parseUser;
+                student.setLastLogin(new Date());
+                student.saveEventually();
                 ParseObject studentInfo = student.getStudentInfo();
                 //prova
                 ParseInstallation.getCurrentInstallation().put("user", student);
@@ -359,6 +366,23 @@ public class PoliLifeDB {
                 if (!fromLocalDataStore) {
                     ParseObject.unpinAllInBackground("cachedNotices");
                     ParseObject.pinAllInBackground("cachedNotices", list);
+                }
+                if (listener != null) listener.onFetchSuccess(list);
+            }
+        });
+    }
+
+    public static void getNewestDidacticalNotices(final GetListCallback<Notice> listener){
+        ParseQuery<Notice> query = ParseQuery.getQuery(Notice.class);
+        query.whereEqualTo(Notice.TYPE, Notice.DIDACTICAL_TYPE);
+        Date lastLogin = ((Student) ParseUser.getCurrentUser()).getLastLogin();
+        query.whereGreaterThanOrEqualTo("createdAt", lastLogin);
+        query.findInBackground(new FindCallback<Notice>() {
+            @Override
+            public void done(List<Notice> list, ParseException e) {
+                if (e != null) {
+                    if (listener != null) listener.onFetchError(e);
+                    return;
                 }
                 if (listener != null) listener.onFetchSuccess(list);
             }

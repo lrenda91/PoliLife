@@ -154,58 +154,70 @@ public class NoticeDetailsActivity extends AppCompatActivity
             details.addView(item);
         }
 
-        View[] advViews = {
+        final View[] advViews = {
                 findViewById(R.id.adv_name_layout),
                 findViewById(R.id.adv_mail_layout),
                 findViewById(R.id.adv_phone_layout)
         };
-        int[] icons = {
+        final int[] icons = {
                 R.drawable.ic_user,
                 R.drawable.ic_mail,
                 android.R.drawable.ic_menu_call
         };
         final ParseUser owner = mNotice.getOwner();
-        final String fname = owner.getString(Student.FIRST_NAME);
-        final String lname = owner.getString(Student.LAST_NAME);
-        final String name = (fname != null && lname != null) ? fname+" "+lname : "null";
-        final String phone = owner.getString(Student.CONTACT_PHONE);
-        String[] values = {
-                name,
-                owner.getEmail(),
-                phone
-        };
-        for (int i=0;i<advViews.length;i++){
-            ((ImageView) advViews[i].findViewById(R.id.rowIcon)).setImageResource(icons[i]);
-            ((TextView) advViews[i].findViewById(R.id.rowText)).setText(values[i]);
-            if (i == 1) {
-                advViews[i].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent email = new Intent(Intent.ACTION_SEND);
-                        email.putExtra(Intent.EXTRA_EMAIL, new String[]{owner.getEmail()});
-                        email.putExtra(Intent.EXTRA_SUBJECT, "subject");
-                        email.putExtra(Intent.EXTRA_TEXT, "");
-                        email.setType("message/rfc822");
-                        startActivity(Intent.createChooser(email, "Choose an Email client :"));
+        PoliLifeDB.retrieveObject(owner.getObjectId(), ParseUser.class, new DBCallbacks.GetOneCallback<ParseUser>() {
+            @Override
+            public void onFetchSuccess(ParseUser result) {
+                final String fname = owner.getString(Student.FIRST_NAME);
+                final String lname = owner.getString(Student.LAST_NAME);
+                final String name = (fname != null && lname != null) ? fname+" "+lname : "null";
+                final String phone = owner.getString(Student.CONTACT_PHONE);
+                String[] values = {
+                        name,
+                        owner.getEmail(),
+                        phone
+                };
+                for (int i=0;i<advViews.length;i++){
+                    ((ImageView) advViews[i].findViewById(R.id.rowIcon)).setImageResource(icons[i]);
+                    ((TextView) advViews[i].findViewById(R.id.rowText)).setText(values[i]);
+                    if (i == 1) {
+                        advViews[i].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent email = new Intent(Intent.ACTION_SEND);
+                                email.putExtra(Intent.EXTRA_EMAIL, new String[]{owner.getEmail()});
+                                email.putExtra(Intent.EXTRA_SUBJECT, "subject");
+                                email.putExtra(Intent.EXTRA_TEXT, "");
+                                email.setType("message/rfc822");
+                                startActivity(Intent.createChooser(email, "Choose an Email client :"));
+                            }
+                        });
                     }
-                });
-            }
-            if (i == 2) {
-                advViews[i].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            Intent callIntent = new Intent(Intent.ACTION_CALL);
-                            callIntent.setData(Uri.parse("tel:" + phone));
-                            startActivity(callIntent);
-                        } catch (ActivityNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (SecurityException e) {
-                        }
+                    if (i == 2) {
+                        advViews[i].setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                try {
+                                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                                    callIntent.setData(Uri.parse("tel:" + phone));
+                                    startActivity(callIntent);
+                                } catch (ActivityNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (SecurityException e) {
+                                }
+                            }
+                        });
                     }
-                });
+                }
             }
-        }
+
+            @Override
+            public void onFetchError(Exception exception) {
+
+            }
+        });
+
+
 
     }
 

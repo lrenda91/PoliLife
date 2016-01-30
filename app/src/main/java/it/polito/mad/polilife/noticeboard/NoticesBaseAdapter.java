@@ -69,7 +69,6 @@ public class NoticesBaseAdapter extends BaseAdapter {
         String from = n.getAvailableFrom() != null ? n.getAvailableFrom().toString() :
                 mContext.getString(R.string.no_available_from);
         ((TextView)convertView.findViewById(R.id.offer_title)).setText(title);
-        ((TextView)convertView.findViewById(R.id.offer_price)).setText(n.getPrice()+"");
         ((TextView)convertView.findViewById(R.id.offer_location)).setText(location);
         ((TextView)convertView.findViewById(R.id.offer_date)).setText(from);
         convertView.setOnClickListener(new View.OnClickListener() {

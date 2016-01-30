@@ -38,6 +38,12 @@ public class CircularImageView extends ImageView {
 		paintBorder.setAntiAlias(true);
 
 	}
+
+	public void setBorderStyle(int width, int color){
+		borderWidth = width;
+		paintBorder.setStrokeWidth((float) width);
+		paintBorder.setColor(color);
+	}
 	
 	@Override
 	public void onDraw(Canvas canvas) {

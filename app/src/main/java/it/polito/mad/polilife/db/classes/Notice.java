@@ -103,8 +103,9 @@ public class Notice extends ParseObject implements Parcelable {
     public static final String SIZE = "size";
     public static final String AVAILABILITY = "availableFrom";
 
-    private static final String HOME_TYPE = "home";
-    private static final String BOOK_TYPE = "book";
+    public static final String HOME_TYPE = "home";
+    public static final String BOOK_TYPE = "book";
+    public static final String DIDACTICAL_TYPE = "didactical";
 
     public static class SortParam {
         public String key;
@@ -137,6 +138,7 @@ public class Notice extends ParseObject implements Parcelable {
         public int daysAgo = -1;
         public Filter homeType(){ type = HOME_TYPE; return this; }
         public Filter bookType(){ type = BOOK_TYPE; return this; }
+        public Filter didacticalType(){ type = DIDACTICAL_TYPE; return this; }
         public Filter title(String value){ title = value; return this; }
         public Filter location(String value){ location = value; return this; }
         public Filter latitude(Double value){ latitude = value; return this; }

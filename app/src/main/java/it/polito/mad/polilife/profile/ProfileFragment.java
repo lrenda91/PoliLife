@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import it.polito.mad.polilife.CircularImageView;
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.chat.CreateChatActivity;
@@ -52,7 +53,7 @@ public class ProfileFragment extends Fragment {
     private StudentInfo mInfo;
 
     //private ViewGroup contactsLayout, infoLayout;
-    private ImageView mProfilePhoto;
+    private CircularImageView mProfilePhoto;
     private ViewSwitcher[] switchableViews;
     private GridView skillsGrid;
 
@@ -100,7 +101,8 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         skillsGrid = (GridView) view.findViewById(R.id.skills);
-        mProfilePhoto = (ImageView) view.findViewById(R.id.profile_photo);
+        mProfilePhoto = (CircularImageView) view.findViewById(R.id.profile_photo);
+
         if (mUser.getPhoto() != null) {
             try {
                 mProfilePhoto.setImageBitmap(Utility.getBitmap(mUser.getPhoto().getData()));
