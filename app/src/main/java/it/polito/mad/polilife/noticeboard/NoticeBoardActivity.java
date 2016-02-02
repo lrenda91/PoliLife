@@ -31,20 +31,21 @@ import it.polito.mad.polilife.db.classes.Notice;
 public class NoticeBoardActivity extends AppCompatActivity
         implements DBCallbacks.GetListCallback<Notice> {
 
-    private static final int ADVANCED_SEARCH_REQUEST_CODE = 10;
+    public static final int ADVANCED_SEARCH_REQUEST_CODE = 10;
+    public static final int PUBLISH_NEW_NOTICE_REQUEST_CODE = 3;
 
     private Toolbar mToolbar;
     private ViewPager mViewPager;
 
-    public static final String TYPE_KEY = "TYPE";
-    public static final String BOOK_TYPE = "book";
-    public static final String HOME_TYPE = "home";
+    public static final String TYPE_EXTRA_KEY = "TYPE";
+    public static final String BOOK_TYPE = Notice.BOOK_TYPE;
+    public static final String HOME_TYPE = Notice.HOME_TYPE;
     private String mNoticesType;
 
     private ProgressBar mWait;
     private Fragment[] sections = {
             AllNoticesFragment.newInstance(),
-            MyNoticesFragment.newInstance("","")
+            MyNoticesFragment.newInstance()
     };
 
     @Override
@@ -52,26 +53,51 @@ public class NoticeBoardActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notice_board);
 
-        mNoticesType = getIntent().getStringExtra(NoticeBoardActivity.TYPE_KEY);
+        mNoticesType = getIntent().getStringExtra(NoticeBoardActivity.TYPE_EXTRA_KEY);
+
+        final String[] mTitles = {
+                getString(R.string.all_notices),
+                getString(R.string.my_notices)
+        };
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
+        mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            public Fragment getItem(int position) {
+                return sections[position];
+            }
+            @Override
+            public int getCount() {
+                return sections.length;
+            }
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return mTitles[position];
+            }
+        });
 
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.getTabAt(0).setIcon(R.drawable.pin);
+        mTabLayout.getTabAt(1).setIcon(R.drawable.pin);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         mWait = (ProgressBar) findViewById(R.id.wait);
         mWait.setVisibility(View.VISIBLE);
 
-        Notice.Filter filter = new Notice.Filter();
-        if (mNoticesType.equals(HOME_TYPE)) filter.homeType();
-        else if (mNoticesType.equals(BOOK_TYPE)) filter.bookType();
+        Notice.Filter filter = new Notice.Filter(mNoticesType);
 
-        boolean fromLocalDataStore = !Utility.networkIsUp(this);
-        PoliLifeDB.advancedNoticeFilter(filter, fromLocalDataStore, this);
+        //boolean fromLocalDataStore = !Utility.networkIsUp(this);
+        PoliLifeDB.advancedNoticeFilter(filter, this);
     }
 
     @Override
@@ -114,54 +140,19 @@ public class NoticeBoardActivity extends AppCompatActivity
         if (requestCode == ADVANCED_SEARCH_REQUEST_CODE){
             switch(resultCode){
                 case Activity.RESULT_OK:
-                    boolean fromLocalDataStore = !Utility.networkIsUp(this);
+                    //boolean fromLocalDataStore = !Utility.networkIsUp(this);
                     Notice.Filter searchParams = (Notice.Filter) data.getSerializableExtra("params");
-                    PoliLifeDB.advancedNoticeFilter(searchParams, fromLocalDataStore, this);
+                    PoliLifeDB.advancedNoticeFilter(searchParams, this);
                     break;
                 case Activity.RESULT_CANCELED:
                     break;
             }
         }
-    }
-
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return sections[position];
-        }
-
-        @Override
-        public int getCount() {
-            return sections.length;
-        }
-
-        private int[] imageResId = {
-                R.drawable.ic_cast_dark,
-                R.drawable.ic_pause_dark
-        };
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            String title = "";
-            switch (position) {
-                case 0:
-                    title = "All"; break;
-                case 1:
-                    title = "My notices"; break;
+        else if (requestCode == PUBLISH_NEW_NOTICE_REQUEST_CODE){
+            if (resultCode == Activity.RESULT_OK){
+                PoliLifeDB.advancedNoticeFilter(new Notice.Filter(mNoticesType), this);
             }
-            Drawable image = ContextCompat.getDrawable(NoticeBoardActivity.this, imageResId[position]);
-            image.setBounds(0, 0, image.getIntrinsicWidth(), image.getIntrinsicHeight());
-            SpannableString sb = new SpannableString(title);
-            ImageSpan imageSpan = new ImageSpan(image, ImageSpan.ALIGN_BOTTOM);
-            sb.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            return sb;
         }
-
     }
 
 }

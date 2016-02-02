@@ -1,7 +1,6 @@
 package it.polito.mad.polilife.noticeboard;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,10 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import it.polito.mad.polilife.R;
-import it.polito.mad.polilife.db.classes.Notice;
-import it.polito.mad.polilife.didactical.prof.ProfessorsActivity;
-import it.polito.mad.polilife.didactical.rooms.ClassroomActivity;
-import it.polito.mad.polilife.didactical.timetable.TimetableActivity;
 
 public class NoticeboardHomeFragment extends Fragment {
 
@@ -40,7 +35,7 @@ public class NoticeboardHomeFragment extends Fragment {
         root.findViewById(R.id.home_select).setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                intent.putExtra(NoticeBoardActivity.TYPE_KEY, NoticeBoardActivity.HOME_TYPE);
+                intent.putExtra(NoticeBoardActivity.TYPE_EXTRA_KEY, NoticeBoardActivity.HOME_TYPE);
                 getActivity().startActivity(intent);
             }
         });
@@ -48,7 +43,7 @@ public class NoticeboardHomeFragment extends Fragment {
         root.findViewById(R.id.books_notes_select).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent.putExtra(NoticeBoardActivity.TYPE_KEY, NoticeBoardActivity.BOOK_TYPE);
+                intent.putExtra(NoticeBoardActivity.TYPE_EXTRA_KEY, NoticeBoardActivity.BOOK_TYPE);
                 getActivity().startActivity(intent);
             }
         });

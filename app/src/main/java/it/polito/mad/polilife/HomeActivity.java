@@ -1,8 +1,10 @@
 package it.polito.mad.polilife;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +32,8 @@ import it.polito.mad.polilife.chat.ChatFragment;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Student;
+import it.polito.mad.polilife.db.push.JSONFactory;
+import it.polito.mad.polilife.db.push.PushBroadcastReceiver;
 import it.polito.mad.polilife.didactical.DidacticalHomeFragment;
 import it.polito.mad.polilife.news.NewsFragment;
 import it.polito.mad.polilife.noticeboard.NoticeBoardActivity;
@@ -69,23 +74,33 @@ public class HomeActivity extends AppCompatActivity
 
     private boolean mProfileEditMode = false;
 
+    private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra("json")){
+                try{
+                    JSONObject obj = new JSONObject(intent.getStringExtra("json"));
+                    if (JSONFactory.isChatMessage(obj)) mCurrentFeature = CHAT;
+                    else if (JSONFactory.isDidacticalMessage(obj)) mCurrentFeature = DIDACTICS;
+                    else if (JSONFactory.isJobMessage(obj)) mCurrentFeature = JOBPLACEMENT;
+                    showPage(mCurrentFeature);
+                }catch(JSONException e){}
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //if activity starts thanks to notification, let's start with suitable page
         if (getIntent().hasExtra("json")){
             try{
                 JSONObject obj = new JSONObject(getIntent().getStringExtra("json"));
-                if (obj.has("feature")) {
-                    String pushFeature = obj.getString("feature");
-                    if (pushFeature.equals("chat")) {
-                        mCurrentFeature = CHAT;
-                    } else if (pushFeature.equals("didactical")){
-                        mCurrentFeature = NEWS;
-                    }
-                }
+                if (JSONFactory.isChatMessage(obj)) mCurrentFeature = CHAT;
+                else if (JSONFactory.isDidacticalMessage(obj)) mCurrentFeature = DIDACTICS;
+                else if (JSONFactory.isJobMessage(obj)) mCurrentFeature = JOBPLACEMENT;
+                showPage(mCurrentFeature);
             }catch(JSONException e){}
         }
 
@@ -101,8 +116,8 @@ public class HomeActivity extends AppCompatActivity
             public void onItemClick(View view, int position) {
                 final Context context = HomeActivity.this;
                 mCurrentFeature = position;
-                switch(position){
-                    case NOTICEBOARD:
+                switch (position) {
+                    /*case NOTICEBOARD:
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                         builder.setTitle("Show dialog");
                         final CharSequence[] choiceList = {
@@ -111,12 +126,13 @@ public class HomeActivity extends AppCompatActivity
                         };
                         DialogInterface.OnClickListener onClick = new DialogInterface.OnClickListener() {
                             private int m;
+
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         Intent i = new Intent(context, NoticeBoardActivity.class);
-                                        i.putExtra(NoticeBoardActivity.TYPE_KEY, choiceList[m]);
+                                        i.putExtra(NoticeBoardActivity.TYPE_EXTRA_KEY, choiceList[m]);
                                         context.startActivity(i);
                                         break;
                                     case DialogInterface.BUTTON_NEGATIVE:
@@ -135,7 +151,7 @@ public class HomeActivity extends AppCompatActivity
                         final AlertDialog alert = builder.create();
                         alert.show();
                         return;
-
+*/
                     default:
                         showPage(position);
                         break;
@@ -168,7 +184,15 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        IntentFilter filter = new IntentFilter(PushBroadcastReceiver.HOME_ACTIVITY_INTENT_ACTION);
+        registerReceiver(mIntentReceiver, filter);
         showPage(mCurrentFeature);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(mIntentReceiver);
+        super.onPause();
     }
 
     @Override
@@ -266,10 +290,10 @@ public class HomeActivity extends AppCompatActivity
                 mNavigationDrawer.setUserData(complete, mail,
                         Utility.getBitmap(user.getPhoto().getData()));
             } catch (Exception e) {
-                mNavigationDrawer.setUserData(complete, mail, R.drawable.logo);
+                mNavigationDrawer.setUserData(complete, mail, R.drawable.student_icon);
             }
         } else {
-            mNavigationDrawer.setUserData(complete, mail, R.drawable.logo);
+            mNavigationDrawer.setUserData(complete, mail, R.drawable.student_icon);
         }
 
     }

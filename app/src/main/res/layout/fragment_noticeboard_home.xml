@@ -4,15 +4,104 @@
     android:orientation="vertical"
     tools:context="it.polito.mad.polilife.noticeboard.NoticeboardHomeFragment">
 
-    <ImageButton
-        android:id="@+id/home_select"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp" />
+        android:layout_height="300dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:weightSum="3">
 
-    <ImageButton
-        android:id="@+id/books_notes_select"
-        android:layout_width="match_parent"
-        android:layout_height="60dp" />
+        <RelativeLayout
+            android:id="@+id/books_notes_select"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <RelativeLayout
+                android:id="@+id/book_icon"
+                android:layout_width="100dp"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/img1"
+                    android:src="@drawable/post"
+                    android:padding="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <ImageView
+                    android:src="@drawable/ic_books"
+                    android:layout_alignBottom="@+id/img1"
+                    android:layout_alignRight="@+id/img1"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:layout_toRightOf="@id/book_icon"
+                android:layout_centerVertical="true">
+                <TextView
+                    android:id="@+id/books_title"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:text="@string/books"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="@string/books_subtitle"
+                    android:layout_below="@id/books_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/home_select"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <RelativeLayout
+                android:id="@+id/home_icon"
+                android:layout_width="100dp"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/img2"
+                    android:src="@drawable/post"
+                    android:padding="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <ImageView
+                    android:src="@drawable/ic_home"
+                    android:layout_alignBottom="@+id/img2"
+                    android:layout_alignRight="@+id/img2"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/home_icon" >
+                <TextView
+                    android:id="@+id/home_title"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:text="@string/homes"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="@string/homes_subtitle"
+                    android:layout_below="@id/home_title"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </LinearLayout>
 
 
 </LinearLayout>

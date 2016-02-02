@@ -1,12 +1,14 @@
 package it.polito.mad.polilife.chat;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -91,6 +93,7 @@ public class ChatMessagesBaseAdapter extends BaseAdapter {
         TextView text = (TextView)convertView.findViewById(R.id.msg_text);
         TextView time = (TextView)convertView.findViewById(R.id.msg_date);
         TextView sender = (TextView) convertView.findViewById(R.id.msg_sender);
+        ImageView photoView = (ImageView) convertView.findViewById(R.id.member_photo);
         /*if (recycledConvertView && text.getGravity() != gravity){
             text.setGravity(gravity);
             time.setGravity(gravity);
@@ -102,9 +105,17 @@ public class ChatMessagesBaseAdapter extends BaseAdapter {
 
         int idx = Math.abs(msg.senderUsername.hashCode()) % mColors.length;
         sender.setTextColor(mColors[idx]);
-        sender.setText(msg.senderUsername);
+        sender.setText(msg.senderCompleteName);
         text.setText(msg.message);
         time.setText(mDateFormat.format(msg.timeStamp));
+
+        /*byte[] photo = msg.photoBytes;
+        if (photo != null){
+            photoView.setImageBitmap(BitmapFactory.decodeByteArray(photo, 0, photo.length));
+        }
+        else photoView.setImageResource(R.drawable.student_icon);
+        */
+
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

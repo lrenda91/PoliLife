@@ -17,10 +17,11 @@ import com.google.android.gms.maps.model.LatLng;
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.classes.Notice;
+import it.polito.mad.polilife.maps.MapsUtil;
 
 public class BookSearchActivity extends AppCompatActivity {
 
-    private Notice.Filter params = new Notice.Filter();
+    private Notice.Filter params = new Notice.Filter(Notice.BOOK_TYPE);
 
     private AutoCompleteTextView locationEditText;
     private TextView within;
@@ -44,7 +45,7 @@ public class BookSearchActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         locationEditText = (AutoCompleteTextView) findViewById(R.id.location);
-        Utility.setAutoCompleteGMaps(locationEditText);
+        MapsUtil.setAutoCompleteGMaps(locationEditText);
         minPriceSeekBar = (SeekBar) findViewById(R.id.minPriceSeekBar);
         maxPriceSeekBar = (SeekBar) findViewById(R.id.maxPriceSeekBar);
         within = (TextView) findViewById(R.id.within);
@@ -80,13 +81,13 @@ public class BookSearchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_filter:
-                params.bookType();
+                params.setBookType();
                 String locationName = locationEditText.getText().toString();
                 params.location(locationName.isEmpty() ? null : locationName)
                         .minPrice(minPriceSeekBar.getProgress())
                         .maxPrice(maxPriceSeekBar.getProgress());
 
-                LatLng coordinates = Utility.getFirstAddress(this, locationName);
+                LatLng coordinates = MapsUtil.getFirstGMapsAddress(this, locationName);
                 if (coordinates != null){
                     params.latitude(coordinates.latitude)
                             .longitude(coordinates.longitude)

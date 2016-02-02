@@ -1,6 +1,9 @@
 package it.polito.mad.polilife;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -27,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements DBCallbacks.UserL
     private ProgressBar progressBar;
     private EditText username, password;
     private Button loginButton, signUpButton;
-    private Intent intent;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements DBCallbacks.UserL
     public void onStudentLoginSuccess(ParseUser student) {
         setUserInteractionEnabled(true);
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-        if (getIntent().hasExtra("json")) intent.putExtra("json",getIntent().getStringExtra("json"));
         startActivity(intent);
         finish();
     }

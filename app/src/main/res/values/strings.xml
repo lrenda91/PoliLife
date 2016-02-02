@@ -48,6 +48,9 @@
     <string name="placement">Job placement</string>
     <string name="chat">Chat</string>
 
+    <string name="all_notices">All notices</string>
+    <string name="my_notices">My notices</string>
+
     <string name="fav_students">Favourite Students</string>
     <string name="comp_positions">My jobs</string>
     <string name="search_students">Search for students</string>
@@ -247,8 +250,12 @@
     <string name="professors">Professors</string>
     <string name="classrooms">Classrooms</string>
     <string name="timetable">Timetable</string>
+    <string name="books">Books and notes ads</string>
+    <string name="homes">Houses ads</string>
 
-    <string name="timetable_subtitle">Take a look at daily and weekly timetable</string>
+    <string name="homes_subtitle">Take a look to ads on houses for rent</string>
+    <string name="books_subtitle">Find books you are interested in</string>
+    <string name="timetable_subtitle">Take a look to daily and weekly timetable</string>
     <string name="professors_subtitle">Find your professors and their related information</string>
     <string name="classrooms_subtitle">Find classrooms by name and discover their job</string>
 
@@ -270,13 +277,14 @@
     <string name="candidatures">My candidatures</string>
     <string name="cvs">My CVs</string>
 
-    <string name="date_format">dd/MM/yyyy</string>
-    <string name="datetime_format">dd/MM/yyyy HH:mm</string>
+    <string name="date_format">MM/dd/yyyy</string>
+    <string name="datetime_format">MM/dd/yyyy HH:mm</string>
 
     <string name="search_result">Search result</string>
     <string name="count_result"> results found</string>
 
-    <string name="didactical_push_subtitle">Didactical notification. Touch to open app</string>
-    <string name="chat_push_subtitle">Chat notification. Touch to open app</string>
+    <string name="job_push_subtitle">Job placement notification. Touch for details</string>
+    <string name="didactical_push_subtitle">Didactical notification. Touch for details</string>
+    <string name="chat_push_subtitle">Chat notification. Touch for details</string>
 
 </resources>

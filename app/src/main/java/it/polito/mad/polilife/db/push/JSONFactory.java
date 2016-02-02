@@ -37,4 +37,8 @@ public class JSONFactory {
         return obj.has("feature") && obj.get("feature").equals("didactical");
     }
 
+    public static boolean isJobMessage(JSONObject obj) throws JSONException {
+        return obj.has("feature") && obj.get("feature").equals("job");
+    }
+
 }

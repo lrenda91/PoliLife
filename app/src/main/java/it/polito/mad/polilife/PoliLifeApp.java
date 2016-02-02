@@ -51,8 +51,7 @@ public class PoliLifeApp extends Application {
                 Job.class,
                 Classroom.class,
                 Student.class,
-                Notice.class,
-                Message.class);
+                Notice.class);
 
         registerActivityLifecycleCallbacks(new HomeActivityLifecycleTracker());
 

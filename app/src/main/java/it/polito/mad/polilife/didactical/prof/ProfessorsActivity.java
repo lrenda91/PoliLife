@@ -95,10 +95,10 @@ public class ProfessorsActivity extends AppCompatActivity
                     if (photoIV != null) {
                         photoIV.setImageBitmap(Utility.getBitmap(photo.getData()));
                     } else {
-                        photoIV.setImageResource(R.drawable.logo);
+                        photoIV.setImageResource(R.drawable.student_icon);
                     }
                 } catch (Exception e) {
-                    photoIV.setImageResource(R.drawable.logo);
+                    photoIV.setImageResource(R.drawable.student_icon);
                 }
                 ((TextView) convertView.findViewById(R.id.professor_name)).setText(item.getName());
                 ((TextView) convertView.findViewById(R.id.professor_office)).setText(item.getOffice());

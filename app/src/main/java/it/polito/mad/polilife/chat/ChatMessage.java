@@ -8,9 +8,12 @@ import org.json.JSONObject;
  */
 public class ChatMessage {
 
-    String senderUsername;
-    String message;
-    long timeStamp;
+    public final String senderUsername;
+    public final String message;
+    public final long timeStamp;
+
+    public String senderCompleteName = "";
+    public byte[] photoBytes = null;
 
     public ChatMessage(String senderUsername, String message, long timeStamp){
         this.senderUsername = senderUsername;

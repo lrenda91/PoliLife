@@ -96,8 +96,8 @@ public class NewsFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        boolean fromLocalDataStore = !Utility.networkIsUp(getActivity());
-        PoliLifeDB.getRecentNoticesAndPositions(100, fromLocalDataStore, this);
+        //boolean fromLocalDataStore = !Utility.networkIsUp(getActivity());
+        PoliLifeDB.getRecentNoticesAndPositions(100, this);
     }
 
     @Override

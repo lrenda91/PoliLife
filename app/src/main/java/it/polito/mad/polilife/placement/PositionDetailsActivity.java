@@ -103,9 +103,9 @@ public class PositionDetailsActivity extends AppCompatActivity {
                             mCompanyLogo.setImageBitmap(
                                     BitmapFactory.decodeByteArray(data, 0, data.length));
                         }
-                        else mCompanyLogo.setImageResource(R.drawable.logo);
+                        else mCompanyLogo.setImageResource(R.drawable.student_icon);
                     }catch(ParseException e){
-                        mCompanyLogo.setImageResource(R.drawable.logo);
+                        mCompanyLogo.setImageResource(R.drawable.student_icon);
                     }
                 }
 

@@ -1,6 +1,7 @@
 package it.polito.mad.polilife.noticeboard;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,10 +19,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import it.polito.mad.polilife.R;
+import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Notice;
 import it.polito.mad.polilife.noticeboard.add.AddNoticeActivity;
 
 public class MyNoticesFragment extends Fragment implements NoticesListener {
+
+
 
     private ListView mListView;
     private NoticesBaseAdapter mAdapter;
@@ -45,7 +49,7 @@ public class MyNoticesFragment extends Fragment implements NoticesListener {
         });
     }
 
-    public static MyNoticesFragment newInstance(String param1, String param2) {
+    public static MyNoticesFragment newInstance() {
         MyNoticesFragment fragment = new MyNoticesFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
@@ -67,7 +71,9 @@ public class MyNoticesFragment extends Fragment implements NoticesListener {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().startActivity(new Intent(getActivity(), AddNoticeActivity.class));
+                getActivity().startActivityForResult(
+                        new Intent(getActivity(), AddNoticeActivity.class),
+                        NoticeBoardActivity.PUBLISH_NEW_NOTICE_REQUEST_CODE);
             }
         });
     }
@@ -75,7 +81,6 @@ public class MyNoticesFragment extends Fragment implements NoticesListener {
     @Override
     public void update(List<Notice> notices) {
         ParseUser me = ParseUser.getCurrentUser();
-        assert me != null;
         List<Notice> mine = new LinkedList<>();
         for (Notice n : notices){
             if (n.getOwner() != null && n.getOwner().getObjectId() != null &&

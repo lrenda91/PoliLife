@@ -28,6 +28,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.db.classes.Student;
@@ -56,7 +57,12 @@ public class ChatFragment extends Fragment {
 
         @Override
         public String getItem(int position) {
-            return mSubscriptions.get(position);
+            String sub = mSubscriptions.get(position);
+            if (!sub.contains("-")) return sub;
+            StringTokenizer st = new StringTokenizer(sub, "-");
+            String t1 = st.nextToken();
+            String t2 = st.nextToken();
+            return t1.equals(mUser.getUsername()) ? t2 : t1;
         }
 
         @Override
@@ -65,7 +71,7 @@ public class ChatFragment extends Fragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getActivity()).inflate(
                         R.layout.layout_chat_friends_item, parent, false);
@@ -77,7 +83,7 @@ public class ChatFragment extends Fragment {
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), MessagingActivity.class);
                     intent.putExtra("UUID", mUser.getUsername());
-                    intent.putExtra("CHANNEL", item);
+                    intent.putExtra("CHANNEL", mSubscriptions.get(position));
                     startActivity(intent);
                 }
             });
@@ -130,6 +136,14 @@ public class ChatFragment extends Fragment {
                 }
                 Toast.makeText(getActivity(), "Join request for channel "+channel, Toast.LENGTH_LONG).show();
             }
+            @Override
+            void onJoin(String channel, String UUID, int occupancy) {
+                Toast.makeText(getActivity(), UUID+" joined channel "+channel, Toast.LENGTH_LONG).show();
+            }
+            @Override
+            void onLeave(String channel, String UUID, int occupancy) {
+                Toast.makeText(getActivity(), UUID+" left channel "+channel, Toast.LENGTH_LONG).show();
+            }
         });
     }
 
@@ -176,6 +190,7 @@ public class ChatFragment extends Fragment {
             }
         });
         mSubscriptions = mUser.getChannels() != null ? mUser.getChannels() : new ArrayList<String>();
+        mChatManager.init(mSubscriptions);
 
         ((ListView) view.findViewById(R.id.conversations_list)).setAdapter(mListAdapter);
     }

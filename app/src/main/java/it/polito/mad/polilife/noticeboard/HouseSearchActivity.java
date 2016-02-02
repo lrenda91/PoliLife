@@ -26,10 +26,11 @@ import java.util.ArrayList;
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.classes.Notice;
+import it.polito.mad.polilife.maps.MapsUtil;
 
 public class HouseSearchActivity extends AppCompatActivity {
 
-    private Notice.Filter params = new Notice.Filter();
+    private Notice.Filter params = new Notice.Filter(Notice.HOME_TYPE);
 
     private ListView tagsList;
     private Toolbar mToolbar;
@@ -113,7 +114,7 @@ public class HouseSearchActivity extends AppCompatActivity {
 
 
         locationEditText = (AutoCompleteTextView) findViewById(R.id.location);
-        Utility.setAutoCompleteGMaps(locationEditText);
+        MapsUtil.setAutoCompleteGMaps(locationEditText);
 
         contractTypeSpinner = (Spinner) findViewById(R.id.contract_type);
         propertyTypeSpinner = (Spinner) findViewById(R.id.property_type);
@@ -253,7 +254,7 @@ public class HouseSearchActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_filter:
-                params.homeType();
+                params.setHomeType();
                 String unspecified = getResources().getString(R.string.unspecified);
                 String locationName = locationEditText.getText().toString();
                 String propType = propertyTypeSpinner.getSelectedItem().toString();
@@ -266,7 +267,7 @@ public class HouseSearchActivity extends AppCompatActivity {
                         .minSize(minSizeSeekBar.getProgress())
                         .maxSize(maxSizeSeekBar.getProgress());
 
-                LatLng coordinates = Utility.getFirstAddress(this, locationName);
+                LatLng coordinates = MapsUtil.getFirstGMapsAddress(this, locationName);
                 if (coordinates != null){
                     params.latitude(coordinates.latitude)
                             .longitude(coordinates.longitude)

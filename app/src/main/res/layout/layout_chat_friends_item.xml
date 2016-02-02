@@ -18,14 +18,35 @@
             android:layout_gravity="center_vertical" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/friend_name"
-        android:layout_weight="3"
-        android:textStyle="bold"
-        android:textSize="15dp"
-        android:layout_marginLeft="10dp"
+    <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical" />
+        android:layout_weight="3"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/friend_name"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:text="BBBBBBBBBBB"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/occupancy"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top|right" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
 
 </LinearLayout>

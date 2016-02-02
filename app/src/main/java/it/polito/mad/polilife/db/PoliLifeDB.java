@@ -1,6 +1,7 @@
 package it.polito.mad.polilife.db;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -8,15 +9,19 @@ import com.parse.*;
 
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import it.polito.mad.polilife.MainActivity;
 import it.polito.mad.polilife.db.classes.*;
 import it.polito.mad.polilife.db.DBCallbacks.*;
+import it.polito.mad.polilife.db.parcel.PFileData;
+import it.polito.mad.polilife.db.parcel.PNoticeData;
 import it.polito.mad.polilife.db.parcel.PStudentData;
 import it.polito.mad.polilife.db.parcel.PUserData;
 
@@ -245,116 +250,143 @@ public class PoliLifeDB {
             }
         });
     }
-/*
-    public static void publishNewNotice(final PNoticeData data,
-                                        final UpdateCallback<Notice> listener){
-        final ParseUser currentUser = ParseUser.getCurrentUser();
-        ParseObject po = (ParseObject) currentUser.get(STUDENT_KEY);
-        if (po == null || !(po instanceof StudentInfo)) throw new AssertionError();
-        final Notice built = data.build();
 
-        new AsyncTask<Void,Void,ParseException>() {
+    public static void publishNewHomeNotice(final PNoticeData data,
+                                        final UpdateCallback<Notice> listener){
+        publishNewNotice(data, Notice.HOME_TYPE, listener);
+    }
+
+    public static void publishNewBookNotice(final PNoticeData data,
+                                            final UpdateCallback<Notice> listener){
+        publishNewNotice(data, Notice.BOOK_TYPE, listener);
+    }
+
+    private static void publishNewNotice(final PNoticeData data, final String type,
+                                        final UpdateCallback<Notice> listener){
+        new AsyncTask<Void,Void,List<ParseFile>>() {
             @Override
-            protected ParseException doInBackground(Void[] params) {
+            protected List<ParseFile> doInBackground(Void[] params) {
                 List<ParseFile> photoFiles = new LinkedList<>();
-                for (PFileData fileData : data.getPhotos()){
+                for (PFileData fileData : data.getPhotos()) {
                     ParseFile file = fileData.build();
-                    try{
+                    try {
                         file.save();
-                    }catch(ParseException e){
+                    } catch (ParseException e) {
                         Log.e("pe", e.getMessage());
-                        return e;
+                        return null;
                     }
                     photoFiles.add(file);
                 }
-                built.addPhotos(photoFiles);
-                return null;
+                return photoFiles;
             }
             @Override
-            protected void onPostExecute(ParseException e) {
-                super.onPostExecute(e);
-                if (e == null){
-                    built.setOwner(currentUser);
-                    built.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            if (e != null){
-                                if (listener != null) listener.onUpdateError(e);
-                                return;
-                            }
-                            currentUser.getRelation(NOTICES).add(built);
-                            currentUser.saveInBackground(new SaveCallback() {
-                                @Override
-                                public void done(ParseException e) {
-                                    if (e != null){
-                                        if (listener != null) listener.onUpdateError(e);
-                                        return;
-                                    }
-                                    if (listener != null) listener.onUpdateSuccess(built);
-                                }
-                            });
-                        }
-                    });
+            protected void onPostExecute(List<ParseFile> photoFiles) {
+                if (photoFiles == null){
+                    if (listener != null) listener.onUpdateError(new Exception("Error saving photos"));
+                    return;
                 }
+                final Notice built = data.build();
+                built.addPhotos(photoFiles);
+                built.setOwner(ParseUser.getCurrentUser());
+                if (Notice.HOME_TYPE.equals(type)){
+                    built.setHomeType();
+                }
+                else if (Notice.BOOK_TYPE.equals(type)){
+                    built.setBookType();
+                }
+                else if (Notice.DIDACTICAL_TYPE.equals(type)){
+                    built.setDidacticalType();
+                }
+                built.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null){
+                            if (listener != null) listener.onUpdateError(e);
+                            return;
+                        }
+                        if (listener != null) listener.onUpdateSuccess(built);
+                    }
+                });
             }
         }.execute();
     }
-    */
+
 
     public static void advancedNoticeFilter(final Notice.Filter filter,
-                                            final boolean fromLocalDataStore,
                                             final GetListCallback<Notice> listener){
         ParseQuery<Notice> query = ParseQuery.getQuery(Notice.class);
-        ParseQuery<Notice> finalQuery = null;
+        ParseQuery<Notice> finalQuery = query;
         if (filter != null) {
-            query.whereLessThanOrEqualTo(Notice.PRICE, filter.maxPrice)
-                    .whereGreaterThanOrEqualTo(Notice.PRICE, filter.minPrice)
-                    .whereLessThanOrEqualTo(Notice.SIZE, filter.maxSize)
-                    .whereGreaterThanOrEqualTo(Notice.SIZE, filter.minSize);
+            List<ParseQuery<Notice>> typeBasedQueries = new LinkedList<>();
+            StringTokenizer st = new StringTokenizer(filter.type, ",");
+            while (st.hasMoreTokens()) {
+                String type = st.nextToken();
+                typeBasedQueries.add(ParseQuery.getQuery(Notice.class).whereEqualTo(Notice.TYPE, type));
+            }
+            if (!typeBasedQueries.isEmpty()) {
+                query = ParseQuery.or(typeBasedQueries);
+            }
+
             if (filter.daysAgo > 0) {
                 long DAY_IN_MS = 1000 * 60 * 60 * 24;
                 Date limit = new Date(System.currentTimeMillis() - (filter.daysAgo * DAY_IN_MS));
                 query.whereGreaterThanOrEqualTo(Notice.PUBLICATED_AT, limit);
             }
-            if (filter.type != null){
-                query.whereEqualTo(Notice.TYPE, filter.type);
-            }
             if (filter.title != null){
                 query.whereContains(Notice.TITLE, filter.title);
             }
-            if (filter.location != null) {
-                query.whereContains(Notice.LOCATION_STRING, filter.location);
+            //DIDACTICAL NOTICES FILTERS
+            if (filter.type.equals(Notice.DIDACTICAL_TYPE)){
+
             }
-            if (filter.latitude != null && filter.longitude != null){
-                ParseGeoPoint point = new ParseGeoPoint(filter.latitude, filter.longitude);
-                query.whereWithinKilometers(Notice.LOCATION_POINT, point, filter.within);
+            else {
+
+                //HOME NOTICES FILTERS
+                if (filter.type.equals(Notice.HOME_TYPE)) {
+                    if (filter.contractType != null) {
+                        query.whereEqualTo(Notice.CONTRACT_TYPE, filter.contractType);
+                    }
+                    if (filter.propertyType != null) {
+                        query.whereEqualTo(Notice.PROPERTY_TYPE, filter.propertyType);
+                    }
+                    query.whereLessThanOrEqualTo(Notice.SIZE, filter.maxSize)
+                            .whereGreaterThanOrEqualTo(Notice.SIZE, filter.minSize);
+                }
+                //BOOK NOTICES FILTERS
+                if (filter.type.equals(Notice.BOOK_TYPE)) {
+
+                }
+
+                //BOTH HOME AND BOOK NOTICES FILTERS
+                query.whereLessThanOrEqualTo(Notice.PRICE, filter.maxPrice)
+                        .whereGreaterThanOrEqualTo(Notice.PRICE, filter.minPrice);
+                if (filter.tags != null && !filter.tags.isEmpty()) {
+                    query.whereContainsAll(Notice.TAGS, filter.tags);
+                }
+                if (filter.location != null) {
+                    query.whereContains(Notice.LOCATION_STRING, filter.location);
+                }
+                if (filter.latitude != null && filter.longitude != null){
+                    ParseGeoPoint point = new ParseGeoPoint(filter.latitude, filter.longitude);
+                    query.whereWithinKilometers(Notice.LOCATION_POINT, point, filter.within);
+                }
+                List<ParseQuery<Notice>> tagBasedQueries = new LinkedList<>();
+                tagBasedQueries.add(query);
+                for (String tag : filter.tags) {
+                    List<ParseQuery<Notice>> queries = new LinkedList<>();
+                    queries.add(ParseQuery.getQuery(Notice.class).whereContains(Notice.TITLE, tag));
+                    queries.add(ParseQuery.getQuery(Notice.class).whereContains(Notice.DESCRIPTION, tag));
+                    ParseQuery<Notice> union = ParseQuery.or(queries);
+                    tagBasedQueries.add(union);
+                }
+                finalQuery = ParseQuery.or(tagBasedQueries);
+
             }
-            if (filter.contractType != null) {
-                query.whereEqualTo(Notice.CONTRACT_TYPE, filter.contractType);
-            }
-            if (filter.propertyType != null) {
-                query.whereEqualTo(Notice.PROPERTY_TYPE, filter.propertyType);
-            }
-            if (filter.tags != null && !filter.tags.isEmpty()) {
-                query.whereContainsAll(Notice.TAGS, filter.tags);
-            }
-            List<ParseQuery<Notice>> res = new LinkedList<>();
-            res.add(query);
-            for (String tag : filter.tags) {
-                List<ParseQuery<Notice>> queries = new LinkedList<>();
-                queries.add(ParseQuery.getQuery(Notice.class).whereContains(Notice.TITLE, tag));
-                queries.add(ParseQuery.getQuery(Notice.class).whereContains(Notice.DESCRIPTION, tag));
-                ParseQuery<Notice> union = ParseQuery.or(queries);
-                res.add(union);
-            }
-            finalQuery = ParseQuery.or(res);
+
         }
-        else{
-            finalQuery = query;
-        }
-        if (fromLocalDataStore){
+        /*if (fromLocalDataStore){
             finalQuery.fromLocalDatastore();
-        }
+        }*/
         finalQuery.addDescendingOrder(Notice.PUBLICATED_AT);
         finalQuery.findInBackground(new FindCallback<Notice>() {
             @Override
@@ -363,10 +395,11 @@ public class PoliLifeDB {
                     if (listener != null) listener.onFetchError(e);
                     return;
                 }
-                if (!fromLocalDataStore) {
+                /*if (!fromLocalDataStore) {
                     ParseObject.unpinAllInBackground("cachedNotices");
                     ParseObject.pinAllInBackground("cachedNotices", list);
                 }
+                */
                 if (listener != null) listener.onFetchSuccess(list);
             }
         });
@@ -431,11 +464,12 @@ public class PoliLifeDB {
     }
 
     public static void getRecentNoticesAndPositions(final int daysAgo,
-            final boolean fromLocalDataStore, final GetListCallback<ParseObject> listener){
+            //final boolean fromLocalDataStore,
+                                                    final GetListCallback<ParseObject> listener){
         final List<ParseObject> objs = new LinkedList<>();
-        Notice.Filter filter = new Notice.Filter();
+        Notice.Filter filter = new Notice.Filter(Notice.HOME_TYPE);
         filter.daysAgo = daysAgo;
-        advancedNoticeFilter(filter, fromLocalDataStore, new GetListCallback<Notice>() {
+        advancedNoticeFilter(filter, new GetListCallback<Notice>() {
             @Override
             public void onFetchSuccess(List<Notice> result) {
                 objs.addAll(result);
@@ -445,9 +479,9 @@ public class PoliLifeDB {
                     Date limit = new Date(System.currentTimeMillis() - (daysAgo * DAY_IN_MS));
                     query.whereGreaterThanOrEqualTo(Job.START_DATE, limit);
                 }
-                if (fromLocalDataStore) {
+                /*if (fromLocalDataStore) {
                     query.fromLocalDatastore();
-                }
+                }*/
                 query.findInBackground(new FindCallback<Job>() {
                     @Override
                     public void done(List<Job> list, ParseException e) {
@@ -489,18 +523,18 @@ public class PoliLifeDB {
                     });
                     return;
                 }
-                Log.d(TAG, "Found " + klass.getSimpleName() + "[" + id + "] onSelectAppliedJobs local data store");
+                Log.d(TAG, "Found " + klass.getSimpleName() + "[" + id + "] in local data store");
                 if (listener != null) listener.onFetchSuccess(parseObject);
             }
         });
     }
 
-    public static void getUsersByName(String name, final GetListCallback<ParseUser> listener){
-        ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);
-        query.whereContains("username", name);
-        query.findInBackground(new FindCallback<ParseUser>() {
+    public static void getChatMembers(String channel, final GetListCallback<Student> listener){
+        ParseQuery<Student> query = ParseQuery.getQuery(Student.class);
+        query.whereContainsAll("channels", Arrays.asList(channel));
+        query.findInBackground(new FindCallback<Student>() {
             @Override
-            public void done(List<ParseUser> list, ParseException e) {
+            public void done(List<Student> list, ParseException e) {
                 if (e != null) {
                     if (listener != null) listener.onFetchError(e);
                     return;

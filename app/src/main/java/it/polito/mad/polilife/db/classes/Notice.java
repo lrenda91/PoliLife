@@ -84,7 +84,7 @@ public class Notice extends ParseObject implements Parcelable {
      * 'Common' keys, e.g. which belong to all notices
      */
     public static final String TYPE = "type";
-    public static final String TITLE = "name";
+    public static final String TITLE = "title";
     public static final String DESCRIPTION = "description";
     public static final String PRICE = "cost";
     public static final String LOCATION_STRING = "locationName";
@@ -126,7 +126,9 @@ public class Notice extends ParseObject implements Parcelable {
     }
 
     public static class Filter implements Serializable {
-        public Filter(){
+        public Filter(String... types){
+            type = "";
+            for (String t : types) type += t + ",";
             minSize = 0; minPrice = 0;
             maxSize = 10000; maxPrice = 10000;  //huge values
         }
@@ -136,9 +138,9 @@ public class Notice extends ParseObject implements Parcelable {
         public Double latitude = null, longitude = null;
         public int within = 1;
         public int daysAgo = -1;
-        public Filter homeType(){ type = HOME_TYPE; return this; }
-        public Filter bookType(){ type = BOOK_TYPE; return this; }
-        public Filter didacticalType(){ type = DIDACTICAL_TYPE; return this; }
+        public Filter setHomeType(){ type = HOME_TYPE; return this; }
+        public Filter setBookType(){ type = BOOK_TYPE; return this; }
+        public Filter setDidacticalType(){ type = DIDACTICAL_TYPE; return this; }
         public Filter title(String value){ title = value; return this; }
         public Filter location(String value){ location = value; return this; }
         public Filter latitude(Double value){ latitude = value; return this; }
@@ -157,6 +159,7 @@ public class Notice extends ParseObject implements Parcelable {
     public String getType(){ return getString(TYPE); }
     public void setHomeType(){ put(TYPE, HOME_TYPE); }
     public void setBookType(){ put(TYPE, BOOK_TYPE); }
+    public void setDidacticalType(){ put(TYPE, DIDACTICAL_TYPE); }
 
     public String getTitle(){
         return getString(TITLE);

@@ -65,7 +65,7 @@ public class PubnubChatManager {
         mListener = listener;
     }
 
-        public void handleJSON(String json){
+    public void handleJSON(String json){
         try{
             JSONObject jsonObject = new JSONObject(json);
             mSubscribeCallback.successCallback(PUBLIC_CHANNEL, jsonObject);
@@ -88,6 +88,7 @@ public class PubnubChatManager {
             for (String s : channels){
                 mPubnub.presence(s, mPresenceCallback);
             }
+            mPubnub.hereNow(ss, null, true, true, mHereNowCallback);
         } catch (Exception e){ e.printStackTrace(); }
     }
 
@@ -128,7 +129,7 @@ public class PubnubChatManager {
     }
 
     public void hereNow(String channel) {
-        mPubnub.hereNow(channel, mHereNowCallback);
+        mPubnub.hereNow(channel, true, false, mHereNowCallback);
     }
 
     public void history(String channel, int count){
@@ -259,7 +260,6 @@ public class PubnubChatManager {
         public void connectCallback(final String channel, Object message) {
             Log.d(TAG, "Subscription onSelectAppliedJobs channel '" + channel + "' OK! " + message.toString());
             if (!channel.equals(PUBLIC_CHANNEL)) {
-                hereNow(channel);
                 mMainHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -375,9 +375,10 @@ public class PubnubChatManager {
     private Callback mHereNowCallback = new Callback() {
         @Override
         public void successCallback(String channel, Object response) {
-            try {
+           // try {
                 JSONObject json = (JSONObject) response;
-                final int occ = json.getInt("occupancy");
+                Log.d(TAG, "Here now on channel "+channel+": "+json.toString());
+/*                final int occ = json.getInt("occupancy");
                 final JSONArray hereNowJSON = json.getJSONArray("uuids");
                 final Set<String> usersOnline = new HashSet<String>();
                 //usersOnline.add(senderUsername);
@@ -387,7 +388,7 @@ public class PubnubChatManager {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+  */    }
         @Override
         public void errorCallback(String s, PubnubError pubnubError) {
             Log.e(TAG, "HereNow error: "+pubnubError.toString());

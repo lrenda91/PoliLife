@@ -33,7 +33,7 @@
     <application
         android:name=".PoliLifeApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher2"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar" >
@@ -83,7 +83,8 @@
         <activity
             android:name=".noticeboard.NoticeBoardActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".noticeboard.add.AddNoticeActivity" />
+        <activity android:name=".noticeboard.add.AddNoticeActivity"
+            android:windowSoftInputMode="stateHidden|stateAlwaysHidden"/>
         <activity android:name=".noticeboard.HouseSearchActivity" />
         <activity android:name=".noticeboard.NoticeDetailsActivity" >
         </activity>

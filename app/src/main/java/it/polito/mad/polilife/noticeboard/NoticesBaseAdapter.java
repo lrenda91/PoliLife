@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +28,12 @@ public class NoticesBaseAdapter extends BaseAdapter {
     private Context mContext;
     private List<Notice> mData;
     private onNoticeClickListener mListener;
+    private DateFormat mDateFormat;
 
     public NoticesBaseAdapter(Context context){
         mContext = context;
         mData = new ArrayList<>();
+        mDateFormat = new SimpleDateFormat(context.getString(R.string.date_format));
     }
 
     public void setData(List<Notice> data){
@@ -66,7 +70,7 @@ public class NoticesBaseAdapter extends BaseAdapter {
         String title = n.getTitle() != null ? n.getTitle() : mContext.getString(R.string.no_title);
         String location = n.getLocationName() != null ? n.getLocationName() :
                 mContext.getString(R.string.no_location);
-        String from = n.getAvailableFrom() != null ? n.getAvailableFrom().toString() :
+        String from = n.getAvailableFrom() != null ? mDateFormat.format(n.getAvailableFrom()) :
                 mContext.getString(R.string.no_available_from);
         ((TextView)convertView.findViewById(R.id.offer_title)).setText(title);
         ((TextView)convertView.findViewById(R.id.offer_location)).setText(location);

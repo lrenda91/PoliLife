@@ -125,6 +125,10 @@ public class CreateChatActivity extends AppCompatActivity
                     Toast.makeText(this, R.string.group_name_empty, Toast.LENGTH_SHORT).show();
                     break;
                 }
+                if (groupName.contains("-")){
+                    Toast.makeText(this, "Character '-' forbidden", Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 ArrayList<String> UUIDs = new ArrayList<>(mGroupMembers.size());
                 for (int i=0;i<mGroupMembers.size();i++) {
                     UUIDs.add(mGroupMembers.get(i).getUsername());

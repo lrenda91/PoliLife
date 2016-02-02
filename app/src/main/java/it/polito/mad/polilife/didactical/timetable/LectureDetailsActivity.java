@@ -24,6 +24,7 @@ import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Classroom;
 import it.polito.mad.polilife.didactical.timetable.data.Lecture;
+import it.polito.mad.polilife.maps.MapsUtil;
 
 public class LectureDetailsActivity extends AppCompatActivity
         implements DBCallbacks.GetListCallback<Classroom>, OnMapReadyCallback {
@@ -69,12 +70,6 @@ public class LectureDetailsActivity extends AppCompatActivity
             View item = findViewById(R.id.lecture_classroom_name);
             ((ImageView) item.findViewById(R.id.rowIcon)).setImageResource(R.drawable.ic_mail);
             ((TextView) item.findViewById(R.id.rowText)).setText(data.getClassroom());
-            item.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PoliLifeDB.searchClassrooms(data.getClassroom(), true, LectureDetailsActivity.this);
-                }
-            });
         }
         if (data.getStartTime() != null && data.getEndTime() != null){
             View item = findViewById(R.id.lecture_schedule);
@@ -84,6 +79,8 @@ public class LectureDetailsActivity extends AppCompatActivity
                     + " - " + data.getStartTime() + " - " + data.getEndTime());
         }
 
+        PoliLifeDB.searchClassrooms(data.getClassroom(), true, LectureDetailsActivity.this);
+
     }
 
     @Override
@@ -92,6 +89,7 @@ public class LectureDetailsActivity extends AppCompatActivity
             return;
         }
         mClassroom = result.get(0);
+        ((TextView) findViewById(R.id.room_details)).setText(mClassroom.getDetails());
         SupportMapFragment mapFragment = new SupportMapFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.map_container, mapFragment); // map_container is your FrameLayout container
@@ -116,7 +114,7 @@ public class LectureDetailsActivity extends AppCompatActivity
         LatLng room = new LatLng(latitude, longitude);
         mMap.addMarker(new MarkerOptions().position(room).title(name));
 
-        float zoom = Utility.calculateZoomLevel(this, 2000);
+        float zoom = MapsUtil.calculateZoomLevel(this, 2000);
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(room, zoom));
     }
 /*

@@ -107,10 +107,10 @@ public class ProfileFragment extends Fragment {
             try {
                 mProfilePhoto.setImageBitmap(Utility.getBitmap(mUser.getPhoto().getData()));
             } catch (Exception e) {
-                mProfilePhoto.setImageResource(R.drawable.logo);
+                mProfilePhoto.setImageResource(R.drawable.student_icon);
             }
         } else {
-            mProfilePhoto.setImageResource(R.drawable.logo);
+            mProfilePhoto.setImageResource(R.drawable.student_icon);
         }
         mProfilePhoto.setOnLongClickListener(new View.OnLongClickListener() {
             @Override

@@ -8,48 +8,44 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
+import android.widget.SeekBar;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.db.parcel.PNoticeData;
+import it.polito.mad.polilife.maps.MapsUtil;
 import it.polito.mad.polilife.noticeboard.NoticeUpdater;
 
 public class Page1 extends Fragment implements NoticeUpdater {
 
-    private View root;
-    //private Spinner contractTypeSpinner, propertyTypeSpinner;
     private AutoCompleteTextView locationEditText;
-    private EditText titleEditText, descrEditText, costEditText;
+    private EditText titleEditText, descrEditText;
     private DatePicker datePicker;
-    private NumberPicker np;
+    private SeekBar mPrice, mSize;
     private RadioGroup contractRG, propertyRG;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        root = inflater.inflate(R.layout.fragment_page1, container, false);
-        //contractTypeSpinner = (Spinner) root.findViewById(R.id.contract_type);
-        //propertyTypeSpinner = (Spinner) root.findViewById(R.id.property_type);
-        locationEditText = (AutoCompleteTextView) root.findViewById(R.id.location);
-        //Util.setAutoCompleteGMaps(locationEditText);
-        titleEditText = (EditText) root.findViewById(R.id.title);
-        descrEditText = (EditText) root.findViewById(R.id.description);
-        datePicker = (DatePicker) root.findViewById(R.id.availableDatePicker);
-        costEditText = (EditText) root.findViewById(R.id.price);
-        contractRG = (RadioGroup) root.findViewById(R.id.contract_type_radio_group);
-        propertyRG = (RadioGroup) root.findViewById(R.id.property_type_radio_group);
+        return inflater.inflate(R.layout.fragment_page1, container, false);
+    }
 
-        np = (NumberPicker) root.findViewById(R.id.size_number_picker);
-        int min = 50, max = 2000, step = 50;
-        //Util.setValuesWithStep(np, min, max, step);
-        np.setWrapSelectorWheel(true);
-        return root;
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        locationEditText = (AutoCompleteTextView) view.findViewById(R.id.location);
+        MapsUtil.setAutoCompleteGMaps(locationEditText);
+        titleEditText = (EditText) view.findViewById(R.id.title);
+        descrEditText = (EditText) view.findViewById(R.id.description);
+        datePicker = (DatePicker) view.findViewById(R.id.availableDatePicker);
+        contractRG = (RadioGroup) view.findViewById(R.id.contract_type_radio_group);
+        propertyRG = (RadioGroup) view.findViewById(R.id.property_type_radio_group);
+
+        mSize = (SeekBar) view.findViewById(R.id.size_seekbar);
+        mPrice = (SeekBar) view.findViewById(R.id.price);
     }
 
     @Override
@@ -65,15 +61,13 @@ public class Page1 extends Fragment implements NoticeUpdater {
                     datePicker.getYear())
                 .contractType(contractRB.getText().toString())
                 .propertyType(propertyRB.getText().toString())
-                //.contractType(((RadioButton) root.findViewById(contractRG.getCheckedRadioButtonId()).getTeget ))
-                //.propertyType(propertyTypeSpinner.getSelectedItem().toString())
-                .cost(Integer.parseInt(costEditText.getText().toString()))
-                .size(np.getValue())
+                .cost(mPrice.getProgress())
+                .size(mSize.getProgress())
                 .location(typedLocation);
         if (!typedLocation.isEmpty()){
-            /*LatLng geoPosition = Util.getFirstAddress(getActivity(), typedLocation);
+            LatLng geoPosition = MapsUtil.getFirstGMapsAddress(getActivity(), typedLocation);
             if (geoPosition != null)
-                data.latitude(geoPosition.latitude).longitude(geoPosition.longitude);*/
+                data.latitude(geoPosition.latitude).longitude(geoPosition.longitude);
         }
     }
 

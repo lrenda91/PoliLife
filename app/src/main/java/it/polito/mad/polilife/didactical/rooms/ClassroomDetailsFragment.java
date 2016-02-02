@@ -1,5 +1,8 @@
 package it.polito.mad.polilife.didactical.rooms;
 
+import android.graphics.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,10 +18,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import it.polito.mad.polilife.R;
 import it.polito.mad.polilife.Utility;
+import it.polito.mad.polilife.maps.MapsUtil;
 
 /**
  * Created by luigi onSelectAppliedJobs 12/11/15.
@@ -37,6 +42,8 @@ public class ClassroomDetailsFragment extends Fragment implements OnMapReadyCall
         return fragment;
     }
 
+    private LatLngBounds.Builder mBoundsBuilder = new LatLngBounds.Builder();
+    private LatLng myPosition;
     private GoogleMap mMap;
 
     @Override
@@ -71,15 +78,32 @@ public class ClassroomDetailsFragment extends Fragment implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location arg0) {
+                if (myPosition == null) {
+                    myPosition = new LatLng(arg0.getLatitude(), arg0.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(myPosition).title("It's Me!"));
+                    mBoundsBuilder.include(myPosition);
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBoundsBuilder.build(), 100));
+                }
+            }
+        });
+
         String name = getArguments().getString("name");
         double latitude = getArguments().getDouble("lat");
         double longitude = getArguments().getDouble("lng");
 
-        LatLng room = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(room).title(name));
 
-        float zoom = Utility.calculateZoomLevel(getActivity(), 2000);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(room, zoom));
+
+        LatLng room = new LatLng(latitude, longitude);
+        mBoundsBuilder.include(room);
+        mMap.addMarker(new MarkerOptions().position(room).title(name));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBoundsBuilder.build(), 100));
+
+        //float zoom = MapsUtil.calculateZoomLevel(getActivity(), 2000);
+        //mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(room, zoom));
     }
 
 }
