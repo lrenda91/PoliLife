@@ -65,11 +65,12 @@ public class PubnubChatManager {
         mListener = listener;
     }
 
-    public void handleJSON(String json){
-        try{
+    public void handleJSON(JSONObject json){
+        /*try{
             JSONObject jsonObject = new JSONObject(json);
-            mSubscribeCallback.successCallback(PUBLIC_CHANNEL, jsonObject);
-        }catch(JSONException e){}
+
+        }catch(JSONException e){}*/
+        mSubscribeCallback.successCallback(PUBLIC_CHANNEL, json);
     }
 
     public void init(String... channels){
@@ -77,6 +78,8 @@ public class PubnubChatManager {
         for (String s : channels) list.add(s);
         list.add(PUBLIC_CHANNEL);
         init(list);
+
+
     }
 
     public void init(List<String> channels){
@@ -162,10 +165,6 @@ public class PubnubChatManager {
                                 String id = receivers.getString(i);
                                 if (id.equals(mPubnub.getUUID())){  //I'm one of receivers
                                     final String channelToSetup = jsonObject.getString("group");
-                                    JSONObject state = new JSONObject();
-                                    state.put("first", sUser.getFirstName());
-                                    state.put("last", sUser.getLastName());
-                                    mPubnub.setState(channelToSetup, id, state, new Callback() {});
                                     mPubnub.subscribe(channelToSetup, this);
                                     mMainHandler.post(new Runnable() {
                                         @Override
@@ -194,57 +193,6 @@ public class PubnubChatManager {
                             }
                         });
                     }
-
-
-
-
-
-
-
-
-                    /*if (jsonObject.has("type")) {
-                        if (jsonObject.getString("type").equals("setup_1_to_1")) {
-                            String receiver = jsonObject.getString("receiverIDs");
-                            String sender = jsonObject.getString("senderID");
-                            if (!receiver.equals(mPubnub.getUUID()) &&
-                                    !sender.equals(mPubnub.getUUID()) ){
-                                return;
-                            }
-                            final String newChannel = getChannelName(sender, receiver);
-                            //This message will be received ALSO by myself
-                            JSONObject state = new JSONObject();
-                            state.put("first", sUser.getFirstName());
-                            state.put("last", sUser.getLastName());
-                            mPubnub.setState(newChannel, mPubnub.getUUID(), state, new Callback() {});
-
-                            mMainHandler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mListener != null)
-                                        mListener.onJoinRequestReceived(newChannel);
-                                }
-                            });
-                        }
-                        else if (jsonObject.getString("type").equals("setup_1_to_N")) {
-                            JSONArray uuids = jsonObject.getJSONArray("receiverIDs");
-                            for (int i=0; i<uuids.length(); i++){
-                                String id = uuids.getString(i);
-                                if (id.equals(mPubnub.getUUID())){  //I'm one of receivers
-                                    final String groupChannelName = jsonObject.getString("group");
-                                    mMainHandler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (mListener != null)
-                                                mListener.onJoinRequestReceived(groupChannelName);
-                                        }
-                                    });
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    */
-
                 }
                 catch(JSONException e){
                     e.printStackTrace();
@@ -339,7 +287,7 @@ public class PubnubChatManager {
     private Callback mPresenceCallback = new Callback() {
         @Override
         public void successCallback(final String channel, Object response) {
-            //Log.i(TAG, "Presence success: " + response.toString() + " class: " + response.getClass().toString());
+            Log.i(TAG, "Presence success: " + response.toString());
             if (response instanceof JSONObject){
                 final JSONObject json = (JSONObject) response;
                 try {

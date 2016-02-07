@@ -31,6 +31,7 @@ import org.json.JSONObject;
 import it.polito.mad.polilife.chat.ChatFragment;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
+import it.polito.mad.polilife.db.classes.Job;
 import it.polito.mad.polilife.db.classes.Student;
 import it.polito.mad.polilife.db.push.JSONFactory;
 import it.polito.mad.polilife.db.push.PushBroadcastReceiver;
@@ -74,6 +75,7 @@ public class HomeActivity extends AppCompatActivity
 
     private boolean mProfileEditMode = false;
 
+    //if bcast is sent when this activity is still resumed
     private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -83,6 +85,9 @@ public class HomeActivity extends AppCompatActivity
                     if (JSONFactory.isChatMessage(obj)) mCurrentFeature = CHAT;
                     else if (JSONFactory.isDidacticalMessage(obj)) mCurrentFeature = DIDACTICS;
                     else if (JSONFactory.isJobMessage(obj)) mCurrentFeature = JOBPLACEMENT;
+                    if (pages[mCurrentFeature] instanceof PushListener) {
+                        ((PushListener) pages[mCurrentFeature]).onPushReceived(obj);
+                    }
                     showPage(mCurrentFeature);
                 }catch(JSONException e){}
             }
@@ -94,12 +99,16 @@ public class HomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        //if bcast is sent when this activity was paused
         if (getIntent().hasExtra("json")){
             try{
                 JSONObject obj = new JSONObject(getIntent().getStringExtra("json"));
                 if (JSONFactory.isChatMessage(obj)) mCurrentFeature = CHAT;
                 else if (JSONFactory.isDidacticalMessage(obj)) mCurrentFeature = DIDACTICS;
                 else if (JSONFactory.isJobMessage(obj)) mCurrentFeature = JOBPLACEMENT;
+                if (pages[mCurrentFeature] instanceof PushListener) {
+                    ((PushListener) pages[mCurrentFeature]).onPushReceived(obj);
+                }
                 showPage(mCurrentFeature);
             }catch(JSONException e){}
         }
@@ -117,41 +126,6 @@ public class HomeActivity extends AppCompatActivity
                 final Context context = HomeActivity.this;
                 mCurrentFeature = position;
                 switch (position) {
-                    /*case NOTICEBOARD:
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setTitle("Show dialog");
-                        final CharSequence[] choiceList = {
-                                NoticeBoardActivity.HOME_TYPE,
-                                NoticeBoardActivity.BOOK_TYPE
-                        };
-                        DialogInterface.OnClickListener onClick = new DialogInterface.OnClickListener() {
-                            private int m;
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case DialogInterface.BUTTON_POSITIVE:
-                                        Intent i = new Intent(context, NoticeBoardActivity.class);
-                                        i.putExtra(NoticeBoardActivity.TYPE_EXTRA_KEY, choiceList[m]);
-                                        context.startActivity(i);
-                                        break;
-                                    case DialogInterface.BUTTON_NEGATIVE:
-                                        dialog.dismiss();
-                                        break;
-                                    default:
-                                        m = which;
-                                        break;
-                                }
-                            }
-                        };
-                        builder.setSingleChoiceItems(choiceList, 0, onClick)
-                                .setCancelable(false)
-                                .setPositiveButton("OK", onClick)
-                                .setNegativeButton("Cancel", onClick);
-                        final AlertDialog alert = builder.create();
-                        alert.show();
-                        return;
-*/
                     default:
                         showPage(position);
                         break;

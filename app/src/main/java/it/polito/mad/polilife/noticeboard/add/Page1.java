@@ -15,11 +15,21 @@ import android.widget.SeekBar;
 import com.google.android.gms.maps.model.LatLng;
 
 import it.polito.mad.polilife.R;
+import it.polito.mad.polilife.db.classes.Notice;
 import it.polito.mad.polilife.db.parcel.PNoticeData;
 import it.polito.mad.polilife.maps.MapsUtil;
+import it.polito.mad.polilife.noticeboard.NoticeBoardActivity;
 import it.polito.mad.polilife.noticeboard.NoticeUpdater;
 
 public class Page1 extends Fragment implements NoticeUpdater {
+
+    public static Page1 newInstance(String noticeType){
+        Page1 fragment = new Page1();
+        Bundle args = new Bundle();
+        args.putString(NoticeBoardActivity.TYPE_EXTRA_KEY, noticeType);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     private AutoCompleteTextView locationEditText;
     private EditText titleEditText, descrEditText;
@@ -30,22 +40,34 @@ public class Page1 extends Fragment implements NoticeUpdater {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_page1, container, false);
+        return inflater.inflate(R.layout.fragment_new_notice_page1, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        locationEditText = (AutoCompleteTextView) view.findViewById(R.id.location);
+        String type = getArguments().getString(NoticeBoardActivity.TYPE_EXTRA_KEY);
+
+        //for all notices
+        locationEditText = (AutoCompleteTextView)
+                view.findViewById(R.id.location_layout).findViewById(R.id.rowText);
         MapsUtil.setAutoCompleteGMaps(locationEditText);
         titleEditText = (EditText) view.findViewById(R.id.title);
         descrEditText = (EditText) view.findViewById(R.id.description);
+        mPrice = (SeekBar) view.findViewById(R.id.price);
+
+        //only for houses
         datePicker = (DatePicker) view.findViewById(R.id.availableDatePicker);
         contractRG = (RadioGroup) view.findViewById(R.id.contract_type_radio_group);
         propertyRG = (RadioGroup) view.findViewById(R.id.property_type_radio_group);
-
         mSize = (SeekBar) view.findViewById(R.id.size_seekbar);
-        mPrice = (SeekBar) view.findViewById(R.id.price);
+        if (type.equals(Notice.BOOK_TYPE)){
+            datePicker.setVisibility(View.INVISIBLE);
+            contractRG.setVisibility(View.INVISIBLE);
+            propertyRG.setVisibility(View.INVISIBLE);
+            mSize.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     @Override

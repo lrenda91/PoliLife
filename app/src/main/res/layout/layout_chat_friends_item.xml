@@ -2,32 +2,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:weightSum="4"
+    android:weightSum="6"
     android:orientation="horizontal" >
 
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:padding="4dp"
         android:layout_weight="1">
         <it.polito.mad.polilife.CircularImageView
             android:id="@+id/user_photo"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical" />
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="0dp"
-        android:layout_weight="3"
+        android:layout_weight="5"
         android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/friend_name"
             android:textStyle="bold"
             android:textSize="18dp"
-            android:text="BBBBBBBBBBB"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical" />
@@ -39,6 +38,7 @@
             <TextView
                 android:id="@+id/occupancy"
                 android:textStyle="bold"
+                android:paddingLeft="8dp"
                 android:textSize="15dp"
                 android:textColor="@color/colorPrimary"
                 android:layout_width="match_parent"

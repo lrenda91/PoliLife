@@ -18,6 +18,7 @@ import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Notice;
 import it.polito.mad.polilife.db.parcel.PNoticeData;
+import it.polito.mad.polilife.noticeboard.NoticeBoardActivity;
 import it.polito.mad.polilife.noticeboard.NoticeUpdater;
 
 
@@ -26,16 +27,17 @@ public class AddNoticeActivity extends AppCompatActivity
 
     private PNoticeData mWrapper = new PNoticeData();
 
+    private String mNewNoticeType;
+
     private ViewPager mViewPager;
     private int mCurrentPage = 0;
-    private Fragment[] pages = new Fragment[]{
-            new Page1(), new Page2()
-    };
+    private Fragment[] pages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notice);
+        mNewNoticeType = getIntent().getStringExtra(NoticeBoardActivity.TYPE_EXTRA_KEY);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -47,6 +49,12 @@ public class AddNoticeActivity extends AppCompatActivity
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle(mNewNoticeType.equals(Notice.HOME_TYPE) ?
+            R.string.title_add_home_notice : R.string.title_add_book_notice);
+
+        pages = new Fragment[]{
+                Page1.newInstance(mNewNoticeType), new Page2()
+        };
 
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -88,7 +96,12 @@ public class AddNoticeActivity extends AppCompatActivity
                         ((NoticeUpdater) page).update(mWrapper);
                     }
                 }
-                PoliLifeDB.publishNewHomeNotice(mWrapper, this);
+                if (mNewNoticeType.equals(Notice.HOME_TYPE)) {
+                    PoliLifeDB.publishNewHomeNotice(mWrapper, this);
+                }
+                else if (mNewNoticeType.equals(Notice.BOOK_TYPE)){
+                    PoliLifeDB.publishNewBookNotice(mWrapper, this);
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);

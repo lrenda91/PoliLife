@@ -53,9 +53,9 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/facebook_color"/>
 
-                <include layout="@layout/layout_list_item_edtable"
+                <include layout="@layout/layout_list_item_switch_edit_mode"
                     android:id="@+id/phone_item_editable" />
-                <include layout="@layout/layout_list_item_edtable"
+                <include layout="@layout/layout_list_item_switch_edit_mode"
                     android:id="@+id/mail_item_editable" />
 
                 <TextView
@@ -76,13 +76,13 @@
                     android:layout_marginTop="10dp"
                     android:background="@color/facebook_color"/>
 
-                <include layout="@layout/layout_list_item_edtable"
+                <include layout="@layout/layout_list_item_switch_edit_mode"
                     android:id="@+id/name_item_editable" />
-                <include layout="@layout/layout_list_item_edtable"
+                <include layout="@layout/layout_list_item_switch_edit_mode"
                     android:id="@+id/dob_item_editable" />
-                <include layout="@layout/layout_list_item_edtable"
+                <include layout="@layout/layout_list_item_switch_edit_mode"
                     android:id="@+id/location_item_editable" />
-                <include layout="@layout/layout_list_item_edtable"
+                <include layout="@layout/layout_list_item_switch_edit_mode"
                     android:id="@+id/about_item_editable" />
 
                 <LinearLayout

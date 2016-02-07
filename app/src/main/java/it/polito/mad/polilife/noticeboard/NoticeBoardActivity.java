@@ -2,34 +2,29 @@ package it.polito.mad.polilife.noticeboard;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import it.polito.mad.polilife.R;
-import it.polito.mad.polilife.Utility;
 import it.polito.mad.polilife.db.DBCallbacks;
 import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Notice;
 
 public class NoticeBoardActivity extends AppCompatActivity
-        implements DBCallbacks.GetListCallback<Notice> {
+        implements DBCallbacks.GetListCallback<Notice>, MyNoticesFragment.NoticeDeleteListener {
 
     public static final int ADVANCED_SEARCH_REQUEST_CODE = 10;
     public static final int PUBLISH_NEW_NOTICE_REQUEST_CODE = 3;
@@ -40,13 +35,12 @@ public class NoticeBoardActivity extends AppCompatActivity
     public static final String TYPE_EXTRA_KEY = "TYPE";
     public static final String BOOK_TYPE = Notice.BOOK_TYPE;
     public static final String HOME_TYPE = Notice.HOME_TYPE;
+
     private String mNoticesType;
+    private List<Notice> mNotices = new LinkedList<>();
 
     private ProgressBar mWait;
-    private Fragment[] sections = {
-            AllNoticesFragment.newInstance(),
-            MyNoticesFragment.newInstance()
-    };
+    private Fragment[] mSections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +48,10 @@ public class NoticeBoardActivity extends AppCompatActivity
         setContentView(R.layout.activity_notice_board);
 
         mNoticesType = getIntent().getStringExtra(NoticeBoardActivity.TYPE_EXTRA_KEY);
-
+        mSections = new Fragment[]{
+                AllNoticesFragment.newInstance(mNoticesType),
+                MyNoticesFragment.newInstance(mNoticesType)
+        };
         final String[] mTitles = {
                 getString(R.string.all_notices),
                 getString(R.string.my_notices)
@@ -63,11 +60,11 @@ public class NoticeBoardActivity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             public Fragment getItem(int position) {
-                return sections[position];
+                return mSections[position];
             }
             @Override
             public int getCount() {
-                return sections.length;
+                return mSections.length;
             }
             @Override
             public CharSequence getPageTitle(int position) {
@@ -121,8 +118,9 @@ public class NoticeBoardActivity extends AppCompatActivity
 
     @Override
     public void onFetchSuccess(List<Notice> result) {
+        mNotices = result;
         mWait.setVisibility(View.INVISIBLE);
-        for (Fragment f : sections){
+        for (Fragment f : mSections){
             if (f instanceof NoticesListener){
                 ((NoticesListener) f).update(result);
             }
@@ -132,6 +130,17 @@ public class NoticeBoardActivity extends AppCompatActivity
     @Override
     public void onFetchError(Exception exception) {
         mWait.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void onNoticeDeleted(Notice notice) {
+        mNotices.remove(notice);
+        for (Fragment f : mSections){
+            if (f instanceof NoticesListener){
+                ((NoticesListener) f).update(mNotices);
+            }
+        }
+        Toast.makeText(this, getString(R.string.delete_success), Toast.LENGTH_SHORT).show();
     }
 
     @Override

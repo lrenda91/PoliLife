@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.parse.*;
+import com.parse.DeleteCallback;
 
 import org.json.JSONObject;
 
@@ -57,6 +58,7 @@ public class PoliLifeDB {
                                      final PStudentData studentData,
                                      final StudentSignUpCallback listener) {
         final Student newUser = userData.build();
+        newUser.addChannel("public");
         newUser.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
@@ -215,11 +217,14 @@ public class PoliLifeDB {
     }
     */
 
-    public static void searchClassrooms(String param, boolean exactMatch,
+    public static void searchClassrooms(String param, boolean exactMatch, boolean fromCache,
                                         final GetListCallback<Classroom> listener){
         ParseQuery<Classroom> query = ParseQuery.getQuery(Classroom.class);
-        if (exactMatch) query.whereEqualTo(Classroom.NAME, "Aula "+param);
-        else query.whereContains(Classroom.NAME, param);
+        if (param != null) {
+            if (exactMatch) query.whereEqualTo(Classroom.NAME, "Aula " + param);
+            else query.whereContains(Classroom.NAME, param);
+        }
+        if (fromCache) query.fromLocalDatastore();
         query.findInBackground(new FindCallback<Classroom>() {
             @Override
             public void done(List<Classroom> list, ParseException e) {
@@ -239,6 +244,9 @@ public class PoliLifeDB {
     public static <T extends ParseObject> void getAllObjects(
             Class<T> klass, final GetListCallback<T> listener){
         ParseQuery<T> query = ParseQuery.getQuery(klass);
+        if (klass == Student.class){
+            query.whereNotEqualTo(Student.STUDENT_KEY, null);
+        }
         query.findInBackground(new FindCallback<T>() {
             @Override
             public void done(List<T> list, ParseException e) {
@@ -311,6 +319,19 @@ public class PoliLifeDB {
         }.execute();
     }
 
+
+    public static void deleteNotice(final Notice notice, final DBCallbacks.DeleteCallback<Notice> listener){
+        notice.deleteEventually(new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    if (listener != null) listener.onDeleteError(e);
+                    return;
+                }
+                if (listener != null) listener.onDeleteSuccess(notice);
+            }
+        });
+    }
 
     public static void advancedNoticeFilter(final Notice.Filter filter,
                                             final GetListCallback<Notice> listener){
@@ -544,8 +565,34 @@ public class PoliLifeDB {
         });
     }
 
-    public static void apply(Job job, final UpdateCallback<StudentInfo> listener) {
-        final StudentInfo info = ((Student) ParseUser.getCurrentUser()).getStudentInfo();
+    public static void getAllChatMembers(List<String> channels, final GetListCallback<Student> listener){
+        List<ParseQuery<Student>> queriesBasedOnSingleChannels = new LinkedList<>();
+        for (String ch : channels){
+            queriesBasedOnSingleChannels.add(
+                    new ParseQuery(Student.class).whereContainsAll("channels", Arrays.asList(ch))
+            );
+        }
+        /**
+         * This query deals with all students who have at least one of the param 'channels' values
+         * inside their array named 'channels' (including myself)
+         */
+        ParseQuery<Student> users = ParseQuery.or(queriesBasedOnSingleChannels)
+                .whereNotEqualTo("objectId", ParseUser.getCurrentUser().getObjectId());
+        users.findInBackground(new FindCallback<Student>() {
+            @Override
+            public void done(List<Student> list, ParseException e) {
+                if (e != null) {
+                    if (listener != null) listener.onFetchError(e);
+                    return;
+                }
+                if (listener != null) listener.onFetchSuccess(list);
+            }
+        });
+    }
+
+    public static void apply(final Job job, final UpdateCallback<StudentInfo> listener) {
+        final Student student = (Student) ParseUser.getCurrentUser();
+        final StudentInfo info = student.getStudentInfo();
         info.addAppliedJob(job);
         info.saveEventually(new SaveCallback() {
             @Override
@@ -554,9 +601,56 @@ public class PoliLifeDB {
                     if (listener != null) listener.onUpdateError(e);
                     return;
                 }
-                if (listener != null) listener.onUpdateSuccess(info);
+                /*Map<String, Object> map = new HashMap<>();
+                map.put("job", job.getObjectId());
+                ParseCloud.callFunctionInBackground("apply", map, new FunctionCallback<Object>() {
+                    @Override
+                    public void done(Object response, ParseException exc) {
+                        if (exc == null) {
+                            job.pinInBackground(getPinName(Job.class));
+                            if (listener != null) listener.onUpdateSuccess(info);
+                        }
+                    }
+                });
+                */
+                ApplicationStatus newStatus = new ApplicationStatus();
+                newStatus.setApplicant(student);
+                newStatus.setJob(job);
+                newStatus.setStatus(ApplicationStatus.STATUS_APPLIED);
+                newStatus.saveEventually(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            if (listener != null) listener.onUpdateError(e);
+                            return;
+                        }
+                        job.pinInBackground(getPinName(Job.class));
+                        if (listener != null) listener.onUpdateSuccess(info);
+                    }
+                });
             }
         });
+    }
+
+    public static void checkApplicationStatus(final Job job, final GetOneCallback<ApplicationStatus> listener) {
+        final Student student = (Student) ParseUser.getCurrentUser();
+        new ParseQuery(ApplicationStatus.class)
+                .whereEqualTo(ApplicationStatus.JOB, job)
+                .whereEqualTo(ApplicationStatus.APPLICANT, student)
+                .findInBackground(new FindCallback<ApplicationStatus>() {
+                    @Override
+                    public void done(List<ApplicationStatus> list, ParseException e) {
+                        if (e != null) {
+                            if (listener != null) listener.onFetchError(e);
+                            return;
+                        }
+                        if (list.isEmpty()){
+                            if (listener != null) listener.onFetchError(e);
+                            return;
+                        }
+                        if (listener != null) listener.onFetchSuccess(list.get(0));
+                    }
+                });
     }
 
     public static void getAppliedJobs(final GetListCallback<Job> listener){
@@ -568,6 +662,7 @@ public class PoliLifeDB {
                     if (listener != null) listener.onFetchError(e);
                     return;
                 }
+                ParseObject.pinAllInBackground(getPinName(Job.class), list);
                 if (listener != null) listener.onFetchSuccess(list);
             }
         });

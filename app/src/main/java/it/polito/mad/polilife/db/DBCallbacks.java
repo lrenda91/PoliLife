@@ -35,7 +35,7 @@ public class DBCallbacks {
     }
 
     public interface DeleteCallback<T extends ParseObject> {
-        void onDeleteSuccess();
+        void onDeleteSuccess(T obj);
         void onDeleteError(Exception exception);
     }
 

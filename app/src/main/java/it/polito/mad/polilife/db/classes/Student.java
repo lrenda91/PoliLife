@@ -29,6 +29,8 @@ public class Student extends ParseUser {
     public static final String CHANNELS = "channels";
     public static final String LAST_LOGIN = "lastLogin";
 
+    public static final String PUBLIC_CHANNEL = "public";
+
     public Date getLastLogin(){ return (Date) get(LAST_LOGIN); }
     public void setLastLogin(Date value){ put(LAST_LOGIN, value); }
 
@@ -78,10 +80,25 @@ public class Student extends ParseUser {
     public String getAbout(){ return (String) get(ABOUT); }
     public void setAbout(String value){ put(ABOUT, value); }
 
-    public List<String> getChannels(){ return (List<String>) get(CHANNELS);  }
-    public void setChannels(List<String> value) {   put(CHANNELS, value);  }
-    public void addChannel(String value){ addUnique(CHANNELS, value); }
-    public void removeChannel(Collection<String> values){ removeAll(CHANNELS, values); }
+    public List<String> getChannels(){
+        List<String> chs = (List<String>) get(CHANNELS);
+        chs.remove(PUBLIC_CHANNEL);
+        return chs;
+    }
+    public void setChannels(List<String> values) {
+        addUnique(CHANNELS, PUBLIC_CHANNEL);
+        for (String ch : values)
+            addUnique(CHANNELS, ch);
+    }
+    public void addChannel(String value){
+        addUnique(CHANNELS, PUBLIC_CHANNEL);
+        addUnique(CHANNELS, value);
+    }
+    public void removeChannels(Collection<String> values){
+        if (values.contains(PUBLIC_CHANNEL))
+            values.remove(PUBLIC_CHANNEL);
+        removeAll(CHANNELS, values);
+    }
 
     @Override
     public String toString() {

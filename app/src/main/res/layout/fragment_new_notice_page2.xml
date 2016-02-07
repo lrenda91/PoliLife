@@ -1,0 +1,111 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="it.polito.mad.noticeboard.advertiser.publish.Page2">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp">
+            <TextView
+                android:id="@+id/photos_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/photos"
+                android:gravity="center_vertical"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+            <ImageButton
+                android:id="@+id/newPhotoButton"
+                android:layout_alignParentRight="true"
+                android:background="@android:drawable/ic_menu_camera"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/colorPrimary"/>
+
+
+        <Gallery
+            android:id="@+id/gallery"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp" />
+
+        <ImageView
+            android:id="@+id/preview"
+            android:background="@drawable/nophoto"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp" >
+            <TextView
+                android:id="@+id/tags_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/tags"
+                android:gravity="center_vertical"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+            <ImageButton
+                android:id="@+id/new_tag_confirm"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/ic_add"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/colorPrimary"/>
+
+        <GridView
+            android:id="@+id/tags_grid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:horizontalSpacing="10dp"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/new_tag_label"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="NEW TAG: " />
+
+            <EditText
+                android:id="@+id/new_tag_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

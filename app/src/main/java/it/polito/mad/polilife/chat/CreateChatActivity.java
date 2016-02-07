@@ -21,6 +21,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseFile;
+import com.parse.ParseUser;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -146,6 +149,7 @@ public class CreateChatActivity extends AppCompatActivity
 
     @Override
     public void onFetchSuccess(List<Student> result) {
+        result.remove((Student) ParseUser.getCurrentUser());
         mAllUsers = result;
         if (mMode == ONE_TO_ONE) {
             mAllUsersAdapter.notifyDataSetChanged();

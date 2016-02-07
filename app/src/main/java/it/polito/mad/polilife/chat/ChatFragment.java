@@ -8,35 +8,35 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.parse.ParseException;
-import com.parse.ParseInstallation;
-import com.parse.ParsePush;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.nio.channels.Channels;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import it.polito.mad.polilife.PushListener;
 import it.polito.mad.polilife.R;
+import it.polito.mad.polilife.db.DBCallbacks;
+import it.polito.mad.polilife.db.PoliLifeDB;
 import it.polito.mad.polilife.db.classes.Student;
 
 /**
  * Created by luigi onSelectAppliedJobs 01/01/16.
  */
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment implements PushListener {
 
     public static ChatFragment newInstance(){
         return new ChatFragment();
@@ -46,81 +46,13 @@ public class ChatFragment extends Fragment {
 
     private PubnubChatManager mChatManager = PubnubChatManager.getInstance();
 
-    private List<String> mSubscriptions;
+    private ChannelsAdapter mListAdapter;
     private int mSelected = 0;
 
-    private BaseAdapter mListAdapter = new BaseAdapter() {
-        @Override
-        public int getCount() {
-            return mSubscriptions.size();
-        }
-
-        @Override
-        public String getItem(int position) {
-            String sub = mSubscriptions.get(position);
-            if (!sub.contains("-")) return sub;
-            StringTokenizer st = new StringTokenizer(sub, "-");
-            String t1 = st.nextToken();
-            String t2 = st.nextToken();
-            return t1.equals(mUser.getUsername()) ? t2 : t1;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getActivity()).inflate(
-                        R.layout.layout_chat_friends_item, parent, false);
-            }
-            final String item = getItem(position);
-            ((TextView) convertView.findViewById(R.id.friend_name)).setText(item);
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), MessagingActivity.class);
-                    intent.putExtra("UUID", mUser.getUsername());
-                    intent.putExtra("CHANNEL", mSubscriptions.get(position));
-                    startActivity(intent);
-                }
-            });
-            convertView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Cancel chat");
-                    DialogInterface.OnClickListener onClick = new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which){
-                                case DialogInterface.BUTTON_POSITIVE:
-                                    List<String> l = new ArrayList<String>();
-                                    l.add(item);
-                                    mSubscriptions.remove(item);
-                                    mUser.removeChannel(l);
-                                    mUser.saveEventually();
-                                    notifyDataSetChanged();
-                                    break;
-                                case DialogInterface.BUTTON_NEGATIVE:
-                                    dialog.dismiss();
-                                    break;
-                            }
-                        }
-                    };
-                    builder.setCancelable(false)
-                            .setPositiveButton("OK", onClick)
-                            .setNegativeButton("Cancel", onClick);
-                    final AlertDialog alert = builder.create();
-                    alert.show();
-                    return false;
-                }
-            });
-            return convertView;
-        }
-    };
+    @Override
+    public void onPushReceived(JSONObject message) {
+        mChatManager.handleJSON(message);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -130,10 +62,7 @@ public class ChatFragment extends Fragment {
             void onJoinRequestReceived(String channel) {
                 mUser.addChannel(channel);
                 mUser.saveEventually();
-                if (!mSubscriptions.contains(channel)) {
-                    mSubscriptions.add(channel);
-                    mListAdapter.notifyDataSetChanged();
-                }
+                mListAdapter.addToData(channel);
                 Toast.makeText(getActivity(), "Join request for channel "+channel, Toast.LENGTH_LONG).show();
             }
             @Override
@@ -189,19 +118,12 @@ public class ChatFragment extends Fragment {
                 alert.show();
             }
         });
-        mSubscriptions = mUser.getChannels() != null ? mUser.getChannels() : new ArrayList<String>();
-        mChatManager.init(mSubscriptions);
-
+        List<String> mSubscriptions = mUser.getChannels() != null ?
+                mUser.getChannels() : new ArrayList<String>();
+        mListAdapter = new ChannelsAdapter(getActivity());
+        mListAdapter.setData(mSubscriptions);
         ((ListView) view.findViewById(R.id.conversations_list)).setAdapter(mListAdapter);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Intent fromActivity = getActivity().getIntent();
-        if (fromActivity.hasExtra("json")){
-            mChatManager.handleJSON(fromActivity.getStringExtra("json"));
-        }
+        mChatManager.init(mListAdapter.getData());
     }
 
     @Override

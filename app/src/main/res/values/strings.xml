@@ -189,6 +189,11 @@
     <string name="contacts">Contacts</string>
     <string name="info">Info</string>
     <string name="infoStudent">Personal Info</string>
+    <string name="general_info">General info</string>
+    <string name="details">Details</string>
+    <string name="photos">Photos</string>
+    <string name="tags">Related Tags</string>
+    <string name="empty_tag">Empty tag. Please type a valid tag</string>
 
     <string name="infoPosition">Information</string>
     <string name="descriptionPosition">Description</string>
@@ -212,6 +217,9 @@
     <string name="title_activity_company_student_search">CompanyStudentSearchActivity</string>
     <string name="title_activity_student_position_search">StudentPositionSearchActivity</string>
     <string name="title_activity_student_company_search">StudentCompanySearchActivity</string>
+
+    <string name="title_add_home_notice">Create your home notice</string>
+    <string name="title_add_book_notice">Create your book notice</string>
 
     <string name="monday">Mon</string>
     <string name="tuesday">Tue</string>
@@ -245,7 +253,7 @@
     <string name="emptyResult">Sorry, you have no events to export</string>
     <string name="noAccount">No Google accounts found</string>
     <string name="confirmExport">Are you sure?</string>
-    <string name="title_activity_classroom_details">Map</string>
+    <string name="title_activity_classroom_details">Classrooms</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="professors">Professors</string>
     <string name="classrooms">Classrooms</string>
@@ -272,6 +280,8 @@
     <string name="no_start_date">No start date</string>
     <string name="no_about">No details</string>
     <string name="no_web_page">No web page</string>
+    <string name="no_results">No results</string>
+    <string name="no_cached_results">No results inside cache. You could switch to online search</string>
 
     <string name="offers">Browse offers</string>
     <string name="candidatures">My candidatures</string>
@@ -286,5 +296,21 @@
     <string name="job_push_subtitle">Job placement notification. Touch for details</string>
     <string name="didactical_push_subtitle">Didactical notification. Touch for details</string>
     <string name="chat_push_subtitle">Chat notification. Touch for details</string>
+
+    <string name="add_photo">Add new photo</string>
+    <string name="take_photo">Take photo</string>
+    <string name="gallery_photo">Choose photo from gallery</string>
+
+    <string name="delete">Delete</string>
+    <string name="delete_success">Notice successfully deleted</string>
+
+    <string name="ok">OK</string>
+    <string name="cancel_chat">Cancel chat</string>
+
+    <string name="job_steps_title">Your application status</string>
+    <string name="job_step_idle">You applied to this job offer</string>
+    <string name="job_step_accepted">Your application has been considered by </string>
+    <string name="job_step_refused">analyzed your application but you do not match some requirements</string>
+    <string name="job_step_hired">Hired! Have a nice job!</string>
 
 </resources>

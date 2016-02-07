@@ -26,5 +26,10 @@
     <dimen name="content_left_margin_from_screen">72dp</dimen>
     <dimen name="header_image_height">180dp</dimen>
 
+    <dimen name="photo_max_width">56dp</dimen>
+
+    <dimen name="application_step_height">48dp</dimen>
+    <dimen name="application_step_padding">4dp</dimen>
+
 
 </resources>

@@ -21,7 +21,11 @@ import it.polito.mad.polilife.db.classes.Notice;
 
 public class AllNoticesFragment extends Fragment implements NoticesListener {
 
-    public static AllNoticesFragment newInstance(){
+    public static AllNoticesFragment newInstance(String noticesType){
+        AllNoticesFragment fragment = new AllNoticesFragment();
+        Bundle args = new Bundle();
+        args.putString(NoticeBoardActivity.TYPE_EXTRA_KEY, noticesType);
+        fragment.setArguments(args);
         return new AllNoticesFragment();
     }
 

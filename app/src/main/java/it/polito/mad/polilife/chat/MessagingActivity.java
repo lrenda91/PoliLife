@@ -97,11 +97,12 @@ public class MessagingActivity extends AppCompatActivity
             public void onTextMessageReceived(String channel, ChatMessage message) {
                 Student s = mMembersStateMap.get(message.senderUsername);
                 message.senderCompleteName = s.getFirstName() + " " + s.getLastName();
-                if (s.getPhoto() != null){
+                /*if (s.getPhoto() != null){
                     try {
                         message.photoBytes = s.getPhoto().getData();
                     }catch(ParseException e){ }
                 }
+                */
                 adapter.addMessage(message);
                 updateLastMsg(message);
             }
@@ -110,11 +111,12 @@ public class MessagingActivity extends AppCompatActivity
             void onTextMessageSent(String channel, ChatMessage message) {
                 Student s = mMembersStateMap.get(message.senderUsername);
                 message.senderCompleteName = s.getFirstName() + " " + s.getLastName();
-                if (s.getPhoto() != null){
+                /*if (s.getPhoto() != null){
                     try {
                         message.photoBytes = s.getPhoto().getData();
                     }catch(ParseException e){ }
                 }
+                */
                 adapter.addMessage(message);
                 mMsgEditText.setText("");
                 updateLastMsg(message);
@@ -126,14 +128,17 @@ public class MessagingActivity extends AppCompatActivity
                     Student s = mMembersStateMap.get(msg.senderUsername);
                     if (s == null) continue;
                     msg.senderCompleteName = s.getFirstName() + " " + s.getLastName();
-                    if (s.getPhoto() != null){
+                    /*if (s.getPhoto() != null){
                         try {
                             msg.photoBytes = s.getPhoto().getData();
                         }catch(ParseException e){ }
                     }
+                    */
                 }
                 adapter.setData(messages);
-                updateLastMsg(messages.get(messages.size()-1));
+                if (!messages.isEmpty()){
+                    updateLastMsg(messages.get(messages.size()-1));
+                }
             }
 
             @Override
